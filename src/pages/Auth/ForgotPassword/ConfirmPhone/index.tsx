@@ -8,7 +8,7 @@ interface ConfirmPhoneProps {
 const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
   const checkPhoneIsValid = () => {
     // call api check phone
-    if (onclick) {
+    if (onClick) {
       onClick(true);
     } //tạm thời trả về true để code
   }
@@ -16,7 +16,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
   return (
     <>
       <p>Confirm phone component</p>
-      <Button onClick={checkPhoneIsValid}>Confirm</Button>
+      <Button variant="contained" onClick={checkPhoneIsValid}>Confirm</Button>
     </>
   );
 };
