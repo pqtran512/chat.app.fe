@@ -1,9 +1,11 @@
-import { FC, ReactNode } from 'react';
-import PropTypes from 'prop-types';
-import { Navigate, Outlet } from 'react-router-dom';
+import { FC, ReactNode } from "react";
+import PropTypes from "prop-types";
+import { Navigate, Outlet } from "react-router-dom";
 
-import { Box } from '@mui/material';
-import { STORAGE_KEY } from 'src/utils/constants';
+import { Box } from "@mui/material";
+import { STORAGE_KEY } from "src/utils/constants";
+
+import cover from "../../assets/images/unauth-cover.jpg";
 
 interface UnAuthProps {
   children?: ReactNode;
@@ -17,8 +19,11 @@ const UnAuth: FC<UnAuthProps> = ({ children }) => {
   return (
     <Box
       sx={{
-        flex: 1,
-        height: '100%'
+        backgroundImage: `url(${cover})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        height: "100vh",
+        paddingTop: 25
       }}
     >
       {children || <Outlet />}
@@ -27,7 +32,7 @@ const UnAuth: FC<UnAuthProps> = ({ children }) => {
 };
 
 UnAuth.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export default UnAuth;
