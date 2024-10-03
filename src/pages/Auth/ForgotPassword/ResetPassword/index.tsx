@@ -112,7 +112,7 @@ const ResetPassword: FC<ResetPasswordProps> = ({ onClick }) => {
 
               <Grid container>
                 <Grid item xs>
-                  <Link href="/Login" variant="body2">
+                  <Link href="/login" variant="body2">
                     Quay lại
                   </Link>
                 </Grid>
