@@ -16,10 +16,22 @@ import {
 import { useEffect, useState, FC } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { LogInDto } from "src/types/api/dto";
+import { useMutation } from "react-query";
+import { authAPI } from "src/api";
+import { STORAGE_KEY } from "src/utils/constants";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "src/contexts/AuthContext";
+import { enqueueSnackbar } from "notistack";
 
 interface LoginProps {}
 
 const Login: FC<LoginProps> = ({}) => {
+  const [loginInfo, setLoginInfo] = useState({
+    phone: "",
+    password: "",
+  } as LogInDto);
+
   function Copyright(props: any) {
     return (
       <Typography
@@ -39,8 +51,52 @@ const Login: FC<LoginProps> = ({}) => {
   }
 
   const defaultTheme = createTheme();
+  const navigate = useNavigate();
+  const { setAccessToken, setUserId } = useAuth();
 
-  const handleSubmit = () => {};
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // login({ variables: { input: loginInfo } });
+    login.mutate(loginInfo);
+  };
+
+  const onFormChangeHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setLoginInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleChangePhone = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const onlyNums = e.target.value.replace(/[^0-9]/g, "");
+    if (onlyNums.length <= 10) {
+      setLoginInfo((prev) => ({ ...prev, phone: onlyNums }));
+    }
+  };
+
+  const login = useMutation(authAPI.login, {
+    onSuccess: (response) => {
+      const { access_token, refresh_token, user, is_success } =
+        response.data;
+
+      if (is_success) {
+        localStorage.setItem(STORAGE_KEY.ID, user.id);
+        localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, access_token);
+        localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
+
+        setUserId(user.id);
+        setAccessToken(access_token);
+
+        navigate("/");
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    }
+  });
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -76,9 +132,9 @@ const Login: FC<LoginProps> = ({}) => {
               name="phone"
               autoComplete="phone"
               autoFocus
-              // value={loginInfo.username}
+              value={loginInfo.phone}
               // disabled={loading}
-              // onChange={onFormChangeHandler}
+              onChange={handleChangePhone}
             />
             <TextField
               margin="normal"
@@ -89,13 +145,9 @@ const Login: FC<LoginProps> = ({}) => {
               type="password"
               id="password"
               autoComplete="current-password"
-              // value={loginInfo.password}
+              value={loginInfo.password}
               // disabled={loading}
-              // onChange={onFormChangeHandler}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Nhớ mật khẩu"
+              onChange={onFormChangeHandler}
             />
             <Box sx={{ position: "relative" }}>
               <Button

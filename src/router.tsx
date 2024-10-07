@@ -23,11 +23,18 @@ const Login = Loader(lazy(() => import("src/pages/Auth/Login")));
 
 const ForgotPassword = Loader(lazy(() => import("src/pages/Auth/ForgotPassword")));
 
+//Home
+
+const Home = Loader(lazy(() => import("src/pages/Home")));
+
 const routes: RouteObject[] = [
   {
     path: "",
     element: <Auth />,
-    children: [],
+    children: [{
+      path: "/",
+      element: <Home />,
+    },],
   },
   {
     path: "",

@@ -4,14 +4,16 @@ import router from "src/router";
 import { CssBaseline } from "@mui/material";
 import "./App.css";
 
+import ThemeProvider from "./theme/ThemeProvider";
+
 function App() {
   const content = useRoutes(router);
 
   return (
-    <>
+    <ThemeProvider>
       <CssBaseline />
       {content}
-    </>
+    </ThemeProvider>
   );
 }
 
