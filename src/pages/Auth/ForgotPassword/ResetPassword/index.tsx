@@ -48,7 +48,7 @@ const ResetPassword: FC<ResetPasswordProps> = ({ onClick }) => {
     if (true) {
       console.log("2 password same and return to login screen")
     }
-    // else typing agrian correct password
+    // else typing agian correct password
 
   };
 
