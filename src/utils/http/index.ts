@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { STORAGE_KEY } from "../constants";
+import { authAPI } from "src/api";
 // import { notificationError } from "./notification";
 
 export class Http {
@@ -14,6 +15,9 @@ export class Http {
         _retry: true,
       },
     });
+
+    let isRefreshToken = false;
+    let requestsToRefresh = [];
 
     this.instance.interceptors.request.use(
       (config) => {
@@ -32,8 +36,57 @@ export class Http {
         return response;
       },
       async (error) => {
+        const { config } = error;
         if (error?.response?.status === 401) {
-          return Promise.reject(error);
+          // return Promise.reject(error);
+          const refreshToken = localStorage.getItem(STORAGE_KEY.REFRESH_TOKEN);
+          if (!refreshToken) {
+            localStorage.clear();
+            return (window.location.href = "/login");
+          }
+
+          if (!isRefreshToken) {
+            // @todo update status isRefresh to be true
+            isRefreshToken = true;
+
+            authAPI
+              .refresh({
+                id: localStorage.getItem(STORAGE_KEY.ID),
+                refresh_token: refreshToken,
+                is_new_refresh_token: false,
+              })
+              .then((response) => {
+                requestsToRefresh.forEach((callback) => {
+                  callback(response.data.access_token);
+                });
+                // localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, response.data.access_token);
+                // return this.instance.request(config);
+              })
+              .catch((error) => {
+                requestsToRefresh.forEach((cb) => cb(null));
+                localStorage.clear();
+                return (window.location.href = "/login");
+              })
+              .finally(() => {
+                // 5. After that, to clear all setup
+                isRefreshToken = false;
+                requestsToRefresh = [];
+              });
+          }
+
+          // 3. Setup callback to change token in headers authorization
+          return new Promise((resolve, reject) => {
+            requestsToRefresh.push((token) => {
+              if (token) {
+                localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, token);
+                // Reset access_token for another request behind
+                config.headers.Authorization = `Bearer ${token}`;
+                resolve(this.instance.request(config));
+              }
+
+              reject(error);
+            });
+          });
         }
 
         // notificationError("", error.response?.data);
