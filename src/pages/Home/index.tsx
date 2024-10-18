@@ -43,16 +43,17 @@ const HomePage: FC<HomePageProps> = ({}) => {
         variant="outlined"
         onClick={onAlert}>Hello world
       </Button> */}
-        <Container maxWidth="xl" sx={{padding: "0px 0px 0px 0px"}}>
+        {/* <Container maxWidth="xl" sx={{padding: "0px 0px 0px 0px"}}>
           <Grid container spacing={0}>
             <Grid item xs={3}>
               <ChatList />
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={9}> 
               <ChatDetail />
             </Grid>
           </Grid>
-        </Container>
+        </Container> */}
+        <ChatList/>
     </>
   );
 };

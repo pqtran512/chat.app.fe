@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import Scrollbar from "src/components/Scrollbar";
 import { SidebarContext } from "src/contexts/SidebarContext";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import {
   Box,
@@ -87,6 +88,14 @@ function Sidebar() {
             <b>Version</b> {process.env.REACT_APP_VERSION}
           </div>
         </Box>
+        {/* <Divider
+          sx={{
+            background: theme.colors.alpha.trueWhite[10],
+          }}
+        />
+        <Box display="flex" justifyContent="center" alignItems="center" sx={{height: "50px"}} >
+          <SettingsIcon/>
+        </Box> */}
       </SidebarWrapper>
       <Drawer
         sx={{
