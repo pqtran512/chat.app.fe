@@ -1,43 +1,159 @@
 import { useState, FC } from "react";
-import Avatar from '@mui/material/Avatar';
-import { Box, Stack } from "@mui/material";
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
-import SearchIcon from '@mui/icons-material/Search';
-import CallIcon from '@mui/icons-material/Call';
-import VideoCallIcon from '@mui/icons-material/VideoCall';
-import InfoIcon from '@mui/icons-material/Info';
+import Avatar from "@mui/material/Avatar";
+import {
+  Box,
+  Stack,
+  styled,
+  Badge,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import SearchIcon from "@mui/icons-material/Search";
+import CallIcon from "@mui/icons-material/Call";
+import VideoCallIcon from "@mui/icons-material/VideoCall";
+import InfoIcon from "@mui/icons-material/Info";
+import { Height } from "@mui/icons-material";
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}));
 
 interface ChatDetailProps {}
 
 const ChatDetail: FC<ChatDetailProps> = () => {
-    return (
-        <>
-        <Box sx={{
-            border: "1px solid",
-        }}> 
-            {/* bar detail */}
-            <Box sx={{border: "1px solid"}}>
-                <Stack direction={"row"} spacing={5}>
-                    <Box >
-                        <Avatar>N</Avatar>
-                        <span>Name</span>
-                    </Box>
-                    <Box>
-                        <PersonAddAltIcon />
-                        <SearchIcon />
-                        <CallIcon />
-                        <VideoCallIcon />
-                        <InfoIcon />
-                    </Box>
-                </Stack>
-            </Box>
-            {/* chat detail */}
-            <Box sx={{boder: "1px solid"}}>
-                <span>chat details</span>
-            </Box>
-        </Box>
-        </>
-    );
+  return (
+    <Stack height={"100%"} width={"auto"}>
+      {/* maxHeight={"100vh"} */}
+      {/* header */}
+      <Box
+        sx={{
+          height: 100,
+          backgroundColor: "#fff",
+          boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+        }}
+        p={1}
+        alignItems={"center"}
+      >
+        <Stack
+          direction={"row"}
+          width={"100%"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          p={2}
+        >
+          <Box>
+            <Stack direction={"row"} spacing={2} alignItems={"center"}>
+              {true ? (
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                >
+                  <Avatar
+                    src={
+                      "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"
+                    }
+                  />
+                </StyledBadge>
+              ) : (
+                <Avatar
+                  src={
+                    "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"
+                  }
+                />
+              )}
+
+              <Stack direction={"column"}>
+                <Typography variant="h4">{"Beckham"}</Typography>
+                <Typography variant="subtitle2">{"Online"}</Typography>
+              </Stack>
+            </Stack>
+          </Box>
+          <Box>
+            <Stack direction={"row"}>
+              <IconButton>
+                <PersonAddAltIcon />
+              </IconButton>
+              <IconButton>
+                <SearchIcon />
+              </IconButton>
+              <IconButton>
+                <CallIcon />
+              </IconButton>
+              <IconButton>
+                <VideoCallIcon />
+              </IconButton>
+              <IconButton>
+                <InfoIcon />
+              </IconButton>
+            </Stack>
+          </Box>
+        </Stack>
+      </Box>
+
+      {/* body */}
+      <Box sx={{ flexGrow: 1 }} width={"100%"}></Box>
+      {/* footer */}
+      <Box
+        sx={{
+          height: 100,
+          backgroundColor: "#fff",
+          boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+        }}
+      ></Box>
+      {/* <Box sx={{
+      
+              border: "1px solid",
+          }}> 
+          
+              <Box sx={{border: "1px solid"}}>
+                  <Stack direction={"row"} spacing={5}>
+                      <Box >
+                          <Avatar>N</Avatar>
+                          <span>Name</span>
+                      </Box>
+                      <Box>
+                          <PersonAddAltIcon />
+                          <SearchIcon />
+                          <CallIcon />
+                          <VideoCallIcon />
+                          <InfoIcon />
+                      </Box>
+                  </Stack>
+              </Box>
+              
+              <Box sx={{boder: "1px solid"}}>
+                  <span>chat details</span>
+              </Box>
+          </Box> */}
+    </Stack>
+  );
 };
 
 export default ChatDetail;

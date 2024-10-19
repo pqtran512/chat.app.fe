@@ -14,7 +14,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useState, FC } from "react";
 import SingleChat from "./SingleChat";
 import { ChatLists } from "src/data";
-import Scrollbar from "src/components/Scrollbar"
+import Scrollbar from "src/components/Scrollbar";
 
 interface ChatListProps {}
 
@@ -41,8 +41,12 @@ const ChatList: FC<ChatListProps> = () => {
               variant="outlined"
               sx={{ width: 280 }}
             />
-            <IconButton sx={{ padding: "0 0 0 0"}}><PersonAddAltIcon /></IconButton>
-            <IconButton sx={{ padding: "0 0 0 0"}}><GroupAddIcon /></IconButton>
+            <IconButton sx={{ padding: "0 0 0 0" }}>
+              <PersonAddAltIcon />
+            </IconButton>
+            <IconButton sx={{ padding: "0 0 0 0" }}>
+              <GroupAddIcon />
+            </IconButton>
           </Stack>
 
           <Stack spacing={1}>
@@ -72,8 +76,12 @@ const ChatList: FC<ChatListProps> = () => {
                 >
                   Phân loại
                 </Button>
-                <IconButton sx={{ padding: "0 0 0 0"}}><KeyboardArrowUpIcon /></IconButton>
-                <IconButton sx={{ padding: "0 0 0 0"}}><MoreHorizIcon /></IconButton>
+                <IconButton sx={{ padding: "0 0 0 0" }}>
+                  <KeyboardArrowUpIcon />
+                </IconButton>
+                <IconButton sx={{ padding: "0 0 0 0" }}>
+                  <MoreHorizIcon />
+                </IconButton>
               </Stack>
             </Stack>
             <Divider />
@@ -85,7 +93,7 @@ const ChatList: FC<ChatListProps> = () => {
             spacing={1}
           >
             {ChatLists.map((el) => {
-                return <SingleChat {...el} />;
+              return <SingleChat {...el} />;
             })}
           </Stack>
         </Stack>

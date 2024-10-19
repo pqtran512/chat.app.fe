@@ -46,7 +46,6 @@ const SingleChat: FC<ChatElementProps> = (ChatElementProps) => {
     <Box
       sx={{
         width: "100%",
-        // height: 80,
         borderRadius: 1,
         backgroundColor: "#f0f0f5",
       }}
