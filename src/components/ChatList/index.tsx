@@ -3,6 +3,7 @@ import {
   Button,
   Divider,
   IconButton,
+  InputAdornment,
   Stack,
   TextField,
 } from "@mui/material";
@@ -15,6 +16,7 @@ import { useState, FC } from "react";
 import SingleChat from "./SingleChat";
 import { ChatLists } from "src/data";
 import Scrollbar from "src/components/Scrollbar";
+import { AodRounded } from "@mui/icons-material";
 
 interface ChatListProps {}
 
@@ -39,7 +41,16 @@ const ChatList: FC<ChatListProps> = () => {
               id="search"
               label="Tìm kiếm"
               variant="outlined"
-              sx={{ width: 280 }}
+              sx={{ width: 200 }}
+              // slotProps={{
+              //   input: {
+              //     startAdornment: <InputAdornment position="start">
+              //       <IconButton>
+              //         <SearchIcon/>
+              //       </IconButton>
+              //     </InputAdornment>
+              //   }
+              // }}
             />
             <IconButton sx={{ padding: "0 0 0 0" }}>
               <PersonAddAltIcon />

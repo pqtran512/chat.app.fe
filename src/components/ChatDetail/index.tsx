@@ -7,13 +7,19 @@ import {
   Badge,
   Typography,
   IconButton,
+  Divider,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import SearchIcon from "@mui/icons-material/Search";
 import CallIcon from "@mui/icons-material/Call";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import InfoIcon from "@mui/icons-material/Info";
-import { Height } from "@mui/icons-material";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { Height, Padding } from "@mui/icons-material";
+import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
+import SendIcon from "@mui/icons-material/Send";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -44,6 +50,13 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
+const StyleInput = styled(TextField)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    paddingTop: "12px",
+    paddingBottom: "12px",
+  },
+}));
+
 interface ChatDetailProps {}
 
 const ChatDetail: FC<ChatDetailProps> = () => {
@@ -53,11 +66,9 @@ const ChatDetail: FC<ChatDetailProps> = () => {
       {/* header */}
       <Box
         sx={{
-          height: 100,
           backgroundColor: "#fff",
           boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
         }}
-        p={1}
         alignItems={"center"}
       >
         <Stack
@@ -65,7 +76,7 @@ const ChatDetail: FC<ChatDetailProps> = () => {
           width={"100%"}
           alignItems={"center"}
           justifyContent={"space-between"}
-          p={2}
+          p={1}
         >
           <Box>
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
@@ -126,32 +137,43 @@ const ChatDetail: FC<ChatDetailProps> = () => {
           backgroundColor: "#fff",
           boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
         }}
-      ></Box>
-      {/* <Box sx={{
-      
-              border: "1px solid",
-          }}> 
-          
-              <Box sx={{border: "1px solid"}}>
-                  <Stack direction={"row"} spacing={5}>
-                      <Box >
-                          <Avatar>N</Avatar>
-                          <span>Name</span>
-                      </Box>
-                      <Box>
-                          <PersonAddAltIcon />
-                          <SearchIcon />
-                          <CallIcon />
-                          <VideoCallIcon />
-                          <InfoIcon />
-                      </Box>
-                  </Stack>
-              </Box>
-              
-              <Box sx={{boder: "1px solid"}}>
-                  <span>chat details</span>
-              </Box>
-          </Box> */}
+      >
+        <Stack height={"100%"}>
+          <Box height={"40%"}>
+            <Stack></Stack>
+          </Box>
+          <Divider />
+          <Box height={"60%"}>
+            <Stack direction={"row"} spacing={2} alignItems={"center"}>
+              <StyleInput
+                size="small"
+                multiline
+                margin="none"
+                fullWidth
+                variant="filled"
+                placeholder="Nhập tin nhắn ..."
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton>
+                          <InsertEmoticonIcon />
+                        </IconButton>
+                        <IconButton>
+                          <ThumbUpIcon />
+                        </IconButton>
+                        <IconButton>
+                          <SendIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Stack>
+          </Box>
+        </Stack>
+      </Box>
     </Stack>
   );
 };

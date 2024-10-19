@@ -34,7 +34,7 @@ const HomePage: FC<HomePageProps> = ({}) => {
       {/* Chat List */}
       <ChatList />
       {/* Chat Detail */}
-      <Box sx={{ width: "80%" }}>
+      <Box sx={{ width: "100%" }}>
         <ChatDetail />
       </Box>
     </Stack>
