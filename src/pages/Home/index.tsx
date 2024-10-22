@@ -11,6 +11,7 @@ import { useEffect, useState, FC } from "react";
 import { styled } from "@mui/material/styles";
 import ChatList from "src/components/ChatList";
 import ChatDetail from "src/components/ChatDetail";
+import ChatInformaion from "src/components/ChatInfomation";
 
 interface HomePageProps {}
 
@@ -26,17 +27,19 @@ interface HomePageProps {}
 // }));
 
 const HomePage: FC<HomePageProps> = ({}) => {
-  const onAlert = () => {
-    alert("Hello world, this MUI!!");
-  };
+  
+  const [openChatInfo, setOpenChatInfo] = useState(false);
+
   return (
     <Stack direction={"row"} sx={{ width: "100%" }}>
       {/* Chat List */}
       <ChatList />
+
       {/* Chat Detail */}
-      <Box sx={{ width: "100%" }}>
-        <ChatDetail />
-      </Box>
+      <ChatDetail {...{openChatInfo, setOpenChatInfo} }/>
+
+      {/* Chat Information */}
+      <ChatInformaion {...{openChatInfo}}/>
     </Stack>
   );
 };

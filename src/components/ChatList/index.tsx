@@ -15,18 +15,15 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useState, FC } from "react";
 import SingleChat from "./SingleChat";
 import { ChatLists } from "src/data";
-import Scrollbar from "src/components/Scrollbar";
-import { AodRounded } from "@mui/icons-material";
 
 interface ChatListProps {}
 
 const ChatList: FC<ChatListProps> = () => {
   return (
-    <>
       <Box
         sx={{
           position: "relative",
-          width: 400,
+          width: 500,
           backgroundColor: "#fff",
           boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
         }}
@@ -41,7 +38,7 @@ const ChatList: FC<ChatListProps> = () => {
               id="search"
               label="Tìm kiếm"
               variant="outlined"
-              sx={{ width: 200 }}
+              sx={{ width: 250 }}
               // slotProps={{
               //   input: {
               //     startAdornment: <InputAdornment position="start">
@@ -52,12 +49,14 @@ const ChatList: FC<ChatListProps> = () => {
               //   }
               // }}
             />
+            <Stack direction={"row"} spacing={1}>
             <IconButton sx={{ padding: "0 0 0 0" }}>
               <PersonAddAltIcon />
             </IconButton>
             <IconButton sx={{ padding: "0 0 0 0" }}>
               <GroupAddIcon />
             </IconButton>
+            </Stack>
           </Stack>
 
           <Stack spacing={1}>
@@ -109,7 +108,6 @@ const ChatList: FC<ChatListProps> = () => {
           </Stack>
         </Stack>
       </Box>
-    </>
   );
 };
 

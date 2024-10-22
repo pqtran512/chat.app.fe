@@ -1,7 +1,9 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Scrollbar from "src/components/Scrollbar";
 import { SidebarContext } from "src/contexts/SidebarContext";
-import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsIcon from "@mui/icons-material/Settings";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import {
   Box,
@@ -15,6 +17,11 @@ import {
   darken,
   Tooltip,
   Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Avatar,
+  Stack,
 } from "@mui/material";
 
 import SidebarMenu from "./SidebarMenu";
@@ -61,7 +68,12 @@ function Sidebar() {
                 width: 52,
               }}
             >
-              <Logo />
+              <Avatar
+                sx={{ width: 60, height: 60 }}
+                alt="Avatar"
+                src="https://cdn.tuoitre.vn/thumb_w/1200/471584752817336320/2024/9/21/aa1qvcnt-1726869380138704119824.jpeg"
+              />
+              {/* <Logo /> */}
             </Box>
           </Box>
           <Divider
@@ -82,11 +94,13 @@ function Sidebar() {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          paddingTop={2.5}
+          // paddingTop={2.5}
+          padding={1}
         >
-          <div>
+          <SettingBotton />
+          {/* <div>
             <b>Version</b> {process.env.REACT_APP_VERSION}
-          </div>
+          </div> */}
         </Box>
         {/* <Divider
           sx={{
@@ -137,6 +151,60 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
+    </>
+  );
+}
+
+function SettingBotton() {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  return (
+    <>
+      <IconButton
+        id="basic-button"
+        aria-controls={open ? "basic-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        <SettingsIcon fontSize="large" />
+      </IconButton>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
+        <Stack direction={"row"} spacing={1}> 
+          <PersonIcon /> 
+          <Typography>Profile Information</Typography>
+        </Stack>
+        </MenuItem>
+        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
+        <Stack direction={"row"} spacing={1}>
+          <SettingsIcon /> 
+          <Typography>Setting</Typography>
+
+        </Stack>
+        </MenuItem>
+        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
+        <Stack direction={"row"} spacing={1}>
+          <LogoutIcon /> 
+          <Typography>Sign out</Typography>
+
+        </Stack>
+        </MenuItem>
+      </Menu>
     </>
   );
 }
