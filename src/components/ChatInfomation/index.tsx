@@ -33,7 +33,7 @@ const ChatInformaion: FC<ChatInformationProps> = (props) => {
             justifyItems: "center",
           }}
         >
-          <Stack spacing={2} alignI={"center"}>
+          <Stack spacing={2} alignItems={"center"}>
             <Avatar
               sx={{ width: 60, height: 60 }}
               src="https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"

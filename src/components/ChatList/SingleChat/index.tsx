@@ -30,17 +30,19 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-interface ChatElementProps {
-    id: number,
-    img: string,
-    name: string,
-    msg: string,
-    time: string,
-    unread: number,
-    online: boolean
+interface SingleChatProps {
+  id: number;
+  group?: boolean;
+  img?: string | string[];
+  name: string;
+  msg: string;
+  time: string;
+  unread: number;
+  online: boolean;
 }
 
-const SingleChat: FC<ChatElementProps> = (ChatElementProps) => {
+const SingleChat: FC<SingleChatProps> = (props) => {
+  console.log(props);
   return (
     <Box
       sx={{
@@ -60,25 +62,27 @@ const SingleChat: FC<ChatElementProps> = (ChatElementProps) => {
           width={"100%"}
         >
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            {ChatElementProps.online ? <StyledBadge
-              overlap="circular"
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              variant="dot"
-            >
-              <Avatar src={ChatElementProps.img}/>
-            </StyledBadge> :
-            <Avatar src={ChatElementProps.img}/>
-            }
+            {/* {props.online ? (
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="dot"
+              >
+                <Avatar src={props.img} />
+              </StyledBadge>
+            ) : (
+              <Avatar src={props.img} />
+            )} */}
 
             <Stack direction={"column"}>
-              <Typography variant="subtitle2">{ChatElementProps.name}</Typography>
-              <Typography variant="subtitle1">{ChatElementProps.msg}</Typography>
+              <Typography variant="subtitle2">{props.name}</Typography>
+              <Typography variant="subtitle1">{props.msg}</Typography>
             </Stack>
           </Stack>
 
           <Stack spacing={2} alignItems="center">
-            <Typography sx={{fontWeight: 300}}>{ChatElementProps.time}</Typography>
-            <Badge color="primary" badgeContent={ChatElementProps.unread}></Badge>
+            <Typography sx={{ fontWeight: 300 }}>{props.time}</Typography>
+            <Badge color="primary" badgeContent={props.unread}></Badge>
           </Stack>
         </Stack>
       </Stack>

@@ -48,8 +48,8 @@ const TextMsg: FC<TextMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-            ? theme.palette.grey[300]
-            : theme.palette.primary.light,
+            ? "#fafffa" // : theme.palette.grey[300],
+            : "#8bbbf7", // : theme.palette.primary.light,
           borderRadius: 1,
           width: "max-content",
         }}
@@ -78,8 +78,8 @@ const ImgMSg: FC<ImgMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-            ? theme.palette.grey[300]
-            : theme.palette.primary.light,
+          ? "#fafffa" // : theme.palette.grey[300],
+          : "#8bbbf7", // : theme.palette.primary.light,
           borderRadius: 1,
           width: "max-content",
         }}
@@ -93,6 +93,7 @@ const ImgMSg: FC<ImgMsgProps> = (props) => {
           <Typography>{props.message}</Typography>
         </Stack>
       </Box>
+      <MessageOption />
     </Stack>
   );
 };
@@ -115,8 +116,8 @@ const ReplyMsg: FC<ReplyMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-            ? theme.palette.grey[300]
-            : theme.palette.primary.light,
+          ? "#fafffa" // : theme.palette.grey[300],
+          : "#8bbbf7", // : theme.palette.primary.light,
           borderRadius: 1,
           width: "max-content",
         }}
@@ -127,8 +128,8 @@ const ReplyMsg: FC<ReplyMsgProps> = (props) => {
             borderRadius={0.5}
             sx={{
               backgroundColor: props.incoming
-                ? theme.palette.grey[400]
-                : theme.palette.primary.dark,
+                ? "#cccdcf" // ? theme.palette.grey[400]
+                : "#4591ed",// : theme.palette.primary.dark,
             }}
           >
             <Typography>{props.message}</Typography>
@@ -136,6 +137,7 @@ const ReplyMsg: FC<ReplyMsgProps> = (props) => {
           <Typography>{props.reply}</Typography>
         </Stack>
       </Box>
+      <MessageOption />
     </Stack>
   );
 };
@@ -159,8 +161,8 @@ const LinkMsg: FC<LinkMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-            ? theme.palette.grey[300]
-            : theme.palette.primary.light,
+          ? "#fafffa" // : theme.palette.grey[300],
+          : "#8bbbf7", // : theme.palette.primary.light,
           borderRadius: 1,
           width: "max-content",
         }}
@@ -175,6 +177,7 @@ const LinkMsg: FC<LinkMsgProps> = (props) => {
           <Typography variant="caption">{props.name}</Typography>
         </Stack>
       </Box>
+      <MessageOption />
     </Stack>
   );
 };
@@ -196,8 +199,8 @@ const DocMsg: FC<DocMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-            ? theme.palette.grey[300]
-            : theme.palette.primary.light,
+          ? "#fafffa" // : theme.palette.grey[300],
+          : "#8bbbf7", // : theme.palette.primary.light,
           borderRadius: 1,
           width: "max-content",
         }}
@@ -210,8 +213,8 @@ const DocMsg: FC<DocMsgProps> = (props) => {
             borderRadius={0.5}
             sx={{
               backgroundColor: props.incoming
-                ? theme.palette.grey[400]
-                : theme.palette.primary.dark,
+              ? "#cccdcf" // ? theme.palette.grey[400]
+              : "#4591ed",// : theme.palette.primary.dark,
             }}
           >
             <InsertDriveFileIcon />
@@ -223,6 +226,7 @@ const DocMsg: FC<DocMsgProps> = (props) => {
           <Typography>{props.message}</Typography>
         </Stack>
       </Box>
+      <MessageOption />
     </Stack>
   );
 };

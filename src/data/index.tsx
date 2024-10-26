@@ -3,6 +3,7 @@ import {faker} from "@faker-js/faker"
 const ChatLists = [
   {
     id: 0,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -11,7 +12,25 @@ const ChatLists = [
     online: true,
   },
   {
+    id: 11,
+    group: true,
+    img: [
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar()
+    ],
+    name: faker.name.firstName(),
+    msg: faker.music.songName(),
+    time: "9:36",
+    unread: 0,
+    online: true,
+  },
+  {
     id: 1,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -21,6 +40,7 @@ const ChatLists = [
   },
   {
     id: 2,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -30,6 +50,7 @@ const ChatLists = [
   },
   {
     id: 3,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -39,6 +60,7 @@ const ChatLists = [
   },
   {
     id: 4,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -48,6 +70,7 @@ const ChatLists = [
   },
   {
     id: 5,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -57,6 +80,7 @@ const ChatLists = [
   },
   {
     id: 6,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -66,6 +90,7 @@ const ChatLists = [
   },
   {
     id: 7,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -75,6 +100,7 @@ const ChatLists = [
   },
   {
     id: 8,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -84,6 +110,7 @@ const ChatLists = [
   },
   {
     id: 9,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -93,6 +120,7 @@ const ChatLists = [
   },
   {
     id: 10,
+    group: false,
     img: faker.image.avatar(),
     name: faker.name.firstName(),
     msg: faker.music.songName(),
@@ -108,10 +136,6 @@ const Chat_History = [
     message: "Hi 👋🏻, How are ya ?",
     incoming: true,
     outgoing: false,
-  },
-  {
-    type: "divider",
-    text: "Today",
   },
   {
     type: "msg",
@@ -131,7 +155,7 @@ const Chat_History = [
     incoming: true,
     outgoing: false,
   },
-
+  
   {
     type: "msg",
     subtype: "img",
@@ -154,7 +178,7 @@ const Chat_History = [
     incoming: false,
     outgoing: true,
   },
-
+  
   {
     type: "msg",
     subtype: "doc",
@@ -162,6 +186,10 @@ const Chat_History = [
     message: "Yes sure, here you go.",
     incoming: true,
     outgoing: false,
+  },
+  {
+    type: "divider",
+    text: "Today",
   },
   {
     type: "msg",
