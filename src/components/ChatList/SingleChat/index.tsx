@@ -33,7 +33,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 interface SingleChatProps {
   id: number;
   group?: boolean;
-  img?: string | string[];
+  img?: string;
   name: string;
   msg: string;
   time: string;
@@ -42,7 +42,6 @@ interface SingleChatProps {
 }
 
 const SingleChat: FC<SingleChatProps> = (props) => {
-  console.log(props);
   return (
     <Box
       sx={{
@@ -62,7 +61,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
           width={"100%"}
         >
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            {/* {props.online ? (
+            {props.online ? (
               <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -72,7 +71,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
               </StyledBadge>
             ) : (
               <Avatar src={props.img} />
-            )} */}
+            )}
 
             <Stack direction={"column"}>
               <Typography variant="subtitle2">{props.name}</Typography>

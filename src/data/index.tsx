@@ -12,23 +12,6 @@ const ChatLists = [
     online: true,
   },
   {
-    id: 11,
-    group: true,
-    img: [
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar()
-    ],
-    name: faker.name.firstName(),
-    msg: faker.music.songName(),
-    time: "9:36",
-    unread: 0,
-    online: true,
-  },
-  {
     id: 1,
     group: false,
     img: faker.image.avatar(),

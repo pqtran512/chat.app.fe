@@ -1,39 +1,44 @@
 import { FC } from "react";
 import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
-  "& .MuiBadge-badge": {
-    backgroundColor: "#44b700",
-    color: "#44b700",
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    "&::after": {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      borderRadius: "50%",
-      animation: "ripple 1.2s infinite ease-in-out",
-      border: "1px solid currentColor",
-      content: '""',
-    },
-  },
-  "@keyframes ripple": {
-    "0%": {
-      transform: "scale(.8)",
-      opacity: 1,
-    },
-    "100%": {
-      transform: "scale(2.4)",
-      opacity: 0,
-    },
-  },
+// const StyledBadge = styled(Badge)(({ theme }) => ({
+//   "& .MuiBadge-badge": {
+//     backgroundColor: "#44b700",
+//     color: "#44b700",
+//     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+//     "&::after": {
+//       position: "absolute",
+//       top: 0,
+//       left: 0,
+//       width: "100%",
+//       height: "100%",
+//       borderRadius: "50%",
+//       animation: "ripple 1.2s infinite ease-in-out",
+//       border: "1px solid currentColor",
+//       content: '""',
+//     },
+//   },
+//   "@keyframes ripple": {
+//     "0%": {
+//       transform: "scale(.8)",
+//       opacity: 1,
+//     },
+//     "100%": {
+//       transform: "scale(2.4)",
+//       opacity: 0,
+//     },
+//   },
+// }));
+const SmallAvatar = styled(Avatar)(({ theme }) => ({
+  width: 30,
+  height: 30,
+  border: `2px solid ${theme.palette.background.paper}`,
 }));
 
 interface GroupChatProps {
   id: number;
   group?: boolean;
-  img?: string | string[];
+  img?: string[];
   name: string;
   msg: string;
   time: string;
@@ -42,7 +47,6 @@ interface GroupChatProps {
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {
-    console.log(props);
   return (
     <Box
       sx={{
@@ -61,7 +65,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
           p={0.6}
           width={"100%"}
         >
-          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+          <Stack direction={"row"} spacing={2} alignItems={"center"}>
             {/* {props.online ? (
               <StyledBadge
                 overlap="circular"
@@ -73,6 +77,18 @@ const GroupChat: FC<GroupChatProps> = (props) => {
             ) : (
               <Avatar src={props.img} />
             )} */}
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              badgeContent={
+                <SmallAvatar
+                  alt="Remy Sharp"
+                  src={props.img[0]}
+                />
+              }
+            >
+              <Avatar alt="Travis Howard" src={props.img[1]} />
+            </Badge>
 
             <Stack direction={"column"}>
               <Typography variant="subtitle2">{props.name}</Typography>
@@ -91,3 +107,8 @@ const GroupChat: FC<GroupChatProps> = (props) => {
 };
 
 export default GroupChat;
+
+// variant	'circular'
+// | 'rounded'
+// | 'square'
+// | string

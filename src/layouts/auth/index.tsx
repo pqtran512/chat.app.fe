@@ -38,6 +38,7 @@ const Auth: FC<AuthProps> = () => {
     return <Navigate to="/login" replace />;
   }
 
+
   return (
     <>
       <Box

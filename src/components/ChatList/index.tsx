@@ -14,6 +14,27 @@ import { useState, FC } from "react";
 import SingleChat from "./SingleChat";
 import { ChatLists } from "src/data";
 import GroupChat from "./GroupChat";
+import { faker } from "@faker-js/faker";
+
+const ChatGroupHistory = [
+  {
+    id: 0,
+    group: true,
+    img: [
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar()
+    ],
+    name: "Software Architrcture Group",
+    msg: faker.music.songName(),
+    time: "9:36",
+    unread: 0,
+    online: true,
+  },
+]
 
 interface ChatListProps {}
 
@@ -84,13 +105,11 @@ const ChatList: FC<ChatListProps> = () => {
                   sx={{ padding: "0 0 0 0", color: "#6e7278" }}
                 >
                   Phân loại
+                <KeyboardArrowUpIcon />
                 </Button>
-                <IconButton sx={{ padding: "0 0 0 0" }}>
-                  <KeyboardArrowUpIcon />
-                </IconButton>
-                <IconButton sx={{ padding: "0 0 0 0" }}>
+                {/* <IconButton sx={{ padding: "0 0 0 0" }}>
                   <MoreHorizIcon />
-                </IconButton>
+                </IconButton> */}
               </Stack>
             </Stack>
             <Divider />
@@ -101,11 +120,15 @@ const ChatList: FC<ChatListProps> = () => {
             direction="column"
             spacing={1}
           >
+            <GroupChat {...ChatGroupHistory[0]}/>
             {ChatLists.map((el) => {
+              return <SingleChat {...el} />
+            })}
+            {/* {ChatLists.map((el) => {
               return el.group 
               ?  <GroupChat {...el} />
               :  <SingleChat {...el} />;
-            })}
+            })} */}
           </Stack>
         </Stack>
       </Box>
