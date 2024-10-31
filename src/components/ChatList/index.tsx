@@ -38,7 +38,7 @@ const ChatGroupHistory = [
 
 interface ChatListProps {}
 
-const ChatList: FC<ChatListProps> = () => {
+const ChatList: FC<ChatListProps> = (props) => {
   return (
       <Box
         sx={{

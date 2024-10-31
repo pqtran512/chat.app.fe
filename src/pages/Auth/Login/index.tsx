@@ -10,6 +10,7 @@ import {
   Input,
   InputAdornment,
   Link,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -172,14 +173,14 @@ const Login: FC<LoginProps> = ({}) => {
                 />
               )} */}
             </Box>
-
-            <Grid container>
-              <Grid item xs>
-                <Link href="/forgot-password" variant="body2">
+            <Stack direction={"row"} justifyContent={"space-between"}>
+            <Link href="/forgot-password" variant="body2">
                   Quên mật khẩu?
                 </Link>
-              </Grid>
-            </Grid>
+                <Link href="/register" variant="body2">
+                  Đăng ký
+                </Link>
+            </Stack>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

@@ -12,6 +12,7 @@ import { styled } from "@mui/material/styles";
 import ChatList from "src/components/ChatList";
 import ChatDetail from "src/components/ChatDetail";
 import ChatInformaion from "src/components/ChatInfomation";
+import Setting from "src/components/Setting";
 
 interface HomePageProps {}
 
@@ -31,6 +32,8 @@ const HomePage: FC<HomePageProps> = ({}) => {
   const [openChatInfo, setOpenChatInfo] = useState(false);
 
   return (
+    <Box>
+
     <Stack direction={"row"} sx={{ width: "100%" }}>
       {/* Chat List */}
       <ChatList />
@@ -41,6 +44,8 @@ const HomePage: FC<HomePageProps> = ({}) => {
       {/* Chat Information */}
       <ChatInformaion {...{openChatInfo}}/>
     </Stack>
+    <Setting />
+    </Box>
   );
 };
 

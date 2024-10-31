@@ -22,6 +22,7 @@ import {
   MenuItem,
   Avatar,
   Stack,
+  Icon,
 } from "@mui/material";
 
 import SidebarMenu from "./SidebarMenu";
@@ -185,24 +186,28 @@ function SettingBotton() {
         }}
       >
         <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
-        <Stack direction={"row"} spacing={1}> 
-          <PersonIcon /> 
-          <Typography>Profile Information</Typography>
-        </Stack>
+          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <IconButton>
+              <PersonIcon />
+            </IconButton>
+            <Typography>Profile Information</Typography>
+          </Stack>
         </MenuItem>
         <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
-        <Stack direction={"row"} spacing={1}>
-          <SettingsIcon /> 
-          <Typography>Setting</Typography>
-
-        </Stack>
+          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <IconButton>
+              <SettingsIcon />
+            </IconButton>
+            <Typography>Setting</Typography>
+          </Stack>
         </MenuItem>
         <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
-        <Stack direction={"row"} spacing={1}>
-          <LogoutIcon /> 
-          <Typography>Sign out</Typography>
-
-        </Stack>
+          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <IconButton>
+              <LogoutIcon />
+            </IconButton>
+            <Typography>Sign out</Typography>
+          </Stack>
         </MenuItem>
       </Menu>
     </>
