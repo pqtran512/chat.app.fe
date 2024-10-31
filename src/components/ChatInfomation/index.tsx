@@ -10,7 +10,14 @@ interface ChatInformationProps {
 
 const ChatInformaion: FC<ChatInformationProps> = (props) => {
   return (
-    <Box sx={{ width: 500 }} display={props.openChatInfo ? "inline" : "none"}>
+    <Box
+      sx={{
+        width: 700,
+        backgroundColor: "#fff",
+        boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+      }}
+      display={props.openChatInfo ? "inline" : "none"}
+    >
       <Stack>
         <Box
           sx={{

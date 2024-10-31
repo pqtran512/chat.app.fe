@@ -27,6 +27,7 @@ import {
 
 import SidebarMenu from "./SidebarMenu";
 import Logo from "src/components/LogoSign";
+import Profile from "src/components/Profile";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -44,6 +45,8 @@ function Sidebar() {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
+
+  const [openMyProfile, setOpenMyProfile] = useState(false);
 
   return (
     <>
@@ -63,17 +66,22 @@ function Sidebar() {
       >
         <Scrollbar>
           <Box mt={3}>
-            <Box
+            <Box 
               mx={2}
               sx={{
                 width: 52,
               }}
             >
-              <Avatar
-                sx={{ width: 60, height: 60 }}
-                alt="Avatar"
-                src="https://cdn.tuoitre.vn/thumb_w/1200/471584752817336320/2024/9/21/aa1qvcnt-1726869380138704119824.jpeg"
-              />
+              <Button
+                onClick={() => setOpenMyProfile(true)}
+                sx={{ padding: 0 }}
+              >
+                <Avatar
+                  sx={{ width: 60, height: 60 }}
+                  alt="Avatar"
+                  src="https://cdn.tuoitre.vn/thumb_w/1200/471584752817336320/2024/9/21/aa1qvcnt-1726869380138704119824.jpeg"
+                />
+              </Button>
               {/* <Logo /> */}
             </Box>
           </Box>
@@ -152,6 +160,7 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
+      <Profile open={openMyProfile} handleClose={setOpenMyProfile} />
     </>
   );
 }

@@ -58,11 +58,20 @@ const Register: FC<RegisterProps> = (props) => {
                 margin="normal"
                 required
                 fullWidth
+                id="username"
+                label="Họ và tên"
+                name="username"
+                autoComplete="username"
+                autoFocus
+              />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
                 id="phone"
                 label="Số điện thoại"
                 name="phone"
                 autoComplete="phone"
-                autoFocus
               />
               <TextField
                 margin="normal"

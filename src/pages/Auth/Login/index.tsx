@@ -7,6 +7,7 @@ import {
   CssBaseline,
   FormControlLabel,
   Grid,
+  IconButton,
   Input,
   InputAdornment,
   Link,
@@ -17,6 +18,8 @@ import {
 import { useEffect, useState, FC } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { LogInDto } from "src/types/api/dto";
 import { useMutation } from "react-query";
 import { authAPI } from "src/api";
@@ -28,6 +31,9 @@ import { enqueueSnackbar } from "notistack";
 interface LoginProps {}
 
 const Login: FC<LoginProps> = ({}) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () =>
+    setShowPassword((showPassword) => !showPassword);
   const [loginInfo, setLoginInfo] = useState({
     phone: "",
     password: "",
@@ -78,8 +84,7 @@ const Login: FC<LoginProps> = ({}) => {
 
   const login = useMutation(authAPI.login, {
     onSuccess: (response) => {
-      const { access_token, refresh_token, user, is_success } =
-        response.data;
+      const { access_token, refresh_token, user, is_success } = response.data;
 
       if (is_success) {
         localStorage.setItem(STORAGE_KEY.ID, user.id);
@@ -96,7 +101,7 @@ const Login: FC<LoginProps> = ({}) => {
       enqueueSnackbar(error.response.data.message, {
         variant: "error",
       });
-    }
+    },
   });
 
   return (
@@ -143,12 +148,30 @@ const Login: FC<LoginProps> = ({}) => {
               fullWidth
               name="password"
               label="Mật khẩu"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               value={loginInfo.password}
               // disabled={loading}
               onChange={onFormChangeHandler}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? "hide the password"
+                            : "display the password"
+                        }
+                        onClick={handleClickShowPassword}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
             <Box sx={{ position: "relative" }}>
               <Button
@@ -174,12 +197,12 @@ const Login: FC<LoginProps> = ({}) => {
               )} */}
             </Box>
             <Stack direction={"row"} justifyContent={"space-between"}>
-            <Link href="/forgot-password" variant="body2">
-                  Quên mật khẩu?
-                </Link>
-                <Link href="/register" variant="body2">
-                  Đăng ký
-                </Link>
+              <Link href="/forgot-password" variant="body2">
+                Quên mật khẩu?
+              </Link>
+              <Link href="/register" variant="body2">
+                Đăng ký
+              </Link>
             </Stack>
           </Box>
         </Box>

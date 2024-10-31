@@ -1,5 +1,12 @@
-import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
-import { FC } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { FC, useState } from "react";
 import StyledBadge from "../StyledBadge";
 
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
@@ -7,13 +14,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import CallIcon from "@mui/icons-material/Call";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import InfoIcon from "@mui/icons-material/Info";
+import Profile from "src/components/Profile";
 
 interface HeaderProps {
-  openChatInfo: boolean,
-  setOpenChatInfo: React.Dispatch<React.SetStateAction<boolean>>
+  openChatInfo: boolean;
+  setOpenChatInfo: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Header: FC<HeaderProps> = (props) => {
+  const [openProfile, setOpenProfile] = useState(false);
+
   return (
     <Box
       sx={{
@@ -30,32 +40,34 @@ const Header: FC<HeaderProps> = (props) => {
         p={1}
       >
         <Box>
-          <Stack direction={"row"} spacing={2} alignItems={"center"}>
-            {true ? (
-              <StyledBadge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                variant="dot"
-              >
+          <Button onClick={() => setOpenProfile(true)}>
+            <Stack direction={"row"} spacing={2} alignItems={"center"}>
+              {true ? (
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                >
+                  <Avatar
+                    src={
+                      "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"
+                    }
+                  />
+                </StyledBadge>
+              ) : (
                 <Avatar
                   src={
                     "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"
                   }
                 />
-              </StyledBadge>
-            ) : (
-              <Avatar
-                src={
-                  "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"
-                }
-              />
-            )}
+              )}
 
-            <Stack direction={"column"}>
-              <Typography variant="h4">{"Beckham"}</Typography>
-              <Typography variant="subtitle2">{"Online"}</Typography>
+              <Stack direction={"column"}>
+                <Typography variant="h4">{"Beckham"}</Typography>
+                <Typography variant="h6">{"Online"}</Typography>
+              </Stack>
             </Stack>
-          </Stack>
+          </Button>
         </Box>
         <Box>
           <Stack direction={"row"}>
@@ -71,12 +83,17 @@ const Header: FC<HeaderProps> = (props) => {
             <IconButton>
               <VideoCallIcon />
             </IconButton>
-            <IconButton onClick={() => {props.setOpenChatInfo((prev) => !prev)}}>
+            <IconButton
+              onClick={() => {
+                props.setOpenChatInfo((prev) => !prev);
+              }}
+            >
               <InfoIcon />
             </IconButton>
           </Stack>
         </Box>
       </Stack>
+      <Profile open={openProfile} handleClose={setOpenProfile} />
     </Box>
   );
 };
