@@ -28,6 +28,7 @@ import {
 import SidebarMenu from "./SidebarMenu";
 import Logo from "src/components/LogoSign";
 import Profile from "src/components/Profile";
+import Setting from "src/components/Setting";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -47,6 +48,7 @@ function Sidebar() {
   const theme = useTheme();
 
   const [openMyProfile, setOpenMyProfile] = useState(false);
+  const [openSetting, setOpenSetting] = useState(false);
 
   return (
     <>
@@ -106,7 +108,7 @@ function Sidebar() {
           // paddingTop={2.5}
           padding={1}
         >
-          <SettingBotton />
+          <SettingBotton setOpenProfile={setOpenMyProfile} setOpenSetting={setOpenSetting}/>
           {/* <div>
             <b>Version</b> {process.env.REACT_APP_VERSION}
           </div> */}
@@ -161,11 +163,12 @@ function Sidebar() {
         </SidebarWrapper>
       </Drawer>
       <Profile open={openMyProfile} handleClose={setOpenMyProfile} />
+      <Setting open={openSetting} handleClose={setOpenSetting}/>
     </>
   );
 }
 
-function SettingBotton() {
+function SettingBotton({setOpenProfile, setOpenSetting}) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -174,6 +177,7 @@ function SettingBotton() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <>
       <IconButton
@@ -194,7 +198,10 @@ function SettingBotton() {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
+        <MenuItem sx={{ padding: "0" }} onClick={()=>{
+          setAnchorEl(null);
+          setOpenProfile(true);
+        }}>
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
             <IconButton>
               <PersonIcon />
@@ -202,7 +209,10 @@ function SettingBotton() {
             <Typography>Profile Information</Typography>
           </Stack>
         </MenuItem>
-        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
+        <MenuItem sx={{ padding: "0" }} onClick={()=> {
+          setAnchorEl(null);
+          setOpenSetting(true);
+        }}>
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
             <IconButton>
               <SettingsIcon />

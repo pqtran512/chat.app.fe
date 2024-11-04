@@ -1,43 +1,68 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { FC } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 
-interface SettingProps {}
+interface SettingProps {
+  open: boolean;
+  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const Setting: FC<SettingProps> = (props) => {
   return (
     <>
-      <Box sx={{ width: 800, height: 800, position: "absolute", top: 80, left: 500}} display={"none"}>
-        <Stack direction={"row"} width={"100%"} height={"100%"}>
-          <Box sx={{ width:200, height: "100%", background: "#fff" }}>
-            <Stack>
-              <Box padding={2}>
-              <Typography variant="h4">Settings</Typography>
-              </Box>
-              <Button sx={{justifyContent: "left"}}>
-                <Typography variant="subtitle1">General Settings</Typography>
-              </Button>
-              <Button sx={{justifyContent: "left"}}>
-                <Typography variant="subtitle1">Privacy</Typography>
-              </Button>
-              <Button sx={{justifyContent: "left"}}>
-                <Typography variant="subtitle1">Theme</Typography>
-              </Button>
-              <Button sx={{justifyContent: "left"}}>
-                <Typography variant="subtitle1">Notification</Typography>
-              </Button>
-              <Button sx={{justifyContent: "left"}}>
-                <Typography variant="subtitle1">Message</Typography>
-              </Button>
-              <Button sx={{justifyContent: "left"}}>
-                <Typography variant="subtitle1">Utilities</Typography>
-              </Button>
-            </Stack>
-          </Box>
-          <Box sx={{ width: 600, height: "100%", background: "#e6e6eb" }}>
-            <Stack>Setting Info</Stack>
-          </Box>
-        </Stack>
-      </Box>
+      <Dialog
+        open={props.open}
+        onClose={props.handleClose}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle margin={0}>
+          <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+            <Typography variant="h4">Setting</Typography>
+            <IconButton onClick={()=>props.handleClose(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+        </DialogTitle>
+        <Divider/>
+        <DialogContent sx={{padding: 0}}>
+          <Stack direction={"row"}>
+            <Box width={300}>
+              <Stack>
+                <Button sx={{ justifyContent: "left" }}>
+                  <Typography variant="subtitle1">General Settings</Typography>
+                </Button>
+                <Button sx={{ justifyContent: "left" }}>
+                  <Typography variant="subtitle1">Privacy</Typography>
+                </Button>
+                <Button sx={{ justifyContent: "left" }}>
+                  <Typography variant="subtitle1">Theme</Typography>
+                </Button>
+                <Button sx={{ justifyContent: "left" }}>
+                  <Typography variant="subtitle1">Notification</Typography>
+                </Button>
+                <Button sx={{ justifyContent: "left" }}>
+                  <Typography variant="subtitle1">Message</Typography>
+                </Button>
+                <Button sx={{ justifyContent: "left" }}>
+                  <Typography variant="subtitle1">Utilities</Typography>
+                </Button>
+              </Stack>
+            </Box>
+            <Box sx={{ width: "100%", backgroundColor: "#e6e9ed" }}>option</Box>
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

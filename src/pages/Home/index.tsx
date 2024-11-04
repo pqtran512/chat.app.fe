@@ -44,7 +44,6 @@ const HomePage: FC<HomePageProps> = ({}) => {
       {/* Chat Information */}
       <ChatInformaion {...{openChatInfo}}/>
     </Stack>
-    <Setting />
     </Box>
   );
 };

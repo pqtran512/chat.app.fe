@@ -23,7 +23,7 @@ const Login = Loader(lazy(() => import("src/pages/Auth/Login")));
 
 const ForgotPassword = Loader(lazy(() => import("src/pages/Auth/ForgotPassword")));
 
-const Register = Loader(lazy(() => import("src/pages/Auth/Register")));
+const Register = Loader(lazy(() => import("src/pages/Auth/Register"))); 
 //Home
 
 const Home = Loader(lazy(() => import("src/pages/Home")));
