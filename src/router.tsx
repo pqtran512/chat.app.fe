@@ -21,21 +21,32 @@ const Auth = Loader(lazy(() => import("src/layouts/auth")));
 
 const Login = Loader(lazy(() => import("src/pages/Auth/Login")));
 
-const ForgotPassword = Loader(lazy(() => import("src/pages/Auth/ForgotPassword")));
+const ForgotPassword = Loader(
+  lazy(() => import("src/pages/Auth/ForgotPassword"))
+);
 
-const Register = Loader(lazy(() => import("src/pages/Auth/Register"))); 
+const Register = Loader(lazy(() => import("src/pages/Auth/Register")));
+
 //Home
 
 const Home = Loader(lazy(() => import("src/pages/Home")));
+
+const Contact = Loader(lazy(() => import("src/pages/Home/Contact")));
 
 const routes: RouteObject[] = [
   {
     path: "",
     element: <Auth />,
-    children: [{
-      path: "/",
-      element: <Home />,
-    },],
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+      },
+    ],
   },
   {
     path: "",
@@ -51,8 +62,8 @@ const routes: RouteObject[] = [
       },
       {
         path: "register",
-        element: <Register />
-      }
+        element: <Register />,
+      },
     ],
   },
 ];

@@ -1,5 +1,106 @@
 import {faker} from "@faker-js/faker"
 
+const FriendList = [
+  {
+    id: 0,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 1,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 2,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 3,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 4,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 5,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 6,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 7,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 8,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 9,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 10,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 11,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+  {
+    id: 12,
+    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+  },
+]
+
+const GroupList = [
+  {
+    id: 0,
+    avatar: [faker.image.avatar(), faker.image.avatar()],
+    name: `${faker.name.firstName()} group`,
+  },
+  {
+    id: 1,
+    avatar: [faker.image.avatar(), faker.image.avatar()],
+    name: `${faker.name.firstName()} group`,
+  },
+  {
+    id: 2,
+    avatar: [faker.image.avatar(), faker.image.avatar()],
+    name: `${faker.name.firstName()} group`,
+  },
+  {
+    id: 3,
+    avatar: [faker.image.avatar(), faker.image.avatar()],
+    name: `${faker.name.firstName()} group`,
+  },
+  {
+    id: 4,
+    avatar: [faker.image.avatar(), faker.image.avatar()],
+    name: `${faker.name.firstName()} group`,
+  },
+  {
+    id: 5,
+    avatar: [faker.image.avatar(), faker.image.avatar()],
+    name: `${faker.name.firstName()} group`,
+  },
+]
+
 const ChatLists = [
   {
     id: 0,
@@ -221,4 +322,4 @@ const Chat_History = [
 ];
 
 
-export { ChatLists, Chat_History }
+export { ChatLists, Chat_History, FriendList, GroupList }

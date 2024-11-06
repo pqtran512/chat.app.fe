@@ -38,17 +38,6 @@ const GroupChat: FC<GroupChatProps> = (props) => {
           width={"100%"}
         >
           <Stack direction={"row"} spacing={2} alignItems={"center"}>
-            {/* {props.online ? (
-              <StyledBadge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                variant="dot"
-              >
-                <Avatar src={props.img} />
-              </StyledBadge>
-            ) : (
-              <Avatar src={props.img} />
-            )} */}
             <Badge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
