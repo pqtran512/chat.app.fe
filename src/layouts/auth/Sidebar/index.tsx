@@ -29,6 +29,8 @@ import SidebarMenu from "./SidebarMenu";
 import Logo from "src/components/LogoSign";
 import Profile from "src/components/Profile";
 import Setting from "src/components/Setting";
+import { useAuth } from "src/contexts/AuthContext";
+import { STORAGE_KEY } from "src/utils/constants";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -68,7 +70,7 @@ function Sidebar() {
       >
         <Scrollbar>
           <Box mt={3}>
-            <Box 
+            <Box
               mx={2}
               sx={{
                 width: 52,
@@ -108,7 +110,10 @@ function Sidebar() {
           // paddingTop={2.5}
           padding={1}
         >
-          <SettingBotton setOpenProfile={setOpenMyProfile} setOpenSetting={setOpenSetting}/>
+          <SettingBotton
+            setOpenProfile={setOpenMyProfile}
+            setOpenSetting={setOpenSetting}
+          />
           {/* <div>
             <b>Version</b> {process.env.REACT_APP_VERSION}
           </div> */}
@@ -163,21 +168,19 @@ function Sidebar() {
         </SidebarWrapper>
       </Drawer>
       <Profile open={openMyProfile} handleClose={setOpenMyProfile} />
-      <Setting open={openSetting} handleClose={setOpenSetting}/>
+      <Setting open={openSetting} handleClose={setOpenSetting} />
     </>
   );
 }
 
-function SettingBotton({setOpenProfile, setOpenSetting}) {
+function SettingBotton({ setOpenProfile, setOpenSetting }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
+  const { setAccessToken, setUserId } = useAuth();
   return (
     <>
       <IconButton
@@ -193,39 +196,58 @@ function SettingBotton({setOpenProfile, setOpenSetting}) {
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem sx={{ padding: "0" }} onClick={()=>{
-          setAnchorEl(null);
-          setOpenProfile(true);
-        }}>
+        <MenuItem
+          sx={{ padding: "0" }}
+          onClick={() => {
+            setAnchorEl(null);
+            setOpenProfile(true);
+          }}
+        >
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <IconButton>
-              <PersonIcon />
-            </IconButton>
-            <Typography>Profile Information</Typography>
+            <Button>
+              <PersonIcon sx={{ marginRight: 2 }} />
+              <Typography>Profile Information</Typography>
+            </Button>
           </Stack>
         </MenuItem>
-        <MenuItem sx={{ padding: "0" }} onClick={()=> {
-          setAnchorEl(null);
-          setOpenSetting(true);
-        }}>
+        <MenuItem
+          sx={{ padding: "0" }}
+          onClick={() => {
+            setAnchorEl(null);
+            setOpenSetting(true);
+          }}
+        >
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <IconButton>
-              <SettingsIcon />
-            </IconButton>
-            <Typography>Setting</Typography>
+            <Button>
+              <SettingsIcon sx={{ marginRight: 2 }} />
+              <Typography>Setting</Typography>
+            </Button>
           </Stack>
         </MenuItem>
-        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
+        <MenuItem
+          sx={{ padding: "0" }}
+          onClick={() => {
+            setAnchorEl(null);
+            localStorage.setItem(STORAGE_KEY.ID, "");
+            localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, "");
+            localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, "")
+
+            setUserId("");
+            setAccessToken("");
+          }}
+        >
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <IconButton>
-              <LogoutIcon />
-            </IconButton>
-            <Typography>Sign out</Typography>
+            <Button>
+              <LogoutIcon sx={{ marginRight: 2 }} />
+              <Typography>Sign out</Typography>
+            </Button>
           </Stack>
         </MenuItem>
       </Menu>

@@ -2,26 +2,29 @@ import {
   Avatar,
   Box,
   Button,
-  Checkbox,
   Container,
   CssBaseline,
-  FormControlLabel,
   Grid,
-  Input,
-  InputAdornment,
   Link,
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState, FC } from "react";
+import { useState, FC } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useMutation } from "react-query";
+import { authAPI } from "src/api";
+import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
 interface ConfirmPhoneProps {
-  onClick?: (isValid: boolean) => void;
+  onClick?: (isValid: boolean, phone: string) => void;
 }
 
 const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
+  const navigate = useNavigate();
+  const [phone, setPhone] = useState("");
+
   function Copyright(props: any) {
     return (
       <Typography
@@ -42,14 +45,35 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
 
   const defaultTheme = createTheme();
 
-  const checkPhoneIsValid = () => {
-    // call api check phone
-    if (onClick) {
-      onClick(true);
-    } //tạm thời trả về true để code
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    checkphone.mutate(phone);
   };
 
-  const handleSubmit = () => {};
+  const handleChangePhone = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const onlyNums = e.target.value.replace(/[^0-9]/g, "");
+    if (onlyNums.length <= 10) {
+      setPhone(onlyNums);
+    }
+  };
+
+  const checkphone = useMutation(authAPI.checkphone, {
+    onSuccess: (respone) => {
+      const isPhoneValid = respone.data;
+      if (isPhoneValid) {
+        onClick(isPhoneValid, phone);
+      } else {
+        enqueueSnackbar("phone is invalid", { variant: "error" });
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.respone.data.message, {
+        variant: "error",
+      });
+    },
+  });
 
   return (
     <>
@@ -76,7 +100,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
             <Typography component="h1" variant="h5">
               Nhập số điện thoại của bạn
             </Typography>
-            <Box component="form" onSubmit={checkPhoneIsValid} sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -86,6 +110,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
                 name="phone"
                 autoComplete="phone"
                 autoFocus
+                onChange={handleChangePhone}
               />
               <Box sx={{ position: "relative" }}>
                 <Button

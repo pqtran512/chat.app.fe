@@ -2,55 +2,93 @@ import {
   Avatar,
   Box,
   Button,
-  Checkbox,
   Container,
   CssBaseline,
-  FormControlLabel,
   Grid,
-  Input,
+  IconButton,
   InputAdornment,
   Link,
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState, FC } from "react";
+import React, { useState, FC } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { ResetPassworDto } from "src/types/api/dto";
+import { useMutation } from "react-query";
+import { authAPI } from "src/api";
+import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { STORAGE_KEY } from "src/utils/constants";
+import { useAuth } from "src/contexts/AuthContext";
 
 interface ResetPasswordProps {
-  onClick?: (isValid: boolean) => void;
+  // onClick?: (isValid: boolean) => void;
+  phoneNumber: string;
 }
 
-const ResetPassword: FC<ResetPasswordProps> = ({ onClick }) => {
-
-  function Copyright(props: any) {
-    return (
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        align="center"
-        {...props}
-      >
-        {"Copyright © "}
-        <Link color="inherit" href="https://mui.com/">
-          HCMUT
-        </Link>{" "}
-        {new Date().getFullYear()}
-        {"."}
-      </Typography>
-    );
-  }
-
+const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordInput, setPasswordInput] = useState({
+    password: "",
+    confirmPassword: "",
+  });
+  const [resetInfo, setResetInfo] = useState({
+    phone: "",
+    new_password: "",
+  } as ResetPassworDto);
+  
+  const navigate = useNavigate();
+  const { setAccessToken, setUserId } = useAuth();
+  const handleClickShowPassword = () =>
+    setShowPassword((showPassword) => !showPassword);
   const defaultTheme = createTheme();
 
-  const resetPassword = (e) => {
-    // if 2 password are similar return to login screen
-    if (true) {
-      console.log("2 password same and return to login screen")
-    }
-    // else typing agian correct password
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // check phone
+    event.preventDefault();
+    if (passwordInput.password === passwordInput.confirmPassword) {
+      setResetInfo((prev)=>({
+        ...prev,
+        phone: phoneNumber,
+        new_password: passwordInput.password,
+      }));
+      // mutate
+      reset.mutate(resetInfo);
 
+    } else {
+      enqueueSnackbar("Not match!!", { variant: "error" });
+    }
   };
+
+  const onFormChangeHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setPasswordInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    // setResetInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const reset = useMutation(authAPI.resetpassword, {
+    onSuccess: (response) => {
+      console.log(`respone: ${response}`);
+      const { access_token, refresh_token, user, is_success } = response.data;
+      if (is_success) {
+        localStorage.setItem(STORAGE_KEY.ID, user.id);
+        localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, access_token);
+        localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
+
+        setUserId(user.id);
+        setAccessToken(access_token);
+        navigate("/");
+    }},
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    },
+  });
 
   return (
     <>
@@ -77,27 +115,65 @@ const ResetPassword: FC<ResetPasswordProps> = ({ onClick }) => {
             <Typography component="h1" variant="h5">
               Thay đổi mật khẩu
             </Typography>
-            <Box component="form" onSubmit={resetPassword} sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="new-password"
+                id="password"
                 label="Mật khẩu mới"
-                type="password"
-                name="new-password"
+                name="password"
                 autoComplete="new-password"
                 autoFocus
+                onChange={onFormChangeHandler}
+                type={showPassword ? "text" : "password"}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={
+                            showPassword
+                              ? "hide the password"
+                              : "display the password"
+                          }
+                          onClick={handleClickShowPassword}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
               />
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                name="new-password-confirm"
+                name="confirmPassword"
                 label="Xác nhận lại"
-                type="password"
-                id="new-password-confirm"
+                id="confirmPassword"
                 autoComplete="new-password"
+                onChange={onFormChangeHandler}
+                type={showPassword ? "text" : "password"}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={
+                            showPassword
+                              ? "hide the password"
+                              : "display the password"
+                          }
+                          onClick={handleClickShowPassword}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
               />
               <Box sx={{ position: "relative" }}>
                 <Button
@@ -125,5 +201,23 @@ const ResetPassword: FC<ResetPasswordProps> = ({ onClick }) => {
     </>
   );
 };
+
+function Copyright(props: any) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
+      <Link color="inherit" href="https://mui.com/">
+        HCMUT
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
 
 export default ResetPassword;
