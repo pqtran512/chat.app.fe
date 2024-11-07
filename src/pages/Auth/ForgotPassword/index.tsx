@@ -6,17 +6,19 @@ interface ForgotPasswordProps {}
 
 const ForgotPassword: FC<ForgotPasswordProps> = ({}) => {
   const [isResetPasswordStep, setIsResetPasswordStep] = useState(false);
+  const [phone, setPhone] = useState("");
 
-  const handleConfirmPhone = (isPhoneValid: boolean) => {
+  const handleConfirmPhone = (isPhoneValid: boolean, phone: string) => {
     if (isPhoneValid) {
       setIsResetPasswordStep(true);
+      setPhone(phone);
     }
   };
 
   return (
     <>
       {isResetPasswordStep ? (
-        <ResetPassword></ResetPassword>
+        <ResetPassword phoneNumber={phone}/>
       ) : (
         <ConfirmPhone onClick={handleConfirmPhone}></ConfirmPhone>
       )}

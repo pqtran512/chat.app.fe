@@ -1,37 +1,21 @@
 import {
-  Container,
-  Grid,
-  Button,
   Box,
-  ThemeProvider,
-  Grid2,
   Stack,
 } from "@mui/material";
-import { useEffect, useState, FC } from "react";
-import { styled } from "@mui/material/styles";
+import { useState, FC } from "react";
 import ChatList from "src/components/ChatList";
 import ChatDetail from "src/components/ChatDetail";
 import ChatInformaion from "src/components/ChatInfomation";
 
 interface HomePageProps {}
 
-// const Item = styled(Paper)(({ theme }) => ({
-//   backgroundColor: '#fff',
-//   ...theme.typography.body2,
-//   padding: theme.spacing(1),
-//   textAlign: 'center',
-//   color: theme.palette.text.secondary,
-//   ...theme.applyStyles('dark', {
-//     backgroundColor: '#1A2027',
-//   }),
-// }));
-
 const HomePage: FC<HomePageProps> = ({}) => {
   
   const [openChatInfo, setOpenChatInfo] = useState(false);
 
   return (
-    <Stack direction={"row"} sx={{ width: "100%" }}>
+    <Box>
+    <Stack direction={"row"}>
       {/* Chat List */}
       <ChatList />
 
@@ -41,6 +25,7 @@ const HomePage: FC<HomePageProps> = ({}) => {
       {/* Chat Information */}
       <ChatInformaion {...{openChatInfo}}/>
     </Stack>
+    </Box>
   );
 };
 

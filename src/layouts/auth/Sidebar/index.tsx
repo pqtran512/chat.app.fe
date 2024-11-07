@@ -22,10 +22,15 @@ import {
   MenuItem,
   Avatar,
   Stack,
+  Icon,
 } from "@mui/material";
 
 import SidebarMenu from "./SidebarMenu";
 import Logo from "src/components/LogoSign";
+import Profile from "src/components/Profile";
+import Setting from "src/components/Setting";
+import { useAuth } from "src/contexts/AuthContext";
+import { STORAGE_KEY } from "src/utils/constants";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -43,6 +48,9 @@ function Sidebar() {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
+
+  const [openMyProfile, setOpenMyProfile] = useState(false);
+  const [openSetting, setOpenSetting] = useState(false);
 
   return (
     <>
@@ -68,11 +76,16 @@ function Sidebar() {
                 width: 52,
               }}
             >
-              <Avatar
-                sx={{ width: 60, height: 60 }}
-                alt="Avatar"
-                src="https://cdn.tuoitre.vn/thumb_w/1200/471584752817336320/2024/9/21/aa1qvcnt-1726869380138704119824.jpeg"
-              />
+              <Button
+                onClick={() => setOpenMyProfile(true)}
+                sx={{ padding: 0 }}
+              >
+                <Avatar
+                  sx={{ width: 60, height: 60 }}
+                  alt="Avatar"
+                  src="https://cdn.tuoitre.vn/thumb_w/1200/471584752817336320/2024/9/21/aa1qvcnt-1726869380138704119824.jpeg"
+                />
+              </Button>
               {/* <Logo /> */}
             </Box>
           </Box>
@@ -97,7 +110,10 @@ function Sidebar() {
           // paddingTop={2.5}
           padding={1}
         >
-          <SettingBotton />
+          <SettingBotton
+            setOpenProfile={setOpenMyProfile}
+            setOpenSetting={setOpenSetting}
+          />
           {/* <div>
             <b>Version</b> {process.env.REACT_APP_VERSION}
           </div> */}
@@ -151,19 +167,20 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
+      <Profile open={openMyProfile} handleClose={setOpenMyProfile} />
+      <Setting open={openSetting} handleClose={setOpenSetting} />
     </>
   );
 }
 
-function SettingBotton() {
+function SettingBotton({ setOpenProfile, setOpenSetting }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+
+  const { setAccessToken, setUserId } = useAuth();
   return (
     <>
       <IconButton
@@ -179,30 +196,59 @@ function SettingBotton() {
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
-        <Stack direction={"row"} spacing={1}> 
-          <PersonIcon /> 
-          <Typography>Profile Information</Typography>
-        </Stack>
+        <MenuItem
+          sx={{ padding: "0" }}
+          onClick={() => {
+            setAnchorEl(null);
+            setOpenProfile(true);
+          }}
+        >
+          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <Button>
+              <PersonIcon sx={{ marginRight: 2 }} />
+              <Typography>Profile Information</Typography>
+            </Button>
+          </Stack>
         </MenuItem>
-        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
-        <Stack direction={"row"} spacing={1}>
-          <SettingsIcon /> 
-          <Typography>Setting</Typography>
-
-        </Stack>
+        <MenuItem
+          sx={{ padding: "0" }}
+          onClick={() => {
+            setAnchorEl(null);
+            setOpenSetting(true);
+          }}
+        >
+          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <Button>
+              <SettingsIcon sx={{ marginRight: 2 }} />
+              <Typography>Setting</Typography>
+            </Button>
+          </Stack>
         </MenuItem>
-        <MenuItem sx={{ padding: "0" }} onClick={handleClose}>
-        <Stack direction={"row"} spacing={1}>
-          <LogoutIcon /> 
-          <Typography>Sign out</Typography>
+        <MenuItem
+          sx={{ padding: "0" }}
+          onClick={() => {
+            setAnchorEl(null);
+            localStorage.setItem(STORAGE_KEY.ID, "");
+            localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, "");
+            localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, "")
 
-        </Stack>
+            setUserId("");
+            setAccessToken("");
+          }}
+        >
+          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <Button>
+              <LogoutIcon sx={{ marginRight: 2 }} />
+              <Typography>Sign out</Typography>
+            </Button>
+          </Stack>
         </MenuItem>
       </Menu>
     </>

@@ -1,34 +1,6 @@
 import { FC } from "react";
 import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
 
-// const StyledBadge = styled(Badge)(({ theme }) => ({
-//   "& .MuiBadge-badge": {
-//     backgroundColor: "#44b700",
-//     color: "#44b700",
-//     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-//     "&::after": {
-//       position: "absolute",
-//       top: 0,
-//       left: 0,
-//       width: "100%",
-//       height: "100%",
-//       borderRadius: "50%",
-//       animation: "ripple 1.2s infinite ease-in-out",
-//       border: "1px solid currentColor",
-//       content: '""',
-//     },
-//   },
-//   "@keyframes ripple": {
-//     "0%": {
-//       transform: "scale(.8)",
-//       opacity: 1,
-//     },
-//     "100%": {
-//       transform: "scale(2.4)",
-//       opacity: 0,
-//     },
-//   },
-// }));
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
   height: 30,
@@ -66,17 +38,6 @@ const GroupChat: FC<GroupChatProps> = (props) => {
           width={"100%"}
         >
           <Stack direction={"row"} spacing={2} alignItems={"center"}>
-            {/* {props.online ? (
-              <StyledBadge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                variant="dot"
-              >
-                <Avatar src={props.img} />
-              </StyledBadge>
-            ) : (
-              <Avatar src={props.img} />
-            )} */}
             <Badge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -107,8 +68,3 @@ const GroupChat: FC<GroupChatProps> = (props) => {
 };
 
 export default GroupChat;
-
-// variant	'circular'
-// | 'rounded'
-// | 'square'
-// | string
