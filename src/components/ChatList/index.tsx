@@ -43,7 +43,6 @@ interface ChatListProps {}
 const ChatList: FC<ChatListProps> = () => {
   
 
-  };
 
   return (
     <Box

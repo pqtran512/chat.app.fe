@@ -5,6 +5,9 @@ import Friend from "./Friend";
 
 interface FriendsProps {}
 const Friends: FC<FriendsProps> = (props) => {
+
+   // api
+   
   return (
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
         <Box sx={{ padding: 3 }}>
