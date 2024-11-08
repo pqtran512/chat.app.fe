@@ -17,6 +17,7 @@ import { ChatLists } from "src/data";
 import GroupChat from "./GroupChat";
 import { faker } from "@faker-js/faker";
 import SearchFriend from "../SearchFriend";
+import CreateGroup from "../CreateGroup";
 
 const ChatGroupHistory = [
   {
@@ -41,7 +42,7 @@ const ChatGroupHistory = [
 interface ChatListProps {}
 
 const ChatList: FC<ChatListProps> = () => {
-  
+
 
 
   return (
