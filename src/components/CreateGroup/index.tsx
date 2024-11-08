@@ -13,11 +13,6 @@ import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-interface CreateGroupProps {
-  open: boolean;
-  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
 const CreateGroupForm = ({ handleClose }) => {
   const NewgroupSchema = yup.object().shape({
     title: yup.string().required("Title is required"),
@@ -79,7 +74,7 @@ const CreateGroupForm = ({ handleClose }) => {
               />
             )}
           ></Autocomplete>
-          <Stack direction={'row'} justifyContent={'space-between'}>
+          <Stack direction={"row"} justifyContent={"space-between"}>
             <Button onClick={handleClose}>Cancel</Button>
             <Button type="submit" variant="contained">
               Create
@@ -90,6 +85,10 @@ const CreateGroupForm = ({ handleClose }) => {
     </FormProvider>
   );
 };
+interface CreateGroupProps {
+  open: boolean;
+  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const CreateGroup: FC<CreateGroupProps> = (props) => {
   return (
