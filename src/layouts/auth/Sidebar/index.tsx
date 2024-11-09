@@ -202,53 +202,40 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
+        
+        
       >
-        <MenuItem
-          sx={{ padding: "0" }}
+        <MenuItem sx={{justifyContent: "space-between" }}
           onClick={() => {
             setAnchorEl(null);
             setOpenProfile(true);
           }}
         >
-          <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <Button>
-              <PersonIcon sx={{ marginRight: 2 }} />
-              <Typography>Profile Information</Typography>
-            </Button>
-          </Stack>
+          <Typography>Profile</Typography>
+          <PersonIcon />
         </MenuItem>
-        <MenuItem
-          sx={{ padding: "0" }}
+        <MenuItem sx={{justifyContent: "space-between" }}
           onClick={() => {
             setAnchorEl(null);
             setOpenSetting(true);
           }}
         >
-          <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <Button>
-              <SettingsIcon sx={{ marginRight: 2 }} />
-              <Typography>Setting</Typography>
-            </Button>
-          </Stack>
+          <Typography>Setting</Typography>
+          <SettingsIcon />
         </MenuItem>
-        <MenuItem
-          sx={{ padding: "0" }}
+        <MenuItem sx={{justifyContent: "space-between" }}
           onClick={() => {
             setAnchorEl(null);
             localStorage.setItem(STORAGE_KEY.ID, "");
             localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, "");
-            localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, "")
+            localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, "");
 
             setUserId("");
             setAccessToken("");
           }}
         >
-          <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <Button>
-              <LogoutIcon sx={{ marginRight: 2 }} />
-              <Typography>Sign out</Typography>
-            </Button>
-          </Stack>
+          <Typography>Sign out</Typography>
+          <LogoutIcon sx={{ marginLeft: 2 }} />
         </MenuItem>
       </Menu>
     </>

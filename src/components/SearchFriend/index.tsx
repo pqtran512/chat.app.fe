@@ -1,4 +1,18 @@
-import React, { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { resolve } from "path";
+import React, { FC, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
 interface User {
   id: string;
@@ -6,12 +20,29 @@ interface User {
   phone: string;
 }
 
-const SearchFriend: React.FC = () => {
+interface SearchFriendProps {
+  open: boolean;
+  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const SearchFriend: FC<SearchFriendProps> = (props) => {
+  return (
+    <Dialog fullWidth maxWidth="xs" open={props.open}>
+      <DialogTitle>Add friend</DialogTitle>
+      <Divider />
+      <DialogContent>
+        <SearchFriendForm handleClose={props.handleClose} />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const SearchFriendForm = ({ handleClose }) => {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [searchResult, setSearchResult] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async () => {
+  const onSubmit = async () => {
     try {
       setError(null);
       // Call API to search phone number
@@ -28,31 +59,37 @@ const SearchFriend: React.FC = () => {
     }
   };
 
-  return (
-    <div>
-      <h2>Search friends</h2>
-      <input
-        type="text"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-        placeholder="Enter phone number"
-      />
-      <button onClick={handleSearch}>Search</button>
+  const methods = useForm();
+  // call api to take respone
+  const response = {
+    name: "David Beckham",
+    avatar:
+      "https://ntvb.tmsimg.com/assets/assets/501949_v9_bb.jpg?w=360&h=480",
+  };
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {searchResult && (
-        <div>
-          <h3>Search results:</h3>
-          <p>Name: {searchResult.name}</p>
-          <p>Phone number: {searchResult.phone}</p>
-          <button
-            onClick={() => alert(`Friend request sent to ${searchResult.name}`)}
-          >
-            Send friend request
-          </button>
-        </div>
-      )}
-    </div>
+  return (
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <Stack spacing={3}>
+          <TextField
+            id="searchfriend"
+            label="Search friend"
+            variant="standard"
+          />
+          <Typography variant="h6">Results</Typography>
+          <Stack direction={"row"} justifyContent={"space-between"}>
+            <Stack direction={"row"} spacing={2} alignItems={"center"}>
+              <Avatar alt={response.name} src={response.avatar} />
+              <Typography>{response.name}</Typography>
+            </Stack>
+            <Button variant="contained" size="small">
+              Send request
+            </Button>
+          </Stack>
+          <Button onClick={handleClose}>Cancel</Button>
+        </Stack>
+      </form>
+    </FormProvider>
   );
 };
 

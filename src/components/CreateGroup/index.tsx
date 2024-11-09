@@ -10,32 +10,10 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 
 const CreateGroupForm = ({ handleClose }) => {
-  const NewgroupSchema = yup.object().shape({
-    title: yup.string().required("Title is required"),
-    members: yup.array().min(2, "Must have at least 2 members"),
-  });
 
-  const defaultValues = {
-    title: "",
-    members: [],
-  };
-
-  const methods = useForm({
-    resolver: yupResolver(NewgroupSchema),
-    defaultValues,
-  });
-
-  const {
-    reset,
-    watch,
-    setError,
-    handleSubmit,
-    formState: { errors, isSubmitting, isSubmitSuccessful, isValid },
-  } = methods;
+  const methods = useForm();
 
   const onSubmit = async (data) => {
     try {
@@ -51,6 +29,7 @@ const CreateGroupForm = ({ handleClose }) => {
     { name: "name2", id: 2 },
     { name: "name3", id: 3 },
   ];
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
