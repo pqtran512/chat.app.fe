@@ -7,7 +7,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 interface FriendsProps {}
 const Friends: FC<FriendsProps> = (props) => {
-  // api
+  // call api to take "FriendList"
 
   return (
     <Stack>

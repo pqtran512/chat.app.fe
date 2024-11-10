@@ -76,6 +76,7 @@ const SearchFriendForm = ({ handleClose }) => {
             label="Search friend"
             variant="standard"
           />
+          <Button>Search</Button>
           <Typography variant="h6">Results</Typography>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
