@@ -63,7 +63,6 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
 
   const checkphone = useMutation(authAPI.checkphone, {
     onSuccess: (respone) => {
-      console.log(respone)
       const isPhoneValid = respone.data;
       if (isPhoneValid) {
         onClick(isPhoneValid, phone);

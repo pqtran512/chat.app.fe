@@ -12,7 +12,7 @@ const Contact:FC<ContactProps> = (props) => {
         <Box>
             <Stack direction={'row'}>
 
-                <ContactBar setChosen={setChosen}/>
+                <ContactBar chosen={chosen} setChosen={setChosen}/>
 
                 <ContactInfo chosen={chosen}/>
 

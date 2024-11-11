@@ -175,8 +175,8 @@ function SidebarMenu() {
       <MenuWrapper>
         <List component="div">
           <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
+            <List component="div" >
+              <ListItem component="div" sx={{marginBottom: 2}}>
                 <Button
                   disableRipple
                   component={RouterLink}

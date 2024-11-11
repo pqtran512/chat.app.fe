@@ -10,15 +10,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { resolve } from "path";
+import { error } from "console";
+import { enqueueSnackbar } from "notistack";
 import React, { FC, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-
-interface User {
-  id: string;
-  name: string;
-  phone: string;
-}
+import { useMutation } from "react-query";
+import { authAPI } from "src/api";
+import { friendAPI } from "src/api/friend.api";
 
 interface SearchFriendProps {
   open: boolean;
@@ -38,59 +35,82 @@ const SearchFriend: FC<SearchFriendProps> = (props) => {
 };
 
 const SearchFriendForm = ({ handleClose }) => {
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [searchResult, setSearchResult] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const onSubmit = async () => {
-    try {
-      setError(null);
-      // Call API to search phone number
-      const response = await fetch(
-        `https://api.example.com/search?phone=${phoneNumber}`
-      );
-      if (!response.ok) throw new Error("User not found");
-
-      const user: User = await response.json();
-      setSearchResult(user);
-    } catch (err) {
-      setSearchResult(null);
-      setError("No user found with this phone number.");
-    }
-  };
-
-  const methods = useForm();
-  // call api to take respone
-  const response = {
-    name: "David Beckham",
+  const [phoneInput, setPhoneInput] = useState("");
+  const [user, setUser] = useState({
+    phone: "",
     avatar:
-      "https://ntvb.tmsimg.com/assets/assets/501949_v9_bb.jpg?w=360&h=480",
+      "https://www.pngkit.com/png/detail/115-1150714_avatar-single-customer-view-icon.png",
+  });
+
+  const handleChangeSearch = (e) => {
+    setPhoneInput(e.target.value);
   };
+
+  // call api to check user exists
+
+  const onSearch = () => {
+    searchFriend.mutate(phoneInput);
+  };
+
+  const searchFriend = useMutation(authAPI.checkphone, {
+    onSuccess: (response) => {
+      const isUserExist = response.data;
+      if (isUserExist) {
+        setUser((prev) => ({ ...prev, phone: phoneInput }));
+      } else {
+        enqueueSnackbar("The user does not exist!!", { variant: "error" });
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.respone.data.message);
+    },
+  });
+
+  // call api to send request
+  const handleAddFriend = () => {
+    // alert("Add friend")
+    console.log(phoneInput)
+    addFriend.mutate({"to_user_phone": phoneInput});
+  };
+  const addFriend = useMutation(friendAPI.addFriend, {
+    onSuccess: (responese) => {
+      console.log(responese);
+      enqueueSnackbar(`Sent friend request to ${phoneInput}`, {variant:"success"})
+    },
+    onError: (error:any) => {
+      // enqueueSnackbar(error.respone.data.message, {variant: "error"})
+      enqueueSnackbar(`You have already sent friend request to ${phoneInput}`, {variant:"warning"})
+    },
+  });
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <Stack spacing={3}>
-          <TextField
-            id="searchfriend"
-            label="Search friend"
-            variant="standard"
-          />
-          <Button>Search</Button>
-          <Typography variant="h6">Results</Typography>
+    <Stack spacing={3}>
+      <TextField
+        value={phoneInput}
+        onChange={handleChangeSearch}
+        id="searchfriend"
+        label="Search friend"
+        variant="standard"
+      />
+      <Button onClick={onSearch}>Search</Button>
+      <Typography variant="h6">Results</Typography>
+      {user.phone ? (
+        <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
-              <Avatar alt={response.name} src={response.avatar} />
-              <Typography>{response.name}</Typography>
+              <Avatar alt={user.phone} src={user.avatar} />
+              <Typography>{user.phone}</Typography>
             </Stack>
-            <Button variant="contained" size="small">
-              Send request
+            <Button variant="contained" size="small" onClick={handleAddFriend}>
+              Add Friend
             </Button>
           </Stack>
-          <Button onClick={handleClose}>Cancel</Button>
-        </Stack>
-      </form>
-    </FormProvider>
+        </Box>
+      ) : (
+        <Box></Box>
+      )}
+      <Button onClick={handleClose}>Cancel</Button>
+    </Stack>
   );
 };
 
