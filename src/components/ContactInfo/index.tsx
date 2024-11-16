@@ -11,8 +11,6 @@ interface ContactInfoProps {
 }
 
 const ContactInfo: FC<ContactInfoProps> = (props) => {
-  console.log(props.chosen);
-
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
       {props.chosen === Number(0) && <Friends />}

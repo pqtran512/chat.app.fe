@@ -2,14 +2,14 @@ import { Avatar, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { FC } from "react";
 
 interface FriendSentProps {
-  //   id: number;
+  id: string;
+  fullname: string;
   avatar: string;
-  name: string;
 }
 
 const FriendSent: FC<FriendSentProps> = (props) => {
   return (
-    <Box>
+    <Box key={props.id}>
       <Stack
         direction={"row"}
         justifyContent={"space-between"}
@@ -18,7 +18,7 @@ const FriendSent: FC<FriendSentProps> = (props) => {
       >
         <Stack direction={"row"} alignItems={"center"}>
           <Avatar sx={{ marginRight: 3 }} src={props.avatar} />
-          <Typography variant="h4">{props.name}</Typography>
+          <Typography variant="h4">{props.fullname}</Typography>
         </Stack>
 
         <Button>Cancel</Button>

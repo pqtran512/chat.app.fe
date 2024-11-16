@@ -1,13 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { FC } from "react";
-import { FriendList } from "src/data";
 import Friend from "./Friend";
 
 import PersonIcon from "@mui/icons-material/Person";
+import { useFriendList } from "src/contexts/FriendContext";
 
 interface FriendsProps {}
 const Friends: FC<FriendsProps> = (props) => {
   // call api to take "FriendList"
+  // const {}
+  const {friendList, setFriendList} = useFriendList();
 
   return (
     <Stack>
@@ -22,7 +24,7 @@ const Friends: FC<FriendsProps> = (props) => {
           <Typography>Contacts(99)</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
-          {FriendList.map((f) => (
+          {friendList.map((f) => (
             <Friend {...f} />
           ))}
         </Stack>

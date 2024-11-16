@@ -2,9 +2,9 @@ import { Avatar, Box, Button, Divider, Typography } from "@mui/material";
 import { FC } from "react";
 
 interface FriendProps {
-  id: number;
+  id: string;
+  fullname: string;
   avatar: string;
-  name: string;
 }
 
 const Friend: FC<FriendProps> = (props) => {
@@ -16,7 +16,7 @@ const Friend: FC<FriendProps> = (props) => {
         sx={{ justifyContent: "left", width: "100%" }}
       >
         <Avatar sx={{ marginRight: 3 }} src={props.avatar} />
-        <Typography variant="h4">{props.name}</Typography>
+        <Typography variant="h4">{props.fullname}</Typography>
       </Button>
       <Divider />
     </Box>

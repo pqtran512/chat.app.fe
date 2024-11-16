@@ -8,12 +8,17 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { FC } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { enqueueSnackbar } from "notistack";
+import { FC, useState } from "react";
+import { useMutation } from "react-query";
+import { groupAPI } from "src/api/group.api";
 
 const CreateGroupForm = ({ handleClose }) => {
 
-  const methods = useForm();
+  const [nameGroup, setNameGroup] = useState("");
+
+
+
 
   const onSubmit = async (data) => {
     try {
@@ -30,14 +35,31 @@ const CreateGroupForm = ({ handleClose }) => {
     { name: "name3", id: 3 },
   ];
 
+  const handleChangeSearch = (e) => {
+    setNameGroup(e.target.value);
+  }
+
+  const handleCreateGroup = () => {
+    createGroup.mutate(nameGroup);
+  }
+
+  const createGroup = useMutation(groupAPI.createGroup, {
+    onSuccess: (response) => {
+      // console.log(response);
+      enqueueSnackbar(`Create ${nameGroup} successfull`, {variant:"success"})
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(`Create ${nameGroup} fail`, {variant:"warning"})
+    }
+  })
+
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Stack spacing={3}>
           <TextField
             id="group-name"
             label="Enter group name..."
             variant="standard"
+            onChange={handleChangeSearch}
           />
           <Autocomplete
             multiple
@@ -55,13 +77,11 @@ const CreateGroupForm = ({ handleClose }) => {
           ></Autocomplete>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" onClick={handleCreateGroup}>
               Create
             </Button>
           </Stack>
         </Stack>
-      </form>
-    </FormProvider>
   );
 };
 interface CreateGroupProps {
