@@ -48,8 +48,6 @@ const SearchFriendForm = ({ handleClose }) => {
     setPhoneInput(e.target.value);
   };
 
-  // call api to check user exists
-
   const onSearch = () => {
     searchFriend.mutate(phoneInput);
   };

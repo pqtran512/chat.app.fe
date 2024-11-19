@@ -9,7 +9,8 @@ export const FRIEND_URL = {
   FREIND_RECEIVED: '/friend-request/list-received',
   ACCEPT: '/friend-request/accept',
   DECLINE: '/friend-request/decline',
-  UNFRIEND: '/friend/delete'
+  UNFRIEND: '/friend/delete',
+  SEARCH_FRIEND: '/friend/find-by-text',
 };
 
 export const friendAPI = {
@@ -39,5 +40,9 @@ export const friendAPI = {
   
   unfriend(id: string) {
     return http.delete<any>(`${FRIEND_URL.UNFRIEND}/${id}`)
+  },
+
+  searchFriend(text: string) {
+    return http.post<any>(`${FRIEND_URL.SEARCH_FRIEND}/${text}`)
   }
 };

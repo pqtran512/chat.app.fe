@@ -1,14 +1,37 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 import Friend from "./Friend";
 
 import PersonIcon from "@mui/icons-material/Person";
 import { useFriendList } from "src/contexts/FriendContext";
+import { useMutation } from "react-query";
+import { friendAPI } from "src/api/friend.api";
 
 interface FriendsProps {}
 const Friends: FC<FriendsProps> = (props) => {
 
+  const [input, setInput] = useState('');
   const { friendList, setFriendList } = useFriendList();
+
+  const handleChangeInput = (e) => {
+    // setInput(e.target.value)
+  }
+
+  const handleSearchFriend = () => {
+    // searchFriend.mutate(input)
+  }
+
+  const searchFriend = useMutation(friendAPI.searchFriend, {
+    // Xử lý responser: nếu success thì render lên UI
+    // onSuccess: (response) => {
+    //   console.log(response)
+    // },UI
+    // Xử lý error: nếu lôi thông báo lỗi cho người dùng
+    // onError: (error: any) => {
+    //   console.log(error)
+    // }
+  })
+
 
   return (
     <Stack>
@@ -24,8 +47,8 @@ const Friends: FC<FriendsProps> = (props) => {
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
           <Stack direction={"row"} padding={1} spacing={2}>
-            <TextField size="small" label="Search friend" />
-            <Button size="small" variant="contained">
+            <TextField size="small" label="Search friend" value={input} onChange={handleChangeInput}/>
+            <Button size="small" variant="contained" onClick={handleSearchFriend}>
               Search
             </Button>
           </Stack>
