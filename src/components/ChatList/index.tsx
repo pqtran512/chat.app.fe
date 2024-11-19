@@ -41,9 +41,11 @@ const ChatGroupHistory = [
 interface ChatListProps {}
 
 const ChatList: FC<ChatListProps> = () => {
-  
+  const [openAddFriend, setOpenAddFriend] = useState(false);
 
-  };
+  // const handleOpenAddFriend = () => {
+  //   setOpenAddFriend(true);
+  // };
 
   return (
     <Box
@@ -76,7 +78,12 @@ const ChatList: FC<ChatListProps> = () => {
             // }}
           />
           <Stack direction={"row"} spacing={1}>
-            <IconButton sx={{ padding: "0 0 0 0" }}>
+            <IconButton
+              onClick={() => {
+                setOpenAddFriend(true);
+              }}
+              sx={{ padding: "0 0 0 0" }}
+            >
               <PersonAddAltIcon />
             </IconButton>
             <IconButton sx={{ padding: "0 0 0 0" }}>
@@ -137,6 +144,7 @@ const ChatList: FC<ChatListProps> = () => {
             })} */}
         </Stack>
       </Stack>
+      {openAddFriend && <SearchFriend />}
     </Box>
   );
 };

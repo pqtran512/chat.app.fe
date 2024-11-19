@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { authAPI } from "src/api";
 
 interface User {
   id: string;
@@ -15,14 +16,15 @@ const SearchFriend: React.FC = () => {
     try {
       setError(null);
       // Call API to search phone number
-      const response = await fetch(
-        `https://api.example.com/search?phone=${phoneNumber}`
-      );
+      const response = await fetch(`/auth/check-user-exist/${phoneNumber}`);
+      console.log(response);
+
       if (!response.ok) throw new Error("User not found");
 
       const user: User = await response.json();
       setSearchResult(user);
     } catch (err) {
+      console.log(err);
       setSearchResult(null);
       setError("No user found with this phone number.");
     }
