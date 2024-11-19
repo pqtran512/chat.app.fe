@@ -20,18 +20,18 @@ const FriendRequests: FC<FriendRequestsProps> = (props) => {
       </Box>
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
         <Box sx={{ padding: 3 }}>
-          <Typography>Sent (5)</Typography>
+          <Typography>{`Requests sent (${friendSentList[0].id === '' ? 0 : friendSentList.length})`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
-          {friendSentList.map((f) => (
+          {friendSentList[0].id !== '' && friendSentList.map((f) => (
             <FriendSent {...f} />
           ))}
         </Stack>
         <Box sx={{ padding: 3 }}>
-          <Typography>Received (10)</Typography>
+          <Typography>{`Requests received (${friendReceivedList[0].id === '' ? 0 : friendReceivedList.length})`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
-          {friendReceivedList.map((f) => (
+          {friendReceivedList[0].id !== '' && friendReceivedList.map((f) => (
             <FriendReceived {...f} />
           ))}
         </Stack>

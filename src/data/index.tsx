@@ -1,103 +1,103 @@
 import {faker} from "@faker-js/faker"
 
-const FriendList = [
-  {
-    id: 0,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 1,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 2,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 3,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 4,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 5,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 6,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 7,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 8,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 9,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 10,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 11,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-  {
-    id: 12,
-    avatar: faker.image.avatar(),
-    name: faker.name.firstName(),
-  },
-]
+// const FriendList = [
+//   {
+//     id: 0,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 1,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 2,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 3,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 4,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 5,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 6,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 7,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 8,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 9,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 10,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 11,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+//   {
+//     id: 12,
+//     avatar: faker.image.avatar(),
+//     name: faker.name.firstName(),
+//   },
+// ]
 
 const GroupList = [
   {
     id: 0,
     avatar: [faker.image.avatar(), faker.image.avatar()],
-    name: `${faker.name.firstName()} group`,
+    name: `${faker.person.firstName()} group`,
   },
   {
     id: 1,
     avatar: [faker.image.avatar(), faker.image.avatar()],
-    name: `${faker.name.firstName()} group`,
+    name: `${faker.person.firstName()} group`,
   },
   {
     id: 2,
     avatar: [faker.image.avatar(), faker.image.avatar()],
-    name: `${faker.name.firstName()} group`,
+    name: `${faker.person.firstName()} group`,
   },
   {
     id: 3,
     avatar: [faker.image.avatar(), faker.image.avatar()],
-    name: `${faker.name.firstName()} group`,
+    name: `${faker.person.firstName()} group`,
   },
   {
     id: 4,
     avatar: [faker.image.avatar(), faker.image.avatar()],
-    name: `${faker.name.firstName()} group`,
+    name: `${faker.person.firstName()} group`,
   },
   {
     id: 5,
     avatar: [faker.image.avatar(), faker.image.avatar()],
-    name: `${faker.name.firstName()} group`,
+    name: `${faker.person.firstName()} group`,
   },
 ]
 
@@ -106,7 +106,7 @@ const ChatLists = [
     id: 0,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "9:36",
     unread: 0,
@@ -116,7 +116,7 @@ const ChatLists = [
     id: 1,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "12:02",
     unread: 2,
@@ -126,7 +126,7 @@ const ChatLists = [
     id: 2,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "10:35",
     unread: 3,
@@ -136,7 +136,7 @@ const ChatLists = [
     id: 3,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "04:00",
     unread: 0,
@@ -146,7 +146,7 @@ const ChatLists = [
     id: 4,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -156,7 +156,7 @@ const ChatLists = [
     id: 5,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -166,7 +166,7 @@ const ChatLists = [
     id: 6,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -176,7 +176,7 @@ const ChatLists = [
     id: 7,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -186,7 +186,7 @@ const ChatLists = [
     id: 8,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -196,7 +196,7 @@ const ChatLists = [
     id: 9,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -206,7 +206,7 @@ const ChatLists = [
     id: 10,
     group: false,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -322,4 +322,5 @@ const Chat_History = [
 ];
 
 
-export { ChatLists, Chat_History, FriendList, GroupList }
+export { ChatLists, Chat_History, GroupList }
+// export {};

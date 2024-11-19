@@ -3,41 +3,69 @@ import { enqueueSnackbar } from "notistack";
 import { FC } from "react";
 import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
+import { useFriendRequest } from "src/contexts/FriendContext";
 
 interface FriendReceivedProps {
-  id: string,
+  id: string;
   fullname: string;
   avatar: string;
 }
 
 const FriendReceived: FC<FriendReceivedProps> = (props) => {
+  const friendRequestContext = useFriendRequest();
 
   const handleAccept = () => {
     accept.mutate(props.id);
-  }
+  };
   const handleDecline = () => {
     decline.mutate(props.id);
-  }
+  };
 
   const accept = useMutation(friendAPI.accept, {
     onSuccess: (response) => {
-      // console.log(response)
-      enqueueSnackbar("Accept successfully", {variant: 'success'})
+      enqueueSnackbar("Accept successfully", { variant: "success" });
+      getFriendRecieveds.mutate();
     },
     onError: (error: any) => {
-      enqueueSnackbar("Fail Accept!!", {variant: 'error'})
-    }
-  })
+      enqueueSnackbar(`Fail Accept!! - ${error.response.data.message}`, {
+        variant: "error",
+      });
+    },
+  });
   const decline = useMutation(friendAPI.decline, {
     onSuccess: (response) => {
-      // console.log(response)
-      enqueueSnackbar("Decline successfully", {variant: 'success'})
+      enqueueSnackbar("Decline successfully", { variant: "success" });
+      getFriendRecieveds.mutate();
     },
     onError: (error: any) => {
-      enqueueSnackbar("Fail Decline!!", {variant: 'error'})
-    }
-  })
+      enqueueSnackbar(`Fail Decline!! - ${error.response.data.message}`, {
+        variant: "error",
+      });
+    },
+  });
 
+  const getFriendRecieveds = useMutation(friendAPI.friendRecieved, {
+    onSuccess: (response) => {
+      if (response.data.length > 0) {
+        const responseReceicedList = [];
+        response.data.forEach((e) => {
+          responseReceicedList.push({
+            id: e.id,
+            fullname: e.from_user_profile.profile[0].fullname,
+            avatar: e.from_user_profile.profile[0].avatar,
+          });
+        });
+        friendRequestContext.setFriendReceivedList(responseReceicedList);
+      } else {
+        friendRequestContext.setFriendReceivedList([
+          { id: "", fullname: "", avatar: "" },
+        ]);
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    },
+  });
 
   return (
     <Box>

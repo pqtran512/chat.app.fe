@@ -43,74 +43,82 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const friendRequestContext = useFriendRequest();
   // const groupListContext = useGroupList();
 
+  const handleOpenCreateGroup = () => {
+    setOpenCreateGroup(true);
+    getFriendList.mutate();
+  };
+
   const handleFriendList = () => {
     props.setChosen(0);
     getFriendList.mutate();
-  }
+  };
 
   const getFriendList = useMutation(friendAPI.friendList, {
     onSuccess: (response) => {
-      const friendList = [];
-      response.data.forEach((e) => {
-        friendList.push({
-          id: e.to_user_profile.profile[0].id,
-          fullname: e.to_user_profile.profile[0].fullname,
-          avatar: e.to_user_profile.profile[0].avatar,
-        })
-      })
-      friendListContext.setFriendList(friendList);
+      if (response.data.length > 0) {
+        const friendList = [];
+        response.data.forEach((e) => {
+          friendList.push({
+            id: e.to_user_profile.id,
+            fullname: e.to_user_profile.profile[0].fullname,
+            avatar: e.to_user_profile.profile[0].avatar,
+          });
+        });
+        friendListContext.setFriendList(friendList);
+      }
     },
-    onError: (error:any) => {
-      enqueueSnackbar(error.response.message, {variant: 'error'})
-    }
-  })
-
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    },
+  });
 
   const handleFriendRequests = async () => {
     props.setChosen(2);
-    await getFriendSents.mutate();
-    await getFriendRecieveds.mutate();
+    getFriendSents.mutate();
+    getFriendRecieveds.mutate();
   };
 
   const getFriendSents = useMutation(friendAPI.friendSent, {
     onSuccess: (response) => {
-      const responeSentList = [];
-      response.data.forEach((e) => {
-        responeSentList.push({
-          id: e.id,
-          fullname: e.to_user_profile.profile[0].fullname,
-          avatar: e.to_user_profile.profile[0].avatar,
+      if (response.data.length > 0){
+        const responeSentList = [];
+        response.data.forEach((e) => {
+          responeSentList.push({
+            id: e.id,
+            fullname: e.to_user_profile.profile[0].fullname,
+            avatar: e.to_user_profile.profile[0].avatar,
+          });
         });
-      });
-      friendRequestContext.setFriendSentList(responeSentList);
+        friendRequestContext.setFriendSentList(responeSentList);
+      }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.message, { variant: "error" });
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
     },
   });
 
   const getFriendRecieveds = useMutation(friendAPI.friendRecieved, {
     onSuccess: (response) => {
-      console.log(response.data)
-      const responseReceicedList = [];
-      response.data.forEach((e) => {
-        responseReceicedList.push({
-          id: e.id,
-          fullname: e.from_user_profile.profile[0].fullname,
-          avatar: e.from_user_profile.profile[0].avatar,
+      if (response.data.length > 0) {
+        const responseReceicedList = [];
+        response.data.forEach((e) => {
+          responseReceicedList.push({
+            id: e.id,
+            fullname: e.from_user_profile.profile[0].fullname,
+            avatar: e.from_user_profile.profile[0].avatar,
+          });
         });
-      });
-      friendRequestContext.setFriendReceivedList(responseReceicedList);
+        friendRequestContext.setFriendReceivedList(responseReceicedList);
+      }
     },
-    onError: (error:any) => {
-      enqueueSnackbar(error.response.message, { variant: "error" });
-    }
-  })
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    },
+  });
 
   const handleGroupList = () => {
     props.setChosen(1);
-
-  }
+  };
 
   // const getGroupList = useMutation(groupAPI.groupList, {})
 
@@ -154,7 +162,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             </IconButton>
             <IconButton
               sx={{ padding: "0 0 0 0" }}
-              onClick={() => setOpenCreateGroup(true)}
+              onClick={handleOpenCreateGroup}
             >
               <GroupAddIcon />
             </IconButton>

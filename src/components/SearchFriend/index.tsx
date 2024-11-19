@@ -10,12 +10,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { error } from "console";
 import { enqueueSnackbar } from "notistack";
 import React, { FC, useState } from "react";
 import { useMutation } from "react-query";
 import { authAPI } from "src/api";
 import { friendAPI } from "src/api/friend.api";
+import { useFriendRequest } from "src/contexts/FriendContext";
 
 interface SearchFriendProps {
   open: boolean;
@@ -42,6 +42,8 @@ const SearchFriendForm = ({ handleClose }) => {
       "https://www.pngkit.com/png/detail/115-1150714_avatar-single-customer-view-icon.png",
   });
 
+  const friendRequestContext = useFriendRequest();
+
   const handleChangeSearch = (e) => {
     setPhoneInput(e.target.value);
   };
@@ -62,24 +64,42 @@ const SearchFriendForm = ({ handleClose }) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.respone.data.message);
+      enqueueSnackbar(error.respone.data.message, {variant: "error"});
     },
   });
 
-  // call api to send request
   const handleAddFriend = () => {
-    // alert("Add friend")
-    console.log(phoneInput)
     addFriend.mutate({"to_user_phone": phoneInput});
   };
   const addFriend = useMutation(friendAPI.addFriend, {
     onSuccess: (responese) => {
-      console.log(responese);
+      getFriendSents.mutate();
       enqueueSnackbar(`Sent friend request to ${phoneInput}`, {variant:"success"})
     },
     onError: (error:any) => {
-      // enqueueSnackbar(error.respone.data.message, {variant: "error"})
-      enqueueSnackbar(`You have already sent friend request to ${phoneInput}`, {variant:"warning"})
+      enqueueSnackbar(`You have already sent friend request to ${phoneInput} - ${error.respone.data.message}`, {variant:"warning"})
+    },
+  });
+
+  const getFriendSents = useMutation(friendAPI.friendSent, {
+    onSuccess: (response) => {
+      if (response.data.length > 0){
+        const responeSentList = [];
+        response.data.forEach((e) => {
+          responeSentList.push({
+            id: e.id,
+            fullname: e.to_user_profile.profile[0].fullname,
+            avatar: e.to_user_profile.profile[0].avatar,
+          });
+        });
+        friendRequestContext.setFriendSentList(responeSentList);
+      }
+      else {
+        friendRequestContext.setFriendReceivedList([{id: '', fullname: '', avatar: ''}])
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
     },
   });
 

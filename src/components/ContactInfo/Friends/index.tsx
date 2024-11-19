@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { FC } from "react";
 import Friend from "./Friend";
 
@@ -7,9 +7,8 @@ import { useFriendList } from "src/contexts/FriendContext";
 
 interface FriendsProps {}
 const Friends: FC<FriendsProps> = (props) => {
-  // call api to take "FriendList"
-  // const {}
-  const {friendList, setFriendList} = useFriendList();
+
+  const { friendList, setFriendList } = useFriendList();
 
   return (
     <Stack>
@@ -21,14 +20,19 @@ const Friends: FC<FriendsProps> = (props) => {
       </Box>
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
         <Box sx={{ padding: 3 }}>
-          <Typography>Contacts(99)</Typography>
+          <Typography>{`Contact (${friendList[0].id === '' ? 0  : friendList.length})`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
-          {friendList.map((f) => (
+          <Stack direction={"row"} padding={1} spacing={2}>
+            <TextField size="small" label="Search friend" />
+            <Button size="small" variant="contained">
+              Search
+            </Button>
+          </Stack>
+          {friendList[0].id !== '' && friendList.map((f) => (
             <Friend {...f} />
           ))}
         </Stack>
-        ;
       </Box>
     </Stack>
   );

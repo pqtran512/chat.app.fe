@@ -8,6 +8,8 @@ export const FRIEND_URL = {
   FRIEND_SENT: '/friend-request/list-sent',
   FREIND_RECEIVED: '/friend-request/list-received',
   ACCEPT: '/friend-request/accept',
+  DECLINE: '/friend-request/decline',
+  UNFRIEND: '/friend/delete'
 };
 
 export const friendAPI = {
@@ -28,10 +30,14 @@ export const friendAPI = {
   },
 
   accept(id: string) {
-    return http.get<any>(`/friend-request/accept/${id}`)
+    return http.get<any>(`${FRIEND_URL.ACCEPT}/${id}`)
   },
 
   decline(id: string) {
-    return http.get<any>(`/friend-request/accept/${id}`)
+    return http.get<any>(`${FRIEND_URL.DECLINE}/${id}`)
   },
+  
+  unfriend(id: string) {
+    return http.delete<any>(`${FRIEND_URL.UNFRIEND}/${id}`)
+  }
 };

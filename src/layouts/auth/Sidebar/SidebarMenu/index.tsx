@@ -8,6 +8,7 @@ import {
   styled,
   Button,
   ListItem,
+  IconButton,
 } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 import { SidebarContext } from "src/contexts/SidebarContext";
@@ -15,6 +16,10 @@ import { SidebarContext } from "src/contexts/SidebarContext";
 //import icons
 import ChatTwoToneIcon from "@mui/icons-material/ChatTwoTone";
 import ContactsIcon from "@mui/icons-material/Contacts";
+import { useFriendList } from "src/contexts/FriendContext";
+import { useMutation } from "react-query";
+import { friendAPI } from "src/api/friend.api";
+import { enqueueSnackbar } from "notistack";
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -175,8 +180,8 @@ function SidebarMenu() {
       <MenuWrapper>
         <List component="div">
           <SubMenuWrapper>
-            <List component="div" >
-              <ListItem component="div" sx={{marginBottom: 2}}>
+            <List component="div">
+              <ListItem component="div" sx={{ marginBottom: 2 }}>
                 <Button
                   disableRipple
                   component={RouterLink}
