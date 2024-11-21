@@ -50,6 +50,7 @@ const CreateGroupForm = ({ handleClose }) => {
 
   const handleCreateGroup = () => {
     createGroup.mutate(groupInfo);
+    handleClose();
   };
 
   const createGroup = useMutation(groupAPI.createGroup, {
