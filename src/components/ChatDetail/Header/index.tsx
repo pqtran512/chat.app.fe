@@ -93,7 +93,7 @@ const Header: FC<HeaderProps> = (props) => {
           </Stack>
         </Box>
       </Stack>
-      <Profile open={openProfile} handleClose={setOpenProfile} />
+      <Profile open={openProfile} handleClose={setOpenProfile} fullname="Beckham" avatar=""/>
     </Box>
   );
 };

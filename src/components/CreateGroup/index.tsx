@@ -8,39 +8,20 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { FC } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-interface CreateGroupProps {
-  open: boolean;
-  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { enqueueSnackbar } from "notistack";
+import { FC, useState } from "react";
+import { useMutation } from "react-query";
+import { groupAPI } from "src/api/group.api";
+import { useFriendList } from "src/contexts/FriendContext";
 
 const CreateGroupForm = ({ handleClose }) => {
-  const NewgroupSchema = yup.object().shape({
-    title: yup.string().required("Title is required"),
-    members: yup.array().min(2, "Must have at least 2 members"),
-  });
 
-  const defaultValues = {
-    title: "",
-    members: [],
-  };
+  const [nameGroup, setNameGroup] = useState("");
 
-  const methods = useForm({
-    resolver: yupResolver(NewgroupSchema),
-    defaultValues,
-  });
+  console.log("Create group")
 
-  const {
-    reset,
-    watch,
-    setError,
-    handleSubmit,
-    formState: { errors, isSubmitting, isSubmitSuccessful, isValid },
-  } = methods;
+  const {friendList} = useFriendList();
+  console.log(friendList);
 
   const onSubmit = async (data) => {
     try {
@@ -51,27 +32,39 @@ const CreateGroupForm = ({ handleClose }) => {
     }
   };
 
-  const friends = [
-    { name: "name1", id: 1 },
-    { name: "name2", id: 2 },
-    { name: "name3", id: 3 },
-  ];
+  const handleChangeSearch = (e) => {
+    setNameGroup(e.target.value);
+  }
+
+  const handleCreateGroup = () => {
+    createGroup.mutate(nameGroup);
+  }
+
+  const createGroup = useMutation(groupAPI.createGroup, {
+    onSuccess: (response) => {
+      // console.log(response);
+      enqueueSnackbar(`Create ${nameGroup} successfull`, {variant:"success"})
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(`Create ${nameGroup} fail - ${error.response.data.message}`, {variant:"warning"})
+    }
+  })
+
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Stack spacing={3}>
           <TextField
             id="group-name"
             label="Enter group name..."
             variant="standard"
+            onChange={handleChangeSearch}
           />
           <Autocomplete
             multiple
             id="group-members"
-            options={friends}
-            getOptionLabel={(option) => option.name}
+            options={friendList}
+            getOptionLabel={(option) => option.fullname}
             filterSelectedOptions
-            renderInput={(params) => (
+            renderInput={(params) => (  
               <TextField
                 {...params}
                 label="Members"
@@ -79,25 +72,30 @@ const CreateGroupForm = ({ handleClose }) => {
               />
             )}
           ></Autocomplete>
-          <Stack direction={'row'} justifyContent={'space-between'}>
+          <Stack direction={"row"} justifyContent={"space-between"}>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" onClick={handleCreateGroup}>
               Create
             </Button>
           </Stack>
         </Stack>
-      </form>
-    </FormProvider>
   );
 };
+interface CreateGroupProps {
+  open: boolean;
+  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const CreateGroup: FC<CreateGroupProps> = (props) => {
+  
+  
+
+
   return (
     <Dialog
       fullWidth
       maxWidth="xs"
       open={props.open}
-      //   TransitionComponent={transition}
     >
       <DialogTitle>Create group</DialogTitle>
       <Divider />

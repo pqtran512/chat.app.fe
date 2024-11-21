@@ -31,6 +31,9 @@ import Profile from "src/components/Profile";
 import Setting from "src/components/Setting";
 import { useAuth } from "src/contexts/AuthContext";
 import { STORAGE_KEY } from "src/utils/constants";
+import { useMutation } from "react-query";
+import { authAPI, profileAPI } from "src/api";
+import { enqueueSnackbar } from "notistack";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -51,6 +54,44 @@ function Sidebar() {
 
   const [openMyProfile, setOpenMyProfile] = useState(false);
   const [openSetting, setOpenSetting] = useState(false);
+
+  // open profile
+  const [profile, setProfile] = useState({
+    fullname: "",
+    avatar: "",
+  });
+
+  const handleClickProfile = () => {
+    if (!localStorage.getItem("fullname")) {
+      getProfile.mutate();
+      setOpenMyProfile(true);
+    }
+    else {
+      const fullname = localStorage.getItem("fullname")
+      const avatar = localStorage.getItem("avatar")
+      setProfile((prev) => ({...prev, }))
+      setProfile((prev) => ({ ...prev, fullname: fullname , avatar: avatar }));
+      setOpenMyProfile(true); 
+    }
+  };
+
+  const getProfile = useMutation(profileAPI.getprofile, {
+    onSuccess: (response) => {
+      if (response.status === 200){
+
+        const { fullname, avatar } = response.data[0];
+        localStorage.setItem("fullname", fullname)
+        localStorage.setItem("avatar", avatar)
+
+        setProfile((prev) => ({ ...prev, fullname: fullname, avatar: avatar }));
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    },
+  });
 
   return (
     <>
@@ -77,13 +118,18 @@ function Sidebar() {
               }}
             >
               <Button
-                onClick={() => setOpenMyProfile(true)}
+                // onClick={() => {
+                //   setOpenMyProfile(true);
+                //   console.log("Open profile");
+                //   getProfile.mutate();
+                // }}
+                onClick={handleClickProfile}
                 sx={{ padding: 0 }}
               >
                 <Avatar
                   sx={{ width: 60, height: 60 }}
                   alt="Avatar"
-                  src="https://cdn.tuoitre.vn/thumb_w/1200/471584752817336320/2024/9/21/aa1qvcnt-1726869380138704119824.jpeg"
+                  src={profile.avatar}
                 />
               </Button>
               {/* <Logo /> */}
@@ -167,7 +213,12 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
-      <Profile open={openMyProfile} handleClose={setOpenMyProfile} />
+      <Profile
+        open={openMyProfile}
+        handleClose={setOpenMyProfile}
+        fullname={profile.fullname}
+        avatar={profile.avatar}
+      />
       <Setting open={openSetting} handleClose={setOpenSetting} />
     </>
   );
@@ -179,8 +230,21 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const { setAccessToken, setUserId } = useAuth();
+
+  // logout
+  const handleClickLogout = () => {
+    logout.mutate();
+  }
+
+  const logout = useMutation(authAPI.logout, {
+    onSuccess: (response) => {
+      console.log(response);
+    },
+    onError: (error: any) => {
+      console.log(error);
+    }
+  })
   return (
     <>
       <IconButton
@@ -204,51 +268,37 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
         }}
       >
         <MenuItem
-          sx={{ padding: "0" }}
+          sx={{ justifyContent: "space-between" }}
           onClick={() => {
             setAnchorEl(null);
             setOpenProfile(true);
           }}
         >
-          <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <Button>
-              <PersonIcon sx={{ marginRight: 2 }} />
-              <Typography>Profile Information</Typography>
-            </Button>
-          </Stack>
+          <Typography>Profile</Typography>
+          <PersonIcon />
         </MenuItem>
         <MenuItem
-          sx={{ padding: "0" }}
+          sx={{ justifyContent: "space-between" }}
           onClick={() => {
             setAnchorEl(null);
             setOpenSetting(true);
           }}
         >
-          <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <Button>
-              <SettingsIcon sx={{ marginRight: 2 }} />
-              <Typography>Setting</Typography>
-            </Button>
-          </Stack>
+          <Typography>Setting</Typography>
+          <SettingsIcon />
         </MenuItem>
         <MenuItem
-          sx={{ padding: "0" }}
+          sx={{ justifyContent: "space-between" }}
           onClick={() => {
             setAnchorEl(null);
-            localStorage.setItem(STORAGE_KEY.ID, "");
-            localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, "");
-            localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, "")
-
+            localStorage.clear();
             setUserId("");
             setAccessToken("");
           }}
+          // onClick={handleClickLogout}
         >
-          <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            <Button>
-              <LogoutIcon sx={{ marginRight: 2 }} />
-              <Typography>Sign out</Typography>
-            </Button>
-          </Stack>
+          <Typography>Sign out</Typography>
+          <LogoutIcon sx={{ marginLeft: 2 }} />
         </MenuItem>
       </Menu>
     </>

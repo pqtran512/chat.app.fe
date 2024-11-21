@@ -45,8 +45,10 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
 
   const defaultTheme = createTheme();
 
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // goi api
     checkphone.mutate(phone);
   };
 
@@ -112,6 +114,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
                 autoFocus
                 onChange={handleChangePhone}
               />
+              
               <Box sx={{ position: "relative" }}>
                 <Button
                   type="submit"
