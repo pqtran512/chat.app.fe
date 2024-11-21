@@ -18,18 +18,18 @@ const Friends: FC<FriendsProps> = (props) => {
   }
 
   const handleSearchFriend = () => {
-    // searchFriend.mutate(input)
+    searchFriend.mutate(input)
   }
 
   const searchFriend = useMutation(friendAPI.searchFriend, {
     // Xử lý responser: nếu success thì render lên UI
-    // onSuccess: (response) => {
-    //   console.log(response)
-    // },UI
+    onSuccess: (response) => {
+      console.log(response)
+    },
     // Xử lý error: nếu lôi thông báo lỗi cho người dùng
-    // onError: (error: any) => {
-    //   console.log(error)
-    // }
+    onError: (error: any) => {
+      console.log(error)
+    }
   })
 
 

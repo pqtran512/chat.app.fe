@@ -2,20 +2,16 @@ import {
   Avatar,
   Box,
   Button,
-  Checkbox,
   Container,
   CssBaseline,
-  FormControlLabel,
-  Grid,
   IconButton,
-  Input,
   InputAdornment,
   Link,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState, FC } from "react";
+import { useState, FC } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";

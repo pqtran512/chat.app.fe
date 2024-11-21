@@ -5,7 +5,6 @@ import {
   IconButton,
   InputAdornment,
   Stack,
-  Tab,
   TextField,
   Typography,
 } from "@mui/material";
@@ -22,8 +21,8 @@ import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { useFriendList, useFriendRequest } from "src/contexts/FriendContext";
 import { enqueueSnackbar } from "notistack";
-import { useGroupList } from "src/contexts/GroupContext";
 import { groupAPI } from "src/api/group.api";
+import { useGroupList } from "src/contexts/GroupContext";
 
 interface ContactBarProps {
   chosen: number;
@@ -33,6 +32,7 @@ interface ContactBarProps {
 const ContactBar: FC<ContactBarProps> = (props) => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
+  // const [searchGroup, setSearchGroup] = useState({searchText: ''} as GroupListDto)
 
   const handleClose = () => {
     setOpenCreateGroup(false);
@@ -41,7 +41,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   const friendListContext = useFriendList();
   const friendRequestContext = useFriendRequest();
-  // const groupListContext = useGroupList();
+  const groupListContext = useGroupList();
 
   const handleOpenCreateGroup = () => {
     setOpenCreateGroup(true);
@@ -65,6 +65,8 @@ const ContactBar: FC<ContactBarProps> = (props) => {
           });
         });
         friendListContext.setFriendList(friendList);
+      } else {
+        friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
       }
     },
     onError: (error: any) => {
@@ -80,7 +82,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   const getFriendSents = useMutation(friendAPI.friendSent, {
     onSuccess: (response) => {
-      if (response.data.length > 0){
+      if (response.data.length > 0) {
         const responeSentList = [];
         response.data.forEach((e) => {
           responeSentList.push({
@@ -118,9 +120,38 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   const handleGroupList = () => {
     props.setChosen(1);
+    getGroupList.mutate({searchText: ''})
   };
 
-  // const getGroupList = useMutation(groupAPI.groupList, {})
+  const getGroupList = useMutation(groupAPI.groupList, {
+    onSuccess: (response) => {
+      // console.log(response.data)
+      // console.log(response.data.count)
+      // console.log(response.data.groups)
+      if (response.data.count > 0) {
+        // console.log("run if")
+        const responseGroupList = [];
+        response.data.groups.forEach((e) => {
+          responseGroupList.push({
+            id: e.group.id,
+            name: e.group.name,
+            avatar: e.group.avatar,
+          });
+        });
+        // console.log("response group list")
+        // console.log(responseGroupList)
+        groupListContext.setGroupList(responseGroupList)
+        groupListContext.setCount(response.data.count)
+      }
+      // console.log(groupListContext.groupList)
+      // console.log(groupListContext.count)
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    },
+  })
+
+
 
   return (
     <Box

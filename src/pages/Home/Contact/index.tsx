@@ -10,6 +10,7 @@ import {
   FriendSentProvider,
   useFriendList,
 } from "src/contexts/FriendContext";
+import { GroupListProvider } from "src/contexts/GroupContext";
 
 interface ContactProps {}
 
@@ -27,7 +28,7 @@ const Contact: FC<ContactProps> = (props) => {
   const getFriendList = useMutation(friendAPI.friendList, {
     onSuccess: (response) => {
       const friendList = [];
-      if (response.data !== '') {
+      if (response.data !== "") {
         response.data.forEach((e) => {
           friendList.push({
             id: e.to_user_profile.profile[0].id,
@@ -36,9 +37,8 @@ const Contact: FC<ContactProps> = (props) => {
           });
         });
         friendListContext.setFriendList(friendList);
-      }
-      else {
-        friendListContext.setFriendList([{id: '', fullname: '', avatar: ''}])
+      } else {
+        friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
       }
     },
     onError: (error: any) => {
@@ -47,16 +47,18 @@ const Contact: FC<ContactProps> = (props) => {
   });
 
   return (
-    <FriendListProvider>
-      <FriendSentProvider>
-        <Box>
-          <Stack direction={"row"}>
-            <ContactBar chosen={chosen} setChosen={setChosen} />
-            <ContactInfo chosen={chosen} />
-          </Stack>
-        </Box>
-      </FriendSentProvider>
-    </FriendListProvider>
+    <GroupListProvider>
+      <FriendListProvider>
+        <FriendSentProvider>
+          <Box>
+            <Stack direction={"row"}>
+              <ContactBar chosen={chosen} setChosen={setChosen} />
+              <ContactInfo chosen={chosen} />
+            </Stack>
+          </Box>
+        </FriendSentProvider>
+      </FriendListProvider>
+    </GroupListProvider>
   );
 };
 
