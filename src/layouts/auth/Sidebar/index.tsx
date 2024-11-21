@@ -1,6 +1,9 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Scrollbar from "src/components/Scrollbar";
 import { SidebarContext } from "src/contexts/SidebarContext";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import {
   Box,
@@ -14,10 +17,23 @@ import {
   darken,
   Tooltip,
   Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Avatar,
+  Stack,
+  Icon,
 } from "@mui/material";
 
 import SidebarMenu from "./SidebarMenu";
 import Logo from "src/components/LogoSign";
+import Profile from "src/components/Profile";
+import Setting from "src/components/Setting";
+import { useAuth } from "src/contexts/AuthContext";
+import { STORAGE_KEY } from "src/utils/constants";
+import { useMutation } from "react-query";
+import { authAPI, profileAPI } from "src/api";
+import { enqueueSnackbar } from "notistack";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -35,6 +51,47 @@ function Sidebar() {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
+
+  const [openMyProfile, setOpenMyProfile] = useState(false);
+  const [openSetting, setOpenSetting] = useState(false);
+
+  // open profile
+  const [profile, setProfile] = useState({
+    fullname: "",
+    avatar: "",
+  });
+
+  const handleClickProfile = () => {
+    if (!localStorage.getItem("fullname")) {
+      getProfile.mutate();
+      setOpenMyProfile(true);
+    }
+    else {
+      const fullname = localStorage.getItem("fullname")
+      const avatar = localStorage.getItem("avatar")
+      setProfile((prev) => ({...prev, }))
+      setProfile((prev) => ({ ...prev, fullname: fullname , avatar: avatar }));
+      setOpenMyProfile(true); 
+    }
+  };
+
+  const getProfile = useMutation(profileAPI.getprofile, {
+    onSuccess: (response) => {
+      if (response.status === 200){
+
+        const { fullname, avatar } = response.data[0];
+        localStorage.setItem("fullname", fullname)
+        localStorage.setItem("avatar", avatar)
+
+        setProfile((prev) => ({ ...prev, fullname: fullname, avatar: avatar }));
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    },
+  });
 
   return (
     <>
@@ -60,7 +117,22 @@ function Sidebar() {
                 width: 52,
               }}
             >
-              <Logo />
+              <Button
+                // onClick={() => {
+                //   setOpenMyProfile(true);
+                //   console.log("Open profile");
+                //   getProfile.mutate();
+                // }}
+                onClick={handleClickProfile}
+                sx={{ padding: 0 }}
+              >
+                <Avatar
+                  sx={{ width: 60, height: 60 }}
+                  alt="Avatar"
+                  src={profile.avatar}
+                />
+              </Button>
+              {/* <Logo /> */}
             </Box>
           </Box>
           <Divider
@@ -81,12 +153,25 @@ function Sidebar() {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          paddingTop={2.5}
+          // paddingTop={2.5}
+          padding={1}
         >
-          <div>
+          <SettingBotton
+            setOpenProfile={setOpenMyProfile}
+            setOpenSetting={setOpenSetting}
+          />
+          {/* <div>
             <b>Version</b> {process.env.REACT_APP_VERSION}
-          </div>
+          </div> */}
         </Box>
+        {/* <Divider
+          sx={{
+            background: theme.colors.alpha.trueWhite[10],
+          }}
+        />
+        <Box display="flex" justifyContent="center" alignItems="center" sx={{height: "50px"}} >
+          <SettingsIcon/>
+        </Box> */}
       </SidebarWrapper>
       <Drawer
         sx={{
@@ -128,6 +213,94 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
+      <Profile
+        open={openMyProfile}
+        handleClose={setOpenMyProfile}
+        fullname={profile.fullname}
+        avatar={profile.avatar}
+      />
+      <Setting open={openSetting} handleClose={setOpenSetting} />
+    </>
+  );
+}
+
+function SettingBotton({ setOpenProfile, setOpenSetting }) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const { setAccessToken, setUserId } = useAuth();
+
+  // logout
+  const handleClickLogout = () => {
+    logout.mutate();
+  }
+
+  const logout = useMutation(authAPI.logout, {
+    onSuccess: (response) => {
+      console.log(response);
+    },
+    onError: (error: any) => {
+      console.log(error);
+    }
+  })
+  return (
+    <>
+      <IconButton
+        id="basic-button"
+        aria-controls={open ? "basic-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        <SettingsIcon fontSize="large" />
+      </IconButton>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        <MenuItem
+          sx={{ justifyContent: "space-between" }}
+          onClick={() => {
+            setAnchorEl(null);
+            setOpenProfile(true);
+          }}
+        >
+          <Typography>Profile</Typography>
+          <PersonIcon />
+        </MenuItem>
+        <MenuItem
+          sx={{ justifyContent: "space-between" }}
+          onClick={() => {
+            setAnchorEl(null);
+            setOpenSetting(true);
+          }}
+        >
+          <Typography>Setting</Typography>
+          <SettingsIcon />
+        </MenuItem>
+        <MenuItem
+          sx={{ justifyContent: "space-between" }}
+          onClick={() => {
+            setAnchorEl(null);
+            localStorage.clear();
+            setUserId("");
+            setAccessToken("");
+          }}
+          // onClick={handleClickLogout}
+        >
+          <Typography>Sign out</Typography>
+          <LogoutIcon sx={{ marginLeft: 2 }} />
+        </MenuItem>
+      </Menu>
     </>
   );
 }

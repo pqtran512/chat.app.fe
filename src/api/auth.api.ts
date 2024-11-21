@@ -1,9 +1,12 @@
-import { LogInDto } from "src/types/api/dto";
-import { LoginResponse } from "src/types/api/response";
+import { LogInDto, ResetPassworDto } from "src/types/api/dto";
+import { LoginResponse, ResetPasswordResponse } from "src/types/api/response";
 import http from "src/utils/http";
 
 export const AUTH_URL = {
-  LOGIN: '/auth/login',
+  LOGIN: "/auth/login",
+  LOGOUT: "/auth/logout",
+  CHECKPHONE: "/auth/check-user-exist",
+  RESETPASSWORD: "/auth/reset-password",
 };
 
 export const authAPI = {
@@ -22,4 +25,29 @@ export const authAPI = {
   // delete(id: string) {
   //   return http.delete<void>(`${OPTIONS_URL.DELETE}/${id}`);
   // },
+  logout() {
+    return http.post<any>(AUTH_URL.LOGOUT);
+  },
+
+  checkphone(phone: string) {
+    // return http.post<CheckPhoneResponse>(`/auth/check-user-exist/${phone}`)
+    return http.get<boolean>(`/auth/check-user-exist/${phone}`);
+  },
+
+  resetpassword(resetPasswordDto: ResetPassworDto) {
+    return http.post<ResetPasswordResponse>(
+      AUTH_URL.RESETPASSWORD,
+      resetPasswordDto
+    );
+  },
+};
+
+export const PROFILE_URL = {
+  GET_PROFILE: "/user/me/profiles",
+};
+
+export const profileAPI = {
+  getprofile() {
+    return http.get<any>(PROFILE_URL.GET_PROFILE);
+  },
 };

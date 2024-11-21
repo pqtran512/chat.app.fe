@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext } from "react";
 
 import {
   ListSubheader,
@@ -7,13 +7,19 @@ import {
   List,
   styled,
   Button,
-  ListItem
-} from '@mui/material';
-import { NavLink as RouterLink } from 'react-router-dom';
-import { SidebarContext } from 'src/contexts/SidebarContext';
+  ListItem,
+  IconButton,
+} from "@mui/material";
+import { NavLink as RouterLink } from "react-router-dom";
+import { SidebarContext } from "src/contexts/SidebarContext";
 
 //import icons
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
+import ChatTwoToneIcon from "@mui/icons-material/ChatTwoTone";
+import ContactsIcon from "@mui/icons-material/Contacts";
+import { useFriendList } from "src/contexts/FriendContext";
+import { useMutation } from "react-query";
+import { friendAPI } from "src/api/friend.api";
+import { enqueueSnackbar } from "notistack";
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -66,7 +72,7 @@ const SubMenuWrapper = styled(Box)(
 
           .MuiButton-startIcon,
           .MuiButton-endIcon {
-            transition: ${theme.transitions.create(['color'])};
+            transition: ${theme.transitions.create(["color"])};
 
             .MuiSvgIcon-root {
               font-size: inherit;
@@ -139,8 +145,8 @@ const SubMenuWrapper = styled(Box)(
                 background: ${theme.colors.alpha.trueWhite[100]};
                 opacity: 0;
                 transition: ${theme.transitions.create([
-                  'transform',
-                  'opacity'
+                  "transform",
+                  "opacity",
                 ])};
                 width: 6px;
                 height: 6px;
@@ -175,15 +181,23 @@ function SidebarMenu() {
         <List component="div">
           <SubMenuWrapper>
             <List component="div">
-              <ListItem component="div">
+              <ListItem component="div" sx={{ marginBottom: 2 }}>
                 <Button
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
                   to="/"
                   startIcon={<ChatTwoToneIcon />}
-                >
-                </Button>
+                ></Button>
+              </ListItem>
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/contact"
+                  startIcon={<ContactsIcon />}
+                ></Button>
               </ListItem>
             </List>
           </SubMenuWrapper>

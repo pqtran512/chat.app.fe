@@ -1,28 +1,27 @@
-import { Container, Grid } from "@mui/material";
-import { useEffect, useState, FC } from "react";
+import { Box, Stack } from "@mui/material";
+import { useState, FC } from "react";
+import ChatList from "src/components/ChatList";
+import ChatDetail from "src/components/ChatDetail";
+import ChatInformaion from "src/components/ChatInfomation";
 
 interface HomePageProps {}
 
 const HomePage: FC<HomePageProps> = ({}) => {
+  const [openChatInfo, setOpenChatInfo] = useState(false);
+
   return (
-    <>
-      <Container maxWidth="xl">
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={1}
-        >
-          <Grid item xs={2}>
-            <p>abc</p>
-          </Grid>
-          <Grid item xs={10}>
-            <p>abc</p>
-          </Grid>
-        </Grid>
-      </Container>
-    </>
+    <Box>
+      <Stack direction={"row"}>
+        {/* Chat List */}
+        <ChatList />
+
+        {/* Chat Detail */}
+        <ChatDetail {...{ openChatInfo, setOpenChatInfo }} />
+
+        {/* Chat Information */}
+        <ChatInformaion {...{ openChatInfo }} />
+      </Stack>
+    </Box>
   );
 };
 
