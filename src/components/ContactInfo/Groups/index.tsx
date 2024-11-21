@@ -1,12 +1,16 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { FC } from "react";
-import { GroupList } from "src/data";
 import Group from "./Group";
 
 import GroupsIcon from "@mui/icons-material/Groups";
+import { useGroupList } from "src/contexts/GroupContext";
 
 interface GroupsProps {}
 const Groups: FC<GroupsProps> = (props) => {
+
+  const groupListContext = useGroupList();
+  const groupList = groupListContext.groupList;
+
   return (
     <Stack>
       <Box sx={{ backgroundColor: "#fff", padding: 2 }}>
@@ -27,7 +31,7 @@ const Groups: FC<GroupsProps> = (props) => {
               Search
             </Button>
           </Stack>
-          {GroupList.map((g) => (
+          {groupList.map((g) => (
             <Group {...g} />
           ))}
         </Stack>

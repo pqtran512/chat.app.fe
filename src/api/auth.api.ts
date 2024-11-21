@@ -26,7 +26,7 @@ export const authAPI = {
   //   return http.delete<void>(`${OPTIONS_URL.DELETE}/${id}`);
   // },
   logout() {
-    return http.post<any>(AUTH_URL.LOGOUT)
+    return http.post<any>(AUTH_URL.LOGOUT);
   },
 
   checkphone(phone: string) {
@@ -43,11 +43,11 @@ export const authAPI = {
 };
 
 export const PROFILE_URL = {
-  GET_PROFILE: "/user/me/profiles"
-}
+  GET_PROFILE: "/user/me/profiles",
+};
 
 export const profileAPI = {
   getprofile() {
-    return http.get<any>(PROFILE_URL.GET_PROFILE)
-  }
-}
+    return http.get<any>(PROFILE_URL.GET_PROFILE);
+  },
+};

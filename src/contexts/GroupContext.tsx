@@ -6,15 +6,15 @@ import React, {
     useState,
   } from "react";
   
-  interface GroupMember {
+  interface Group {
     id: string;
-    fullname: string;
+    name: string;
     avatar: string;
   }
   
   interface GroupListContext {
-    groupList: GroupMember[];
-    setGroupList: React.Dispatch<React.SetStateAction<GroupMember[]>>;
+    groupList: Group[];
+    setGroupList: React.Dispatch<React.SetStateAction<Group[]>>;
     count: number;
     setCount: React.Dispatch<React.SetStateAction<number>>;
   }
@@ -29,10 +29,10 @@ import React, {
   
   export const GroupListProvider: FC<Props> = ({ children }) => {
     const [groupList, setGroupList] = useState([
-      { id: "", fullname: "", avatar: "" },
-    ] as GroupMember[]);
+      { id: "", name: "", avatar: "" },
+    ] as Group[]);
 
-    const [count, setCount] = useState<number>(null);
+    const [count, setCount] = useState<number>(0);
   
     return (
       <GroupListContext.Provider value={{ groupList, setGroupList, count, setCount }}>

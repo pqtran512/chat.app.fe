@@ -16,9 +16,9 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 }));
 
 interface GroupProps {
-  id: number;
-  avatar: string[];
+  id: string;
   name: string;
+  avatar: string;
 }
 
 const Group: FC<GroupProps> = (props) => {
@@ -29,13 +29,15 @@ const Group: FC<GroupProps> = (props) => {
         size="large"
         sx={{ justifyContent: "left", width: "100%"}}
       >
-        <Badge
+        {/* <Badge
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           badgeContent={<SmallAvatar alt="Remy Sharp" src={props.avatar[0]} />}
         >
           <Avatar alt="Travis Howard" src={props.avatar[1]} />
-        </Badge>
+        </Badge> */}
+        <Avatar alt="Travis Howard" src={props.avatar} />
+        
         <Typography variant="h4" sx={{marginLeft: 3}}>{props.name}</Typography>
       </Button>
       <Divider />
