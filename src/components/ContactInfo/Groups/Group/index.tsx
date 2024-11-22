@@ -12,6 +12,10 @@ import {
 } from "@mui/material";
 import { FC, useState } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { useMutation } from "react-query";
+import { groupAPI } from "src/api/group.api";
+import { useGroupList } from "src/contexts/GroupContext";
+import { enqueueSnackbar } from "notistack";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
@@ -36,11 +40,34 @@ const Group: FC<GroupProps> = (props) => {
     setAnchorEl(null);
   };
   // ------------------------
+  // const groupListContext = useGroupList();
 
   const handleLeaveGroup = () => {
     // leaveGroup.mutate(props.id);
     setAnchorEl(null);
   };
+
+  // const getGroupList = useMutation(groupAPI.groupList, {
+  //   onSuccess: (response) => {
+  //     if (response.data.count > 0) {
+  //       const responseGroupList = [];
+  //       response.data.groups.forEach((e) => {
+  //         responseGroupList.push({
+  //           id: e.group.id,
+  //           name: e.group.name,
+  //           avatar: e.group.avatar,
+  //         });
+  //       });
+  //       groupListContext.setGroupList(responseGroupList);
+  //       groupListContext.setCount(response.data.count);
+  //     }
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error.response.data.message, { variant: "error" });
+  //   },
+  // });
+
+
   return (
     <Stack direction={"row"} alignItems={"center"}>
       <Button
