@@ -62,27 +62,32 @@ const SearchFriendForm = ({ handleClose }) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.respone.data.message, {variant: "error"});
+      enqueueSnackbar(error.respone.data.message, { variant: "error" });
     },
   });
 
   const handleAddFriend = () => {
-    addFriend.mutate({"to_user_phone": phoneInput});
+    addFriend.mutate({ to_user_phone: phoneInput });
     handleClose();
   };
   const addFriend = useMutation(friendAPI.addFriend, {
     onSuccess: (responese) => {
       getFriendSents.mutate();
-      enqueueSnackbar(`Sent friend request to ${phoneInput}`, {variant:"success"})
+      enqueueSnackbar(`Sent friend request to ${phoneInput}`, {
+        variant: "success",
+      });
     },
-    onError: (error:any) => {
-      enqueueSnackbar(`You have already sent friend request to ${phoneInput} - ${error.respone.data.message}`, {variant:"warning"})
+    onError: (error: any) => {
+      enqueueSnackbar(
+        `You have already sent friend request to ${phoneInput} - ${error.respone.data.message}`,
+        { variant: "warning" }
+      );
     },
   });
 
   const getFriendSents = useMutation(friendAPI.friendSent, {
     onSuccess: (response) => {
-      if (response.data.length > 0){
+      if (response.data.length > 0) {
         const responeSentList = [];
         response.data.forEach((e) => {
           responeSentList.push({
@@ -92,9 +97,10 @@ const SearchFriendForm = ({ handleClose }) => {
           });
         });
         friendRequestContext.setFriendSentList(responeSentList);
-      }
-      else {
-        friendRequestContext.setFriendReceivedList([{id: '', fullname: '', avatar: ''}])
+      } else {
+        friendRequestContext.setFriendReceivedList([
+          { id: "", fullname: "", avatar: "" },
+        ]);
       }
     },
     onError: (error: any) => {
