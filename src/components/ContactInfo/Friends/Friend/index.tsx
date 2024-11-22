@@ -12,7 +12,6 @@ interface FriendProps {
 }
 
 const Friend: FC<FriendProps> = (props) => {
-
   const FriendListContext = useFriendList();
 
   const handleUnfriend = () => {
@@ -21,17 +20,16 @@ const Friend: FC<FriendProps> = (props) => {
 
   const unfriend = useMutation(friendAPI.unfriend, {
     onSuccess: (response) => {
-      enqueueSnackbar(`unfriend Sucessfull`, {variant: "success"});
-      getFriendList.mutate()
+      enqueueSnackbar(`unfriend Sucessfull`, { variant: "success" });
+      getFriendList.mutate();
     },
-    onError: (error:any) => {
+    onError: (error: any) => {
       enqueueSnackbar(error.response.data.message, { variant: "error" });
-    }
+    },
   });
   const getFriendList = useMutation(friendAPI.friendList, {
     onSuccess: (response) => {
-      if (response.data.length > 0){
-
+      if (response.data.length > 0) {
         const friendList = [];
         response.data.forEach((e) => {
           friendList.push({
@@ -41,9 +39,8 @@ const Friend: FC<FriendProps> = (props) => {
           });
         });
         FriendListContext.setFriendList(friendList);
-      }
-      else {
-        FriendListContext.setFriendList([{id: '', fullname: '', avatar: ''}])
+      } else {
+        FriendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
       }
     },
     onError: (error: any) => {
@@ -60,9 +57,9 @@ const Friend: FC<FriendProps> = (props) => {
       >
         <Avatar sx={{ marginRight: 3 }} src={props.avatar} />
         <Typography variant="h4">{props.fullname}</Typography>
-      </Button>
-      <Button onClick={handleUnfriend}>
-        <Typography color="red">Unfriend</Typography>
+        <Button onClick={handleUnfriend}>
+          <Typography color="red">Unfriend</Typography>
+        </Button>
       </Button>
       <Divider />
     </Stack>

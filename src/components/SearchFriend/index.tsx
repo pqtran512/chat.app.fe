@@ -68,6 +68,7 @@ const SearchFriendForm = ({ handleClose }) => {
 
   const handleAddFriend = () => {
     addFriend.mutate({"to_user_phone": phoneInput});
+    handleClose();
   };
   const addFriend = useMutation(friendAPI.addFriend, {
     onSuccess: (responese) => {

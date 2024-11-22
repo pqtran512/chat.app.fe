@@ -8,8 +8,7 @@ import { useGroupList } from "src/contexts/GroupContext";
 interface GroupsProps {}
 const Groups: FC<GroupsProps> = (props) => {
 
-  const groupListContext = useGroupList();
-  const groupList = groupListContext.groupList;
+  const {groupList, setGroupList} = useGroupList();
 
   return (
     <Stack>

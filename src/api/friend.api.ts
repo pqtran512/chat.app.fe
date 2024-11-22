@@ -1,4 +1,4 @@
-import { AddFriendDto } from "src/types/api/dto";
+import { AddFriendDto, SearchFriendDto } from "src/types/api/dto";
 import { AddFriendResponse } from "src/types/api/response";
 import http from "src/utils/http";
 
@@ -42,7 +42,7 @@ export const friendAPI = {
     return http.delete<any>(`${FRIEND_URL.UNFRIEND}/${id}`)
   },
 
-  searchFriend(text: string) {
-    return http.post<any>(`${FRIEND_URL.SEARCH_FRIEND}/${text}`)
+  searchFriend(searchFriendDto: SearchFriendDto) {
+    return http.post<any>(FRIEND_URL.SEARCH_FRIEND, searchFriendDto)
   }
 };
