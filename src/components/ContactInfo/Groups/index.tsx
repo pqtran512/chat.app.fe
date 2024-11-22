@@ -25,18 +25,22 @@ const Groups: FC<GroupsProps> = (props) => {
 
   const searchGroup = useMutation(groupAPI.groupList, {
     onSuccess: (res) => {
-      console.log(res);
-      const searchGroupResults = [];
-
-      res.data.groups.map((e) => {
-        searchGroupResults.push({
-          id: e.group.id,
-          name: e.group.name,
-          avatar: e.group.avatar,
+      if (res.data.groups.length > 0) {
+        const searchGroupResults = [];
+        res.data.groups.map((e) => {
+          searchGroupResults.push({
+            id: e.group.id,
+            name: e.group.name,
+            avatar: e.group.avatar,
+          });
         });
-      });
-
-      setGroupList(searchGroupResults);
+        setGroupList(searchGroupResults);
+      }
+      else {
+        enqueueSnackbar("Not found any groups with that name", {
+          variant: "info",
+        });
+      }
     },
     onError: (error: any) => {
       enqueueSnackbar(error.response.data.message, { variant: "error" });
