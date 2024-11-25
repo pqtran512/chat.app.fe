@@ -14,7 +14,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import CallIcon from "@mui/icons-material/Call";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import InfoIcon from "@mui/icons-material/Info";
-import Profile from "src/components/Profile";
 
 interface HeaderProps {
   openChatInfo: boolean;
@@ -93,7 +92,7 @@ const Header: FC<HeaderProps> = (props) => {
           </Stack>
         </Box>
       </Stack>
-      <Profile open={openProfile} handleClose={setOpenProfile} fullname="Beckham" avatar=""/>
+      {/* <Profile open={openProfile} handleClose={setOpenProfile} fullname="Beckham" avatar=""/> */}
     </Box>
   );
 };

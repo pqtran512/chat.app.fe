@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Box,
   Button,
   Dialog,
   DialogContent,
@@ -18,23 +17,105 @@ import {
 } from "@mui/material";
 import { FC, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import styled from "@emotion/styled";
+import { UpdateProfileDto } from "src/types/api/dto";
 import { useMutation } from "react-query";
 import { profileAPI } from "src/api";
+import { useProfile } from "src/contexts/ProfileContext";
 import { enqueueSnackbar } from "notistack";
-import styled from "@emotion/styled";
 
 interface ProfileProps {
   open: boolean;
   handleClose: React.Dispatch<React.SetStateAction<boolean>>;
-  fullname: string;
-  avatar: string;
 }
-const Profile: FC<ProfileProps> = (props) => {
-  const [openUpdate, setOpenUpdate] = useState(false);
 
-  const handleUpdate = () => {
-    // Call API
+const Profile: FC<ProfileProps> = (props) => {
+  const profileContext = useProfile()
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [updateProfileInfo, setUpdateProfileInfo] = useState({
+    profileId: profileContext.profileId,
+    fullname: profileContext.fullname,
+    avatar: profileContext.avatar,
+  } as UpdateProfileDto);
+
+  const handleUpdate = (e) => {
+    updateProfile.mutate(updateProfileInfo)
   };
+
+  const updateProfile = useMutation(profileAPI.updateProfile, {
+    onSuccess: (response) => {
+      enqueueSnackbar("Update profile successfull!!", {variant: "success"})
+      profileContext.setProfileId(updateProfileInfo.profileId)
+      profileContext.setFulname(updateProfileInfo.fullname)
+      profileContext.setAvatar(updateProfileInfo.avatar)
+      handleClose();
+    },
+    onError: (error: any) => {
+
+      enqueueSnackbar(error.response.data.message, {variant: "error"})
+    }
+  })
+
+  const handleInputChange = (e) => {
+    setUpdateProfileInfo((prev) => ({ ...prev, fullname: e.target.value }));
+  };
+
+  const handleSelectedAvatar = async (e) => {
+    function resizeImage(file, width) {
+      return new Promise((resolve, reject) => {
+        const fileName = file.target.files[0].name;
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file.target.files[0]);
+
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result.toString();
+
+          img.onload = () => {
+            const elem = document.createElement("canvas");
+            const scaleFactor = width / img.width;
+            elem.width = width;
+            elem.height = img.height * scaleFactor;
+
+            const ctx = elem.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, img.height * scaleFactor);
+
+            ctx.canvas.toBlob(
+              (blob) => {
+                resolve(
+                  new File([blob], fileName, {
+                    type: "image/jpeg",
+                    lastModified: Date.now(),
+                  })
+                );
+              },
+              "image/jpeg",
+              1
+            );
+          };
+        };
+      });
+    }
+    if (e.target.files[0]) {
+      const resizedImg = await resizeImage(e, 100);
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(resizedImg as Blob);
+      fileReader.addEventListener(
+        "load",
+        () => {
+          const avatar = String(fileReader.result).split(",")[1];
+          setUpdateProfileInfo((prev) => ({ ...prev, avatar: avatar }));
+        },
+        false
+      );
+    }
+  };
+
+  const handleClose = () => {
+    props.handleClose(false);
+    setOpenUpdate(false);
+  }
 
   return (
     <Dialog
@@ -50,10 +131,7 @@ const Profile: FC<ProfileProps> = (props) => {
           <DialogTitle>Profile</DialogTitle>
         )}
         <IconButton
-          onClick={() => {
-            props.handleClose(false);
-            setOpenUpdate(false);
-          }}
+          onClick={handleClose}
         >
           <CloseIcon />
         </IconButton>
@@ -64,17 +142,30 @@ const Profile: FC<ProfileProps> = (props) => {
           <Stack spacing={2}>
             <Stack direction={"row"} spacing={4} alignItems={"center"}>
               <Typography>Change Avatar</Typography>
-              <InputFileUpload>
-                <Avatar
-                  sx={{ width: 60, height: 60 }}
-                  src={`data:image/jpeg;base64,${props.avatar}`}
+              <Button component="label" role={undefined} tabIndex={-1}>
+                
+                  <Avatar
+                    sx={{ width: 60, height: 60 }}
+                    src={`data:image/jpeg;base64,${updateProfileInfo.avatar}`}
+                  />
+                
+
+                <VisuallyHiddenInput
+                  accept=".jpeg, .jpg, .png"
+                  type="file"
+                  onChange={handleSelectedAvatar}
                 />
-              </InputFileUpload>
+              </Button>
             </Stack>
 
             <Stack spacing={1}>
-              <Typography>Display name</Typography>
-              <TextField label="Your name" value={props.fullname} />
+              <Typography>Change name</Typography>
+              <TextField
+                label="your name"
+                value={updateProfileInfo.fullname
+                }
+                onChange={handleInputChange}
+              />
             </Stack>
             <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
@@ -118,9 +209,9 @@ const Profile: FC<ProfileProps> = (props) => {
             <Stack spacing={2} alignItems={"center"}>
               <Avatar
                 sx={{ width: 60, height: 60 }}
-                src={`data:image/jpeg;base64,${props.avatar}`}
+                src={`data:image/jpeg;base64,${profileContext.avatar}`}
               />
-              <Typography variant="h4">{props.fullname}</Typography>
+              <Typography variant="h4">{profileContext.fullname}</Typography>
               <Stack direction={"row"}></Stack>
             </Stack>
 
@@ -151,18 +242,5 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-
-function InputFileUpload({ children }) {
-  return (
-    <Button component="label" role={undefined} tabIndex={-1}>
-      {children}
-      <VisuallyHiddenInput
-        type="file"
-        onChange={(event) => console.log(event.target.files)}
-        multiple
-      />
-    </Button>
-  );
-}
 
 export default Profile;

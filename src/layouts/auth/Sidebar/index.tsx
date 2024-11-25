@@ -30,10 +30,9 @@ import Logo from "src/components/LogoSign";
 import Profile from "src/components/Profile";
 import Setting from "src/components/Setting";
 import { useAuth } from "src/contexts/AuthContext";
-import { STORAGE_KEY } from "src/utils/constants";
 import { useMutation } from "react-query";
-import { authAPI, profileAPI } from "src/api";
-import { enqueueSnackbar } from "notistack";
+import { authAPI } from "src/api";
+import { useProfile } from "src/contexts/ProfileContext";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -55,43 +54,11 @@ function Sidebar() {
   const [openMyProfile, setOpenMyProfile] = useState(false);
   const [openSetting, setOpenSetting] = useState(false);
 
-  // open profile
-  const [profile, setProfile] = useState({
-    fullname: "",
-    avatar: "",
-  });
+  const profileContext = useProfile();
 
   const handleClickProfile = () => {
-    if (!localStorage.getItem("fullname")) {
-      getProfile.mutate();
-      setOpenMyProfile(true);
-    }
-    else {
-      const fullname = localStorage.getItem("fullname")
-      const avatar = localStorage.getItem("avatar")
-      setProfile((prev) => ({...prev, }))
-      setProfile((prev) => ({ ...prev, fullname: fullname , avatar: avatar }));
-      setOpenMyProfile(true); 
-    }
+    setOpenMyProfile(true);
   };
-
-  const getProfile = useMutation(profileAPI.getprofile, {
-    onSuccess: (response) => {
-      if (response.status === 200){
-
-        const { fullname, avatar } = response.data[0];
-        localStorage.setItem("fullname", fullname)
-        localStorage.setItem("avatar", avatar)
-
-        setProfile((prev) => ({ ...prev, fullname: fullname, avatar: avatar }));
-      }
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, {
-        variant: "error",
-      });
-    },
-  });
 
   return (
     <>
@@ -130,7 +97,7 @@ function Sidebar() {
                   sx={{ width: 60, height: 60 }}
                   alt="Avatar"
                   // src={profile.avatar}
-                  src={`data:image/jpeg;base64,${profile.avatar}`}
+                  src={`data:image/jpeg;base64,${profileContext.avatar}`}
                 />
               </Button>
               {/* <Logo /> */}
@@ -217,8 +184,6 @@ function Sidebar() {
       <Profile
         open={openMyProfile}
         handleClose={setOpenMyProfile}
-        fullname={profile.fullname}
-        avatar={profile.avatar}
       />
       <Setting open={openSetting} handleClose={setOpenSetting} />
     </>
