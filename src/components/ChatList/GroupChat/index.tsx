@@ -8,14 +8,14 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 }));
 
 interface GroupChatProps {
-  id: number;
+  id?: number;
   group?: boolean;
   img?: string[];
-  name: string;
-  msg: string;
-  time: string;
-  unread: number;
-  online: boolean;
+  name?: string;
+  msg?: string;
+  time?: string;
+  unread?: number;
+  online?: boolean;
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {

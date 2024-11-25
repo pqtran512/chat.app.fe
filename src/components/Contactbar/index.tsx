@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
@@ -25,8 +25,8 @@ import { groupAPI } from "src/api/group.api";
 import { useGroupList } from "src/contexts/GroupContext";
 
 interface ContactBarProps {
-  chosen: number;
-  setChosen: React.Dispatch<React.SetStateAction<number>>;
+  chosen?: number;
+  setChosen?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const ContactBar: FC<ContactBarProps> = (props) => {
@@ -143,6 +143,11 @@ const ContactBar: FC<ContactBarProps> = (props) => {
     },
   });
 
+  useEffect(() => {
+    props.setChosen(0);
+    getFriendList.mutate();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -221,7 +226,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             <PersonAddAlt1Icon sx={{ marginRight: 2 }} />
             <Typography variant="h4">Friend requests</Typography>
           </Button>
-          <Button
+          {/* <Button
             variant={props.chosen == 3 ? "contained" : "text"}
             key={3}
             size="large"
@@ -232,7 +237,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             <Typography variant="h4">
               Group and community invitations
             </Typography>
-          </Button>
+          </Button> */}
         </Stack>
       </Stack>
       {openCreateGroup && (

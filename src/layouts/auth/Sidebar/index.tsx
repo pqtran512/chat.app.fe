@@ -295,6 +295,7 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
             setUserId("");
             setAccessToken("");
           }}
+          //TODO logout
           // onClick={handleClickLogout}
         >
           <Typography>Sign out</Typography>

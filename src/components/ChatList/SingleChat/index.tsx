@@ -31,14 +31,14 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 interface SingleChatProps {
-  id: number;
+  id?: number;
   group?: boolean;
   img?: string;
-  name: string;
-  msg: string;
-  time: string;
-  unread: number;
-  online: boolean;
+  name?: string;
+  msg?: string;
+  time?: string;
+  unread?: number;
+  online?: boolean;
 }
 
 const SingleChat: FC<SingleChatProps> = (props) => {

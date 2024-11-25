@@ -3,6 +3,7 @@ import { enqueueSnackbar } from "notistack";
 import { FC, useState } from "react";
 import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
+import ChatDetail from "src/components/ChatDetail";
 import ContactBar from "src/components/Contactbar";
 import ContactInfo from "src/components/ContactInfo";
 import {
@@ -16,6 +17,7 @@ interface ContactProps {}
 
 const Contact: FC<ContactProps> = (props) => {
   const [chosen, setChosen] = useState(0);
+  const [openChatInfo, setOpenChatInfo] = useState(false);
 
   const friendListContext = useFriendList();
 
@@ -47,18 +49,13 @@ const Contact: FC<ContactProps> = (props) => {
   });
 
   return (
-    <GroupListProvider>
-      <FriendListProvider>
-        <FriendSentProvider>
-          <Box>
-            <Stack direction={"row"}>
-              <ContactBar chosen={chosen} setChosen={setChosen} />
-              <ContactInfo chosen={chosen} />
-            </Stack>
-          </Box>
-        </FriendSentProvider>
-      </FriendListProvider>
-    </GroupListProvider>
+    <Box>
+      <Stack direction={"row"}>
+        <ContactBar chosen={chosen} setChosen={setChosen} />
+        <ContactInfo chosen={chosen} />
+        {/* <ChatDetail {...{ openChatInfo, setOpenChatInfo }} /> */}
+      </Stack>
+    </Box>
   );
 };
 

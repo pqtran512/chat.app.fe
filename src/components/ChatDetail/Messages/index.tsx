@@ -9,29 +9,26 @@ const Messages: FC<MessagesProps> = () => {
   return (
     <Box overflow={"scroll"}>
       <Stack spacing={1}>
-        {Chat_History.map((el) => {
+        {Chat_History.map((el, index) => {
           switch (el.type) {
             case "divider":
-              return <TimeLineBreak {...el} />;
+              return <TimeLineBreak key={index} {...el} />;
             case "msg":
               switch (el.subtype) {
                 case "img":
-                  return <ImgMSg {...el} />;
+                  return <ImgMSg key={index} {...el} />;
                 case "doc":
-                  return <DocMsg {...el}/>
+                  return <DocMsg key={index} {...el}/>
                 case "link":
-                  return <LinkMsg {...el}/>
+                  return <LinkMsg key={index} {...el}/>
                 case "reply":
-                  return <ReplyMsg {...el}/>
+                  return <ReplyMsg key={index} {...el}/>
 
                 default:
-                  return <TextMsg {...el} />;
+                  return <TextMsg key={index} {...el} />;
               }
-              break;
-
             default:
               return <></>;
-              break;
           }
         })}
       </Stack>

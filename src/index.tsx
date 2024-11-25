@@ -8,6 +8,12 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SnackbarProvider } from "notistack";
 import { STORAGE_KEY } from "./utils/constants";
+import { GroupListProvider } from "./contexts/GroupContext";
+import {
+  FriendListProvider,
+  FriendSentProvider,
+} from "./contexts/FriendContext";
+import { TabsProvider } from "./contexts/TabsContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -29,9 +35,17 @@ root.render(
           maxSnack={STORAGE_KEY.SNACKBAR_MAX_STACK}
           preventDuplicate={true}
         >
-          <AuthProvider>
-            <App />
-          </AuthProvider>
+          <TabsProvider>
+            <GroupListProvider>
+              <FriendListProvider>
+                <FriendSentProvider>
+                  <AuthProvider>
+                    <App />
+                  </AuthProvider>
+                </FriendSentProvider>
+              </FriendListProvider>
+            </GroupListProvider>
+          </TabsProvider>
         </SnackbarProvider>
       </BrowserRouter>
     </React.StrictMode>

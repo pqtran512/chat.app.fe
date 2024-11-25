@@ -16,6 +16,8 @@ import GroupChat from "./GroupChat";
 import { faker } from "@faker-js/faker";
 import SearchFriend from "../SearchFriend";
 import CreateGroup from "../CreateGroup";
+import { useQuery } from "react-query";
+import { chatAPI } from "src/api/chat.api";
 
 const ChatGroupHistory = [
   {
@@ -47,6 +49,15 @@ const ChatList: FC<ChatListProps> = () => {
     setOpenCreateGroup(false);
     setOpenSearchFriend(false);
   };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["GetChatBoxListByUser"],
+    queryFn: () => chatAPI.listChatBox(),
+    enabled: true,
+    select: (rs) => {
+      return rs.data;
+    },
+  });
 
   return (
     <Box
@@ -135,15 +146,13 @@ const ChatList: FC<ChatListProps> = () => {
           direction="column"
           spacing={1}
         >
-          <GroupChat {...ChatGroupHistory[0]} />
-          {ChatLists.map((el) => {
-            return <SingleChat {...el} />;
-          })}
-          {/* {ChatLists.map((el) => {
-              return el.group 
-              ?  <GroupChat {...el} />
-              :  <SingleChat {...el} />;
-            })} */}
+          {data &&
+            data.data.map((el, index) => {
+              if (el.to_user) {
+                return <SingleChat key={index} />;
+              }
+              return <GroupChat key={index} />;
+            })}
         </Stack>
       </Stack>
       {openCreateGroup && (

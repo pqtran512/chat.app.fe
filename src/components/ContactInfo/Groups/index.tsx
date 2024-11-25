@@ -77,8 +77,8 @@ const Groups: FC<GroupsProps> = (props) => {
               Search
             </Button>
           </Stack>
-          {groupList.map((g) => (
-            <Group {...g} />
+          {groupList.map((g, index) => (
+            <Group key={index} {...g} />
           ))}
         </Stack>
         ;
