@@ -18,6 +18,7 @@ import SearchFriend from "../SearchFriend";
 import CreateGroup from "../CreateGroup";
 import { useQuery } from "react-query";
 import { chatAPI } from "src/api/chat.api";
+import { ListChatBoxByUserResult } from "src/types/api/response/chatbox";
 
 const ChatGroupHistory = [
   {
@@ -39,9 +40,11 @@ const ChatGroupHistory = [
   },
 ];
 
-interface ChatListProps {}
+interface ChatListProps {
+  onSuccess?: (data: ListChatBoxByUserResult) => void;
+}
 
-const ChatList: FC<ChatListProps> = () => {
+const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
 
@@ -55,6 +58,9 @@ const ChatList: FC<ChatListProps> = () => {
     queryFn: () => chatAPI.listChatBox(),
     enabled: true,
     select: (rs) => {
+      if (onSuccess) {
+        onSuccess(rs.data);
+      }
       return rs.data;
     },
   });

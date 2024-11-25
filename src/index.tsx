@@ -14,6 +14,7 @@ import {
   FriendSentProvider,
 } from "./contexts/FriendContext";
 import { TabsProvider } from "./contexts/TabsContext";
+import { ChatProvider } from "./contexts/ChatContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -40,7 +41,9 @@ root.render(
               <FriendListProvider>
                 <FriendSentProvider>
                   <AuthProvider>
-                    <App />
+                    <ChatProvider>
+                      <App />
+                    </ChatProvider>
                   </AuthProvider>
                 </FriendSentProvider>
               </FriendListProvider>

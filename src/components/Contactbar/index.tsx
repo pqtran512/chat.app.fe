@@ -17,12 +17,13 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import CreateGroup from "../CreateGroup";
 import SearchFriend from "../SearchFriend";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { useFriendList, useFriendRequest } from "src/contexts/FriendContext";
 import { enqueueSnackbar } from "notistack";
 import { groupAPI } from "src/api/group.api";
 import { useGroupList } from "src/contexts/GroupContext";
+import { useTabs } from "src/contexts/TabsContext";
 
 interface ContactBarProps {
   chosen?: number;
@@ -32,7 +33,7 @@ interface ContactBarProps {
 const ContactBar: FC<ContactBarProps> = (props) => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
-  // const [searchGroup, setSearchGroup] = useState({searchText: ''} as GroupListDto)
+  const { setShowContactInfo, setShowChatDetail } = useTabs();
 
   const handleClose = () => {
     setOpenCreateGroup(false);
@@ -45,15 +46,45 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   const handleOpenCreateGroup = () => {
     setOpenCreateGroup(true);
-    getFriendList.mutate();
+    refetch();
+  };
+
+  const showChatDetailActions = () => {
+    setShowContactInfo(true);
+    setShowChatDetail(false);
   };
 
   const handleFriendList = () => {
+    showChatDetailActions();
     props.setChosen(0);
-    getFriendList.mutate();
+    refetch();
   };
 
-  const getFriendList = useMutation(friendAPI.friendList, {
+  // const getFriendList = useQuery(friendAPI.friendList, {
+  //   onSuccess: (response) => {
+  //     if (response.data.length > 0) {
+  //       const friendList = [];
+  //       response.data.forEach((e) => {
+  //         friendList.push({
+  //           id: e.to_user_profile.id,
+  //           fullname: e.to_user_profile.profile[0].fullname,
+  //           avatar: e.to_user_profile.profile[0].avatar,
+  //         });
+  //       });
+  //       friendListContext.setFriendList(friendList);
+  //     } else {
+  //       friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+  //     }
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error.response.data.message, { variant: "error" });
+  //   },
+  // });
+
+  const { refetch } = useQuery({
+    queryKey: ["FriendList"],
+    queryFn: () => friendAPI.searchFriend({ text: "" }),
+    enabled: false,
     onSuccess: (response) => {
       if (response.data.length > 0) {
         const friendList = [];
@@ -75,6 +106,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   });
 
   const handleFriendRequests = async () => {
+    showChatDetailActions();
     props.setChosen(2);
     getFriendSents.mutate();
     getFriendRecieveds.mutate();
@@ -119,6 +151,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   });
 
   const handleGroupList = () => {
+    showChatDetailActions();
     props.setChosen(1);
     getGroupList.mutate({ searchText: "" });
   };
@@ -145,7 +178,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   useEffect(() => {
     props.setChosen(0);
-    getFriendList.mutate();
+    refetch();
   }, []);
 
   return (
@@ -208,7 +241,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
           </Button>
           <Button
             key={1}
-            variant={props.chosen == 1 ? "contained" : "text"}
+            variant={props.chosen === 1 ? "contained" : "text"}
             size="large"
             sx={{ justifyContent: "left" }}
             onClick={handleGroupList}
@@ -217,7 +250,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             <Typography variant="h4">Joined groups and communities</Typography>
           </Button>
           <Button
-            variant={props.chosen == 2 ? "contained" : "text"}
+            variant={props.chosen === 2 ? "contained" : "text"}
             key={2}
             size="large"
             sx={{ justifyContent: "left" }}

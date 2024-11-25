@@ -42,7 +42,6 @@ export class Http {
           // return Promise.reject(error);
           const refreshToken = localStorage.getItem(STORAGE_KEY.REFRESH_TOKEN);
           const id = localStorage.getItem(STORAGE_KEY.ID);
-          console.log(id);
           if (!refreshToken || !id) {
             localStorage.clear();
             return (window.location.href = "/login");

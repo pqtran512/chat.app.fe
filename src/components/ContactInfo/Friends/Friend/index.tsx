@@ -13,6 +13,8 @@ import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { useFriendList } from "src/contexts/FriendContext";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { useTabs } from "src/contexts/TabsContext";
+import { useChat } from "src/contexts/ChatContext";
 
 interface FriendProps {
   id: string;
@@ -32,6 +34,8 @@ const Friend: FC<FriendProps> = (props) => {
   };
   // ------------------------
   const FriendListContext = useFriendList();
+  const { setShowChatDetail, setShowContactInfo } = useTabs();
+  const { setToUserId, setToGroupId, setChatProfile } = useChat();
 
   const handleUnfriend = () => {
     unfriend.mutate(props.id);
@@ -68,14 +72,31 @@ const Friend: FC<FriendProps> = (props) => {
     },
   });
 
+  const handleItemClick = () => {
+    setShowContactInfo(false);
+    setShowChatDetail(true);
+    setToUserId(props.id);
+    setToGroupId('');
+    setChatProfile({
+      id: props.id,
+      name: props.fullname,
+      isGroupChat: false,
+      avatar: props.avatar,
+    });
+  };
+
   return (
     <Stack direction={"row"} alignItems={"center"}>
       <Button
         key={props.id}
         size="large"
         sx={{ justifyContent: "left", width: "100%" }}
+        onClick={handleItemClick}
       >
-        <Avatar sx={{ marginRight: 3 }} src={props.avatar} />
+        <Avatar
+          sx={{ marginRight: 3 }}
+          src={`data:image/png;base64, ${props.avatar}`}
+        />
         <Typography variant="h4">{props.fullname}</Typography>
       </Button>
       <Button

@@ -1,6 +1,6 @@
 export const STORAGE_KEY = {
-  // BASE_URL: 'http://103.237.146.123:8000',
-  BASE_URL: 'http://localhost:3008/',
+  BASE_URL: 'http://103.237.146.123:8000',
+  // BASE_URL: 'http://localhost:3008/',
   ACCESS_TOKEN: 'access_token',
   REFRESH_TOKEN: 'refresh_token',
   RESET_PASSWORD_TOKEN: 'resetPasswordToken',

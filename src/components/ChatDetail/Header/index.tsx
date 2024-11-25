@@ -15,6 +15,7 @@ import CallIcon from "@mui/icons-material/Call";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import InfoIcon from "@mui/icons-material/Info";
 import Profile from "src/components/Profile";
+import { useChat } from "src/contexts/ChatContext";
 
 interface HeaderProps {
   openChatInfo: boolean;
@@ -23,6 +24,7 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = (props) => {
   const [openProfile, setOpenProfile] = useState(false);
+  const { chatProfile } = useChat();
 
   return (
     <Box
@@ -41,32 +43,38 @@ const Header: FC<HeaderProps> = (props) => {
       >
         <Box>
           <Button onClick={() => setOpenProfile(true)}>
-            <Stack direction={"row"} spacing={2} alignItems={"center"}>
-              {true ? (
-                <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  variant="dot"
-                >
+            {chatProfile.id && (
+              <Stack direction={"row"} spacing={2} alignItems={"center"}>
+                {true ? (
+                  <StyledBadge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    variant="dot"
+                  >
+                    <Avatar
+                      src={`data:image/png;base64, ${chatProfile.avatar}`}
+                    />
+                  </StyledBadge>
+                ) : (
                   <Avatar
                     src={
                       "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"
                     }
                   />
-                </StyledBadge>
-              ) : (
-                <Avatar
-                  src={
-                    "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"
-                  }
-                />
-              )}
+                )}
 
-              <Stack direction={"column"}>
-                <Typography variant="h4">{"Beckham"}</Typography>
-                <Typography variant="h6">{"Online"}</Typography>
+                <Stack direction={"column"}>
+                  <Typography textAlign={"left"} variant="h4">
+                    {chatProfile.name}
+                  </Typography>
+                  {chatProfile.isGroupChat && (
+                    <Typography textAlign={"left"} variant="h6">
+                      {chatProfile.memberCount} thành viên
+                    </Typography>
+                  )}
+                </Stack>
               </Stack>
-            </Stack>
+            )}
           </Button>
         </Box>
         <Box>
@@ -93,7 +101,12 @@ const Header: FC<HeaderProps> = (props) => {
           </Stack>
         </Box>
       </Stack>
-      <Profile open={openProfile} handleClose={setOpenProfile} fullname="Beckham" avatar=""/>
+      <Profile
+        open={openProfile}
+        handleClose={setOpenProfile}
+        fullname="Beckham"
+        avatar=""
+      />
     </Box>
   );
 };
