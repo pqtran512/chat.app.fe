@@ -23,9 +23,9 @@ const CreateGroupForm = ({ handleClose }) => {
     user_ids: [],
   } as CreateGroupDto);
 
-  const { friendList } = useFriendList();
+  const friendListContext = useFriendList();
 
-  const options = friendList.map((option) => {
+  const options = friendListContext.friendList.map((option) => {
     const firstLetter =
       option.fullname !== "" ? option.fullname[0].toUpperCase() : "";
     return {
