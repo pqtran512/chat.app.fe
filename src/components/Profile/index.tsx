@@ -23,15 +23,6 @@ import { profileAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
 import styled from "@emotion/styled";
 
-const user = {
-  name: "Beckham",
-  avatar:
-    "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288",
-  gender: "Male",
-  birthday: "2/5/1975",
-  phone: "0123435678",
-};
-
 interface ProfileProps {
   open: boolean;
   handleClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,7 +34,7 @@ const Profile: FC<ProfileProps> = (props) => {
 
   const handleUpdate = () => {
     // Call API
-  }
+  };
 
   return (
     <Dialog
@@ -58,7 +49,12 @@ const Profile: FC<ProfileProps> = (props) => {
         ) : (
           <DialogTitle>Profile</DialogTitle>
         )}
-        <IconButton onClick={() => props.handleClose(false)}>
+        <IconButton
+          onClick={() => {
+            props.handleClose(false);
+            setOpenUpdate(false);
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </Stack>
@@ -69,7 +65,10 @@ const Profile: FC<ProfileProps> = (props) => {
             <Stack direction={"row"} spacing={4} alignItems={"center"}>
               <Typography>Change Avatar</Typography>
               <InputFileUpload>
-              <Avatar sx={{ width: 60, height: 60 }} src={props.avatar} />
+                <Avatar
+                  sx={{ width: 60, height: 60 }}
+                  src={`data:image/jpeg;base64,${props.avatar}`}
+                />
               </InputFileUpload>
             </Stack>
 
@@ -102,10 +101,14 @@ const Profile: FC<ProfileProps> = (props) => {
                 />
               </RadioGroup>
             </FormControl>
-            <Divider/>
+            <Divider />
             <Stack direction={"row"} justifyContent={"right"} spacing={1}>
-              <Button variant="text" onClick={()=>setOpenUpdate(false)}>Cancel</Button>
-              <Button variant="contained" onClick={handleUpdate}>Update</Button>
+              <Button variant="text" onClick={() => setOpenUpdate(false)}>
+                Cancel
+              </Button>
+              <Button variant="contained" onClick={handleUpdate}>
+                Update
+              </Button>
             </Stack>
           </Stack>
         </DialogContent>
@@ -113,7 +116,10 @@ const Profile: FC<ProfileProps> = (props) => {
         <DialogContent>
           <Stack spacing={2}>
             <Stack spacing={2} alignItems={"center"}>
-              <Avatar sx={{ width: 60, height: 60 }} src={props.avatar} />
+              <Avatar
+                sx={{ width: 60, height: 60 }}
+                src={`data:image/jpeg;base64,${props.avatar}`}
+              />
               <Typography variant="h4">{props.fullname}</Typography>
               <Stack direction={"row"}></Stack>
             </Stack>
@@ -134,25 +140,21 @@ const Profile: FC<ProfileProps> = (props) => {
   );
 };
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 
-function InputFileUpload({children}) {
+function InputFileUpload({ children }) {
   return (
-    <Button
-      component="label"
-      role={undefined}
-      tabIndex={-1}
-    >
+    <Button component="label" role={undefined} tabIndex={-1}>
       {children}
       <VisuallyHiddenInput
         type="file"

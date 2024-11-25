@@ -129,7 +129,8 @@ function Sidebar() {
                 <Avatar
                   sx={{ width: 60, height: 60 }}
                   alt="Avatar"
-                  src={profile.avatar}
+                  // src={profile.avatar}
+                  src={`data:image/jpeg;base64,${profile.avatar}`}
                 />
               </Button>
               {/* <Logo /> */}
