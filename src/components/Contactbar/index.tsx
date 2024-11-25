@@ -120,16 +120,12 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   const handleGroupList = () => {
     props.setChosen(1);
-    getGroupList.mutate({searchText: ''})
+    getGroupList.mutate({ searchText: "" });
   };
 
   const getGroupList = useMutation(groupAPI.groupList, {
     onSuccess: (response) => {
-      // console.log(response.data)
-      // console.log(response.data.count)
-      // console.log(response.data.groups)
       if (response.data.count > 0) {
-        // console.log("run if")
         const responseGroupList = [];
         response.data.groups.forEach((e) => {
           responseGroupList.push({
@@ -138,20 +134,14 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             avatar: e.group.avatar,
           });
         });
-        // console.log("response group list")
-        // console.log(responseGroupList)
-        groupListContext.setGroupList(responseGroupList)
-        groupListContext.setCount(response.data.count)
+        groupListContext.setGroupList(responseGroupList);
+        groupListContext.setCount(response.data.count);
       }
-      // console.log(groupListContext.groupList)
-      // console.log(groupListContext.count)
     },
     onError: (error: any) => {
       enqueueSnackbar(error.response.data.message, { variant: "error" });
     },
-  })
-
-
+  });
 
   return (
     <Box

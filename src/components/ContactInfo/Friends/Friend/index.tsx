@@ -1,9 +1,18 @@
-import { Avatar, Button, Divider, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Divider,
+  Menu,
+  MenuItem,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { useFriendList } from "src/contexts/FriendContext";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 interface FriendProps {
   id: string;
@@ -12,10 +21,21 @@ interface FriendProps {
 }
 
 const Friend: FC<FriendProps> = (props) => {
+  // make ui more beatifull
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  // ------------------------
   const FriendListContext = useFriendList();
 
   const handleUnfriend = () => {
     unfriend.mutate(props.id);
+    setAnchorEl(null);
   };
 
   const unfriend = useMutation(friendAPI.unfriend, {
@@ -57,10 +77,29 @@ const Friend: FC<FriendProps> = (props) => {
       >
         <Avatar sx={{ marginRight: 3 }} src={props.avatar} />
         <Typography variant="h4">{props.fullname}</Typography>
-        <Button onClick={handleUnfriend}>
-          <Typography color="red">Unfriend</Typography>
-        </Button>
       </Button>
+      <Button
+        id="basic-button"
+        aria-controls={open ? "basic-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        <MoreHorizIcon />
+      </Button>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        <MenuItem sx={{ padding: 0 }} onClick={handleUnfriend}>
+          <Button>Unfriend</Button>
+        </MenuItem>
+      </Menu>
       <Divider />
     </Stack>
   );

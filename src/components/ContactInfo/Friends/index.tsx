@@ -11,39 +11,37 @@ import { enqueueSnackbar } from "notistack";
 
 interface FriendsProps {}
 const Friends: FC<FriendsProps> = (props) => {
-  // const [input, setInput] = useState('');
   const [input, setInput] = useState({ text: "" } as SearchFriendDto);
   const { friendList, setFriendList } = useFriendList();
 
   const handleChangeInput = (e) => {
-    // console.log(e.target.value)
-    // assign 
-    setInput((p) => ({...p, text: e.target.value}));
+    setInput((p) => ({ ...p, text: e.target.value }));
   };
-  // console.log(input)
-
-  const handleSearchFriend = () => {
-    //call api to get friend
-    searchFriend.mutate(input)
+  const handleSearchFriend = (e) => {
+    e.preventDefault();
+    searchFriend.mutate(input);
   };
 
   const searchFriend = useMutation(friendAPI.searchFriend, {
-    // Xử lý responser: nếu success thì render lên UI
-    onSuccess: (res) => {
-      const searchFriendResults = []
-
-      res.data.map((e) => {
-        searchFriendResults.push({
-          id: e.to_user_profile.id,
-          fullname: e.to_user_profile.profile[0].fullname,
-          avatar: e.to_user_profile.profile[0].avatar
-        })
-      })
-      setFriendList(searchFriendResults)
+    onSuccess: (response) => {
+      if (response.data.length > 0) {
+        const searchFriendResults = [];
+        response.data.map((e) => {
+          searchFriendResults.push({
+            id: e.to_user_profile.id,
+            fullname: e.to_user_profile.profile[0].fullname,
+            avatar: e.to_user_profile.profile[0].avatar,
+          });
+        });
+        setFriendList(searchFriendResults);
+      } else {
+        enqueueSnackbar("Not found friends with that name", {
+          variant: "info",
+        });
+      }
     },
-    // Xử lý error: nếu lôi thông báo lỗi cho người dùng
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, {variant: "error"})
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
     },
   });
 
@@ -62,7 +60,7 @@ const Friends: FC<FriendsProps> = (props) => {
           })`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
-          <Stack direction={"row"} padding={1} spacing={2}>
+          <Stack component={"form"} direction={"row"} padding={1} spacing={2}>
             <TextField
               size="small"
               label="Search friend"
@@ -70,6 +68,7 @@ const Friends: FC<FriendsProps> = (props) => {
               onChange={handleChangeInput}
             />
             <Button
+            type="submit"
               size="small"
               variant="contained"
               onClick={handleSearchFriend}
