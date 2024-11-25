@@ -34,6 +34,7 @@ import { STORAGE_KEY } from "src/utils/constants";
 import { useMutation } from "react-query";
 import { authAPI, profileAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
+import { LogOutDto } from "src/types/api/dto/auth";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -65,23 +66,21 @@ function Sidebar() {
     if (!localStorage.getItem("fullname")) {
       getProfile.mutate();
       setOpenMyProfile(true);
-    }
-    else {
-      const fullname = localStorage.getItem("fullname")
-      const avatar = localStorage.getItem("avatar")
-      setProfile((prev) => ({...prev, }))
-      setProfile((prev) => ({ ...prev, fullname: fullname , avatar: avatar }));
-      setOpenMyProfile(true); 
+    } else {
+      const fullname = localStorage.getItem("fullname");
+      const avatar = localStorage.getItem("avatar");
+      setProfile((prev) => ({ ...prev }));
+      setProfile((prev) => ({ ...prev, fullname: fullname, avatar: avatar }));
+      setOpenMyProfile(true);
     }
   };
 
   const getProfile = useMutation(profileAPI.getprofile, {
     onSuccess: (response) => {
-      if (response.status === 200){
-
+      if (response.status === 200) {
         const { fullname, avatar } = response.data[0];
-        localStorage.setItem("fullname", fullname)
-        localStorage.setItem("avatar", avatar)
+        localStorage.setItem("fullname", fullname);
+        localStorage.setItem("avatar", avatar);
 
         setProfile((prev) => ({ ...prev, fullname: fullname, avatar: avatar }));
       }
@@ -233,18 +232,30 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
   const { setAccessToken, setUserId } = useAuth();
 
   // logout
-  const handleClickLogout = () => {
-    logout.mutate();
-  }
-
   const logout = useMutation(authAPI.logout, {
-    onSuccess: (response) => {
-      console.log(response);
+    onSuccess: async (response) => {
+      const succsess: boolean = response.data;
+      if (succsess) {
+        setAnchorEl(null);
+        localStorage.clear();
+        setUserId("");
+        setAccessToken("");
+      }
     },
     onError: (error: any) => {
-      console.log(error);
+      enqueueSnackbar(error, { variant: "error" });
+    },
+  });
+
+  const handleLogout = async () => {
+    const userId: string | null = localStorage.getItem(STORAGE_KEY.ID);
+    const refresh_token: string | null = localStorage.getItem(
+      STORAGE_KEY.REFRESH_TOKEN
+    );
+    if (userId && refresh_token) {
+      logout.mutate({ userId, refresh_token } as unknown as LogOutDto);
     }
-  })
+  };
   return (
     <>
       <IconButton
@@ -289,14 +300,7 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
         </MenuItem>
         <MenuItem
           sx={{ justifyContent: "space-between" }}
-          onClick={() => {
-            setAnchorEl(null);
-            localStorage.clear();
-            setUserId("");
-            setAccessToken("");
-          }}
-          //TODO logout
-          // onClick={handleClickLogout}
+          onClick={handleLogout}
         >
           <Typography>Sign out</Typography>
           <LogoutIcon sx={{ marginLeft: 2 }} />
