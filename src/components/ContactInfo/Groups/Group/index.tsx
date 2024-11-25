@@ -82,7 +82,7 @@ const Group: FC<GroupProps> = (props) => {
         >
           <Avatar alt="Travis Howard" src={props.avatar[1]} />
         </Badge> */}
-        <Avatar alt="Travis Howard" src={props.avatar} />
+        <Avatar alt={props.name} src={`data:image/png;base64, ${props.avatar}`} />
 
         <Typography variant="h4" sx={{ marginLeft: 3 }}>
           {props.name}
