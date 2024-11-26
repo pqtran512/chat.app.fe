@@ -23,9 +23,9 @@ const CreateGroupForm = ({ handleClose }) => {
     user_ids: [],
   } as CreateGroupDto);
 
-  const friendListContext = useFriendList();
+  const { friendList } = useFriendList();
 
-  const options = friendListContext.friendList.map((option) => {
+  const options = friendList.map((option) => {
     const firstLetter =
       option.fullname !== "" ? option.fullname[0].toUpperCase() : "";
     return {
@@ -62,7 +62,7 @@ const CreateGroupForm = ({ handleClose }) => {
     },
     onError: (error: any) => {
       enqueueSnackbar(
-        `Create ${groupInfo.name} fail - ${error.response.data.message}`,
+        `Create ${groupInfo.name} fail - ${error}`,
         { variant: "warning" }
       );
     },

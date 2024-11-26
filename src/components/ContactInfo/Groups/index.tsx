@@ -25,6 +25,7 @@ const Groups: FC<GroupsProps> = (props) => {
 
   const searchGroup = useMutation(groupAPI.groupList, {
     onSuccess: (res) => {
+      console.log(res.data.groups)
       if (res.data.groups.length > 0) {
         const searchGroupResults = [];
         res.data.groups.map((e) => {
@@ -32,18 +33,18 @@ const Groups: FC<GroupsProps> = (props) => {
             id: e.group.id,
             name: e.group.name,
             avatar: e.group.avatar,
+            group_members: [...e.group.group_members],
           });
         });
-        setGroupList(searchGroupResults);
-      }
-      else {
+        setGroupList([...searchGroupResults]);
+      } else {
         enqueueSnackbar("Not found any groups with that name", {
           variant: "info",
         });
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -77,8 +78,8 @@ const Groups: FC<GroupsProps> = (props) => {
               Search
             </Button>
           </Stack>
-          {groupList.map((g) => (
-            <Group {...g} />
+          {groupList.map((g, index) => (
+            <Group key={index} {...g} memberCount={g?.group_members?.length || 0} />
           ))}
         </Stack>
         ;

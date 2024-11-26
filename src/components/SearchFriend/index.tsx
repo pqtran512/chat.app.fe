@@ -104,7 +104,7 @@ const SearchFriendForm = ({ handleClose }) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 

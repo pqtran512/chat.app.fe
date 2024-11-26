@@ -16,6 +16,8 @@ import { useMutation } from "react-query";
 import { groupAPI } from "src/api/group.api";
 import { useGroupList } from "src/contexts/GroupContext";
 import { enqueueSnackbar } from "notistack";
+import { useTabs } from "src/contexts/TabsContext";
+import { useChat } from "src/contexts/ChatContext";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
@@ -27,6 +29,7 @@ interface GroupProps {
   id: string;
   name: string;
   avatar: string;
+  memberCount?: number;
 }
 
 const Group: FC<GroupProps> = (props) => {
@@ -47,26 +50,22 @@ const Group: FC<GroupProps> = (props) => {
     setAnchorEl(null);
   };
 
-  // const getGroupList = useMutation(groupAPI.groupList, {
-  //   onSuccess: (response) => {
-  //     if (response.data.count > 0) {
-  //       const responseGroupList = [];
-  //       response.data.groups.forEach((e) => {
-  //         responseGroupList.push({
-  //           id: e.group.id,
-  //           name: e.group.name,
-  //           avatar: e.group.avatar,
-  //         });
-  //       });
-  //       groupListContext.setGroupList(responseGroupList);
-  //       groupListContext.setCount(response.data.count);
-  //     }
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error.response.data.message, { variant: "error" });
-  //   },
-  // });
+  const { setShowChatDetail, setShowContactInfo } = useTabs();
+  const { setToUserId, setToGroupId, setChatProfile } = useChat();
 
+  const handleItemClick = () => {
+    setShowContactInfo(false);
+    setShowChatDetail(true);
+    setToGroupId(props.id);
+    setToUserId('');
+    setChatProfile({
+      id: props.id,
+      avatar: props.avatar,
+      name: props.name,
+      isGroupChat: true,
+      memberCount: props.memberCount,
+    });
+  };
 
   return (
     <Stack direction={"row"} alignItems={"center"}>
@@ -74,6 +73,7 @@ const Group: FC<GroupProps> = (props) => {
         key={props.id}
         size="large"
         sx={{ justifyContent: "left", width: "100%" }}
+        onClick={handleItemClick}
       >
         {/* <Badge
           overlap="circular"
@@ -82,7 +82,7 @@ const Group: FC<GroupProps> = (props) => {
         >
           <Avatar alt="Travis Howard" src={props.avatar[1]} />
         </Badge> */}
-        <Avatar alt="Travis Howard" src={props.avatar} />
+        <Avatar alt={props.name} src={`data:image/png;base64, ${props.avatar}`} />
 
         <Typography variant="h4" sx={{ marginLeft: 3 }}>
           {props.name}

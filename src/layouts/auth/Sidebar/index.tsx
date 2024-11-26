@@ -8,21 +8,16 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import {
   Box,
   Drawer,
-  alpha,
   styled,
   Divider,
   useTheme,
   Button,
-  lighten,
   darken,
-  Tooltip,
   Typography,
   IconButton,
   Menu,
   MenuItem,
   Avatar,
-  Stack,
-  Icon,
 } from "@mui/material";
 
 import SidebarMenu from "./SidebarMenu";
@@ -31,8 +26,11 @@ import Profile from "src/components/Profile";
 import Setting from "src/components/Setting";
 import { useAuth } from "src/contexts/AuthContext";
 import { useMutation } from "react-query";
-import { authAPI } from "src/api";
+import { authAPI, profileAPI } from "src/api";
+import { enqueueSnackbar } from "notistack";
+import { LogOutDto } from "src/types/api/dto/auth";
 import { useProfile } from "src/contexts/ProfileContext";
+import { STORAGE_KEY } from "src/utils/constants";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -181,10 +179,7 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
-      <Profile
-        open={openMyProfile}
-        handleClose={setOpenMyProfile}
-      />
+      <Profile open={openMyProfile} handleClose={setOpenMyProfile} />
       <Setting open={openSetting} handleClose={setOpenSetting} />
     </>
   );
@@ -199,18 +194,30 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
   const { setAccessToken, setUserId } = useAuth();
 
   // logout
-  const handleClickLogout = () => {
-    logout.mutate();
-  }
-
   const logout = useMutation(authAPI.logout, {
-    onSuccess: (response) => {
-      console.log(response);
+    onSuccess: async (response) => {
+      const succsess: boolean = response.data;
+      if (succsess) {
+        setAnchorEl(null);
+        localStorage.clear();
+        setUserId("");
+        setAccessToken("");
+      }
     },
     onError: (error: any) => {
-      console.log(error);
+      enqueueSnackbar(error, { variant: "error" });
+    },
+  });
+
+  const handleLogout = async () => {
+    const userId: string | null = localStorage.getItem(STORAGE_KEY.ID);
+    const refresh_token: string | null = localStorage.getItem(
+      STORAGE_KEY.REFRESH_TOKEN
+    );
+    if (userId && refresh_token) {
+      logout.mutate({ userId, refresh_token } as unknown as LogOutDto);
     }
-  })
+  };
   return (
     <>
       <IconButton
@@ -255,13 +262,7 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
         </MenuItem>
         <MenuItem
           sx={{ justifyContent: "space-between" }}
-          onClick={() => {
-            setAnchorEl(null);
-            localStorage.clear();
-            setUserId("");
-            setAccessToken("");
-          }}
-          // onClick={handleClickLogout}
+          onClick={handleLogout}
         >
           <Typography>Sign out</Typography>
           <LogoutIcon sx={{ marginLeft: 2 }} />

@@ -25,7 +25,7 @@ const FriendSent: FC<FriendSentProps> = (props) => {
       getFriendSents.mutate();
     },
     onError: (error: any) => {
-      enqueueSnackbar(`Fail Cancel!! - ${error.response.data.message}`, {
+      enqueueSnackbar(`Fail Cancel!! - ${error}`, {
         variant: "error",
       });
     },
@@ -51,7 +51,7 @@ const FriendSent: FC<FriendSentProps> = (props) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 

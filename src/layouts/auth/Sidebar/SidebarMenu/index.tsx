@@ -20,6 +20,8 @@ import { useFriendList } from "src/contexts/FriendContext";
 import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { enqueueSnackbar } from "notistack";
+import { useTabs } from "src/contexts/TabsContext";
+import { TabsEnum } from "src/utils/enums";
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -174,6 +176,32 @@ const SubMenuWrapper = styled(Box)(
 
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
+  const {
+    tabs,
+    setTabs,
+    setShowChatBoxList,
+    setShowChatDetail,
+    setShowContactInfo,
+    setShowContactList,
+  } = useTabs();
+
+  const handleChatClick = () => {
+    // closeSidebar();
+    setTabs(TabsEnum.CHAT);
+    setShowChatBoxList(true);
+    setShowChatDetail(true);
+    setShowContactInfo(false);
+    setShowContactList(false);
+  };
+
+  const handleContactClick = () => {
+    // closeSidebar();
+    setTabs(TabsEnum.CONTACT);
+    setShowChatBoxList(false);
+    setShowChatDetail(false);
+    setShowContactInfo(true);
+    setShowContactList(true);
+  }
 
   return (
     <>
@@ -183,19 +211,21 @@ function SidebarMenu() {
             <List component="div">
               <ListItem component="div" sx={{ marginBottom: 2 }}>
                 <Button
+                  className={tabs === TabsEnum.CHAT ? 'active' : ''}
                   disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/"
+                  // component={RouterLink}
+                  onClick={handleChatClick}
+                  // to="/"
                   startIcon={<ChatTwoToneIcon />}
                 ></Button>
               </ListItem>
               <ListItem component="div">
                 <Button
+                  className={tabs === TabsEnum.CONTACT ? 'active' : ''}
                   disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/contact"
+                  // component={RouterLink}
+                  onClick={handleContactClick}
+                  // to="/contact"
                   startIcon={<ContactsIcon />}
                 ></Button>
               </ListItem>

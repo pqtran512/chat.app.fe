@@ -5,11 +5,13 @@ import React, {
     useContext,
     useState,
   } from "react";
+import { GroupMembers } from "src/types/entities";
   
   interface Group {
     id: string;
     name: string;
     avatar: string;
+    group_members: GroupMembers[],
   }
   
   interface GroupListContext {
@@ -29,7 +31,7 @@ import React, {
   
   export const GroupListProvider: FC<Props> = ({ children }) => {
     const [groupList, setGroupList] = useState([
-      { id: "", name: "", avatar: "" },
+      { id: "", name: "", avatar: "", group_members: [] },
     ] as Group[]);
 
     const [count, setCount] = useState<number>(0);

@@ -19,6 +19,11 @@ import {
 import styled from "@emotion/styled";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import { useChat } from "src/contexts/ChatContext";
+import { useMutation, useQueryClient } from "react-query";
+import { chatAPI } from "src/api/chat.api";
+import { enqueueSnackbar } from "notistack";
+import { ChatLogContentTypeCode } from "src/utils/enums";
 
 const StyleInput = styled(TextField)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -30,9 +35,48 @@ const StyleInput = styled(TextField)(({ theme }) => ({
 interface FooterProps {}
 
 const Footer: FC<FooterProps> = () => {
-
   const [openPicker, setOpenPicker] = useState(false);
-  
+  const { toUserId, toGroupId, chatboxId, chatProfile } = useChat();
+  const [text, setText] = useState("");
+  const queryClient = useQueryClient();
+
+  const insertChatLog = useMutation(chatAPI.insertChatlog, {
+    onSuccess: (response) => {
+      const { id, content, owner_id, to_user, to_group, content_type } =
+        response.data;
+
+      if (id) {
+        setText('');
+        queryClient.invalidateQueries(["GetChatBoxListByUser"]);
+        queryClient.invalidateQueries([
+          "ChatDetail",
+          chatboxId,
+          toGroupId,
+          toUserId,
+        ]);
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error, {
+        variant: "error",
+      });
+    },
+  });
+
+  const handleSendMessage = () => {
+    if (!toUserId && !toGroupId) {
+      return;
+    }
+    const newDate = new Date();
+    insertChatLog.mutate({
+      content: text,
+      content_type_code: ChatLogContentTypeCode.TEXT,
+      created_date: newDate,
+      is_group_chat: chatProfile.isGroupChat ? true : false,
+      to_id: chatProfile.isGroupChat ? toGroupId : toUserId,
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -63,9 +107,14 @@ const Footer: FC<FooterProps> = () => {
         <Divider />
         <Box>
           <Stack direction={"row"} spacing={2} alignItems={"center"}>
-            <Stack sx={{width: "100%"}}>
-              <Box zIndex={10} position={"fixed"} bottom={50} right={110}
-              sx={{display: openPicker ? "inline" : "none"}}>
+            <Stack sx={{ width: "100%" }}>
+              <Box
+                zIndex={10}
+                position={"fixed"}
+                bottom={50}
+                right={110}
+                sx={{ display: openPicker ? "inline" : "none" }}
+              >
                 <Picker
                   data={data}
                   onEmojiSelect={console.log}
@@ -79,17 +128,27 @@ const Footer: FC<FooterProps> = () => {
                 fullWidth
                 variant="outlined"
                 placeholder="Nhập tin nhắn ..."
+                value={text}
+                onChange={(e) => {
+                  setText(e.target.value);
+                }}
                 slotProps={{
                   input: {
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton title="Icon Picker" onClick={() => setOpenPicker((prev) => !prev)}>
-                          <InsertEmoticonIcon/>
+                        <IconButton
+                          title="Icon Picker"
+                          onClick={() => setOpenPicker((prev) => !prev)}
+                        >
+                          <InsertEmoticonIcon />
                         </IconButton>
                         <IconButton title="Send like icon">
                           <ThumbUpIcon />
                         </IconButton>
-                        <IconButton title="Send Message">
+                        <IconButton
+                          onClick={handleSendMessage}
+                          title="Send Message"
+                        >
                           <SendIcon />
                         </IconButton>
                       </InputAdornment>

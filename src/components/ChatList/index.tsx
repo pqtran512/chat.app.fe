@@ -11,71 +11,47 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useState, FC } from "react";
 import SingleChat from "./SingleChat";
-import { ChatLists } from "src/data";
 import GroupChat from "./GroupChat";
-import { faker } from "@faker-js/faker";
 import SearchFriend from "../SearchFriend";
 import CreateGroup from "../CreateGroup";
-import { useMutation } from "react-query";
-import { friendAPI } from "src/api/friend.api";
-import { useFriendList } from "src/contexts/FriendContext";
-import { enqueueSnackbar } from "notistack";
+import { useQuery } from "react-query";
+import { chatAPI } from "src/api/chat.api";
+import { ListChatBoxByUserResult } from "src/types/api/response/chatbox";
+import { useChat } from "src/contexts/ChatContext";
+import moment from "moment";
 
-const ChatGroupHistory = [
-  {
-    id: 0,
-    group: true,
-    img: [
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-    ],
-    name: "Software Architrcture Group",
-    msg: faker.music.songName(),
-    time: "9:36",
-    unread: 0,
-    online: true,
-  },
-];
+interface ChatListProps {
+  onSuccess?: (data: ListChatBoxByUserResult) => void;
+}
 
-interface ChatListProps {}
-
-const ChatList: FC<ChatListProps> = () => {
+const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
-  const friendListContext = useFriendList();
+  const { toUserId, toGroupId, setToUserId, setToGroupId } = useChat();
 
   const handleClose = () => {
     setOpenCreateGroup(false);
     setOpenSearchFriend(false);
   };
 
-  const handleOpenCreateGroup = () => {
-    setOpenCreateGroup(true);
-    getFriendList.mutate();
-  };
-
-  const getFriendList = useMutation(friendAPI.friendList, {
-    onSuccess: (response) => {
-      if (response.data.length > 0) {
-        const friendList = [];
-        response.data.forEach((e) => {
-          friendList.push({
-            id: e.to_user_profile.id,
-            fullname: e.to_user_profile.profile[0].fullname,
-            avatar: e.to_user_profile.profile[0].avatar,
-          });
-        });
-        friendListContext.setFriendList(friendList);
-      } else {
-        friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+  const { data, isLoading } = useQuery({
+    queryKey: ["GetChatBoxListByUser"],
+    queryFn: () => chatAPI.listChatBox(),
+    enabled: true,
+    select: (rs) => {
+      if (onSuccess) {
+        onSuccess(rs.data);
       }
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      // console.log(rs.data);
+      if (rs.data.count > 0 && !toUserId && !toGroupId) {
+        const firstChatBox = rs.data.data[0];
+        if (firstChatBox.to_group_profile) {
+          setToGroupId(firstChatBox.to_group_profile.id);
+        } else {
+          setToUserId(firstChatBox.to_user_profile.id);
+        }
+      }
+      return rs.data;
     },
   });
 
@@ -88,11 +64,12 @@ const ChatList: FC<ChatListProps> = () => {
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
       }}
     >
-      <Stack sx={{ height: "100vh" }} direction="column" p={2} spacing={2}>
+      <Stack sx={{ height: "100vh" }} direction="column" spacing={2}>
         <Stack
           direction="row"
           alignItems="center"
           justifyContent="space-between"
+          p={2}
         >
           <TextField
             id="search"
@@ -118,14 +95,14 @@ const ChatList: FC<ChatListProps> = () => {
             </IconButton>
             <IconButton
               sx={{ padding: "0 0 0 0" }}
-              onClick={handleOpenCreateGroup}
+              onClick={() => setOpenCreateGroup(true)}
             >
               <GroupAddIcon />
             </IconButton>
           </Stack>
         </Stack>
 
-        <Stack spacing={1}>
+        <Stack spacing={1} p={2}>
           <Stack
             direction="row"
             alignItems="center"
@@ -162,19 +139,51 @@ const ChatList: FC<ChatListProps> = () => {
         </Stack>
 
         <Stack
-          sx={{ flexGrow: 1, overflow: "scroll", height: "100%" }}
+          sx={{
+            flexGrow: 1,
+            overflow: "scroll",
+            height: "100%",
+            marginTop: "0px !important",
+          }}
           direction="column"
-          spacing={1}
         >
-          <GroupChat {...ChatGroupHistory[0]} />
-          {ChatLists.map((el) => {
-            return <SingleChat {...el} />;
-          })}
-          {/* {ChatLists.map((el) => {
-              return el.group 
-              ?  <GroupChat {...el} />
-              :  <SingleChat {...el} />;
-            })} */}
+          {data &&
+            data.data.map((el, index) => {
+              const time = moment(el.latest_updated_date).format("HH:mm");
+              const lastChatLogContent =
+                el.chatbox_chatlogs[0].chat_log.content;
+              const isNewMessage = el.new_message;
+              const chatboxId = el.id;
+              if (el.to_user_profile) {
+                const { fullname, avatar } = el.to_user_profile.profile[0];
+                return (
+                  <SingleChat
+                    key={index}
+                    id={el.to_user_profile.id}
+                    chatboxId={chatboxId}
+                    name={fullname}
+                    img={avatar}
+                    time={time}
+                    msg={lastChatLogContent}
+                    newMessage={isNewMessage}
+                  />
+                );
+              }
+              const { name, avatar, id, group_members } = el.to_group_profile;
+              return (
+                <GroupChat
+                  key={index}
+                  id={id}
+                  chatboxId={chatboxId}
+                  name={name}
+                  img={avatar}
+                  time={time}
+                  memberCount={group_members.length}
+                  msg={lastChatLogContent}
+                  newMessage={isNewMessage}
+                />
+              );
+            })}
         </Stack>
       </Stack>
       {openCreateGroup && (

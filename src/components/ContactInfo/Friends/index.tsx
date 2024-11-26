@@ -41,7 +41,7 @@ const Friends: FC<FriendsProps> = (props) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -76,7 +76,7 @@ const Friends: FC<FriendsProps> = (props) => {
               Search
             </Button>
           </Stack>
-          {friendList[0].id !== "" && friendList.map((f) => <Friend {...f} />)}
+          {friendList[0].id !== "" && friendList.map((f, index) => <Friend key={index} {...f} />)}
         </Stack>
       </Box>
     </Stack>

@@ -27,7 +27,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
       getFriendRecieveds.mutate();
     },
     onError: (error: any) => {
-      enqueueSnackbar(`Fail Accept!! - ${error.response.data.message}`, {
+      enqueueSnackbar(`Fail Accept!! - ${error}`, {
         variant: "error",
       });
     },
@@ -38,7 +38,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
       getFriendRecieveds.mutate();
     },
     onError: (error: any) => {
-      enqueueSnackbar(`Fail Decline!! - ${error.response.data.message}`, {
+      enqueueSnackbar(`Fail Decline!! - ${error}`, {
         variant: "error",
       });
     },
@@ -63,7 +63,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 

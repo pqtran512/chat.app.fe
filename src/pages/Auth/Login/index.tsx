@@ -97,7 +97,7 @@ const Login: FC<LoginProps> = ({}) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, {
+      enqueueSnackbar(error, {
         variant: "error",
       });
     },

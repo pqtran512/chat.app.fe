@@ -1,4 +1,5 @@
 import { LogInDto, RefreshDto, ResetPassworDto } from "src/types/api/dto";
+import { LogOutDto } from "src/types/api/dto/auth";
 import { LoginResponse, ResetPasswordResponse } from "src/types/api/response";
 import { Token } from "src/types/api/response/token.response";
 import http from "src/utils/http";
@@ -22,8 +23,12 @@ export const authAPI = {
   checkUserExist(phone: string) {
     return http.get<boolean>(`${AUTH_URL.CHECK_USER_EXIST}/${phone}`);
   },
-  logout() {
-    return http.post<any>(AUTH_URL.LOGOUT);
+  logout(logOutDto: LogOutDto) {
+    return http.post<boolean>(AUTH_URL.LOGOUT, logOutDto, {
+      headers: {
+        "refresh_token": logOutDto.refresh_token,
+      },
+    });
   },
   checkphone(phone: string) {
     return http.get<boolean>(`${AUTH_URL.CHECKPHONE}/${phone}`);

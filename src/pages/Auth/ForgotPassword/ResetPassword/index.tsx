@@ -84,7 +84,7 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
         navigate("/");
     }},
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, {
+      enqueueSnackbar(error, {
         variant: "error",
       });
     },

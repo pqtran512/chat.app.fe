@@ -7,7 +7,7 @@ import FriendRequests from "./FriendRequest";
 import GroupInvitations from "./GroupRequest";
 
 interface ContactInfoProps {
-  chosen: number;
+  chosen?: number;
 }
 
 const ContactInfo: FC<ContactInfoProps> = (props) => {
@@ -16,7 +16,7 @@ const ContactInfo: FC<ContactInfoProps> = (props) => {
       {props.chosen === Number(0) && <Friends />}
       {props.chosen === Number(1) && <Groups />}
       {props.chosen === Number(2) && <FriendRequests />}
-      {props.chosen === Number(3) && <GroupInvitations />}
+      {/* {props.chosen === Number(3) && <GroupInvitations />} */}
     </Box>
   );
 };
