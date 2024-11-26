@@ -23,7 +23,6 @@ interface GroupChatProps {
   online?: boolean;
   memberCount?: number;
   newMessage?: boolean;
-  onSetSeen?: (chatboxId: string, seen: boolean) => void;
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {
@@ -33,9 +32,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
   const setSeen = useMutation(chatAPI.setChatboxSeen, {
     onSuccess: (res) => {
       if (res.data) {
-        if (props.onSetSeen) {
-          queryClient.invalidateQueries(['GetChatBoxListByUser']);
-        }
+        queryClient.invalidateQueries(['GetChatBoxListByUser']);
       }
     },
     onError: (err: any) => {

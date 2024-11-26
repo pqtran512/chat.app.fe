@@ -27,7 +27,8 @@ interface ChatListProps {
 const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
-  const { toUserId, toGroupId, setToUserId, setToGroupId } = useChat();
+  const { toUserId, toGroupId, setToUserId, setToGroupId, setChatProfile } =
+    useChat();
 
   const handleClose = () => {
     setOpenCreateGroup(false);
@@ -46,9 +47,25 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
       if (rs.data.count > 0 && !toUserId && !toGroupId) {
         const firstChatBox = rs.data.data[0];
         if (firstChatBox.to_group_profile) {
-          setToGroupId(firstChatBox.to_group_profile.id);
+          const { avatar, name, id, group_members } =
+            firstChatBox.to_group_profile;
+          setToGroupId(id);
+          setChatProfile({
+            id,
+            isGroupChat: true,
+            name,
+            avatar,
+            memberCount: group_members.length,
+          });
         } else {
+          const {avatar, fullname} = firstChatBox.to_user_profile.profile[0];
           setToUserId(firstChatBox.to_user_profile.id);
+          setChatProfile({
+            id: firstChatBox.to_user_profile.id,
+            isGroupChat: false,
+            name: fullname,
+            avatar,
+          });
         }
       }
       return rs.data;
