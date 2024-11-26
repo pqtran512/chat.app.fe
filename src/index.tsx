@@ -8,6 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SnackbarProvider } from "notistack";
 import { STORAGE_KEY } from "./utils/constants";
+import { ProfileProvider } from "./contexts/ProfileContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -30,7 +31,9 @@ root.render(
           preventDuplicate={true}
         >
           <AuthProvider>
-            <App />
+            <ProfileProvider>
+              <App />
+            </ProfileProvider>
           </AuthProvider>
         </SnackbarProvider>
       </BrowserRouter>

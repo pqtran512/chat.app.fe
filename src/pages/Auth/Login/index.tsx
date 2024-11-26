@@ -18,11 +18,12 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { LogInDto } from "src/types/api/dto";
 import { useMutation } from "react-query";
-import { authAPI } from "src/api";
+import { authAPI, profileAPI } from "src/api";
 import { STORAGE_KEY } from "src/utils/constants";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/contexts/AuthContext";
 import { enqueueSnackbar } from "notistack";
+import { useProfile } from "src/contexts/ProfileContext";
 
 interface LoginProps {}
 
@@ -56,10 +57,11 @@ const Login: FC<LoginProps> = ({}) => {
   const defaultTheme = createTheme();
   const navigate = useNavigate();
   const { setAccessToken, setUserId } = useAuth();
+  const profileContext = useProfile();
+
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // login({ variables: { input: loginInfo } });
     login.mutate(loginInfo);
   };
 
@@ -86,11 +88,32 @@ const Login: FC<LoginProps> = ({}) => {
         localStorage.setItem(STORAGE_KEY.ID, user.id);
         localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, access_token);
         localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
+        getProfile.mutate()
 
         setUserId(user.id);
         setAccessToken(access_token);
 
         navigate("/");
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    },
+  });
+
+  const getProfile = useMutation(profileAPI.getprofile, {
+    onSuccess: (response) => {
+      if (response.status === 200){
+        const { fullname, avatar, id } = response.data[0];
+        localStorage.setItem("fullname", fullname)
+        localStorage.setItem("avatar", avatar)
+        localStorage.setItem("profileId", id)
+
+        profileContext.setProfileId(id);
+        profileContext.setFulname(fullname);
+        profileContext.setAvatar(avatar);
       }
     },
     onError: (error: any) => {

@@ -26,8 +26,7 @@ export const authAPI = {
     return http.post<any>(AUTH_URL.LOGOUT);
   },
   checkphone(phone: string) {
-    // return http.post<CheckPhoneResponse>(`/auth/check-user-exist/${phone}`)
-    return http.get<boolean>(`/auth/check-user-exist/${phone}`);
+    return http.get<boolean>(`${AUTH_URL.CHECKPHONE}/${phone}`);
   },
   resetpassword(resetPasswordDto: ResetPassworDto) {
     return http.post<ResetPasswordResponse>(
@@ -37,12 +36,3 @@ export const authAPI = {
   },
 };
 
-export const PROFILE_URL = {
-  GET_PROFILE: "/user/me/profiles",
-};
-
-export const profileAPI = {
-  getprofile() {
-    return http.get<any>(PROFILE_URL.GET_PROFILE);
-  },
-};

@@ -16,6 +16,10 @@ import GroupChat from "./GroupChat";
 import { faker } from "@faker-js/faker";
 import SearchFriend from "../SearchFriend";
 import CreateGroup from "../CreateGroup";
+import { useMutation } from "react-query";
+import { friendAPI } from "src/api/friend.api";
+import { useFriendList } from "src/contexts/FriendContext";
+import { enqueueSnackbar } from "notistack";
 
 const ChatGroupHistory = [
   {
@@ -42,11 +46,38 @@ interface ChatListProps {}
 const ChatList: FC<ChatListProps> = () => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
+  const friendListContext = useFriendList();
 
   const handleClose = () => {
     setOpenCreateGroup(false);
     setOpenSearchFriend(false);
   };
+
+  const handleOpenCreateGroup = () => {
+    setOpenCreateGroup(true);
+    getFriendList.mutate();
+  };
+
+  const getFriendList = useMutation(friendAPI.friendList, {
+    onSuccess: (response) => {
+      if (response.data.length > 0) {
+        const friendList = [];
+        response.data.forEach((e) => {
+          friendList.push({
+            id: e.to_user_profile.id,
+            fullname: e.to_user_profile.profile[0].fullname,
+            avatar: e.to_user_profile.profile[0].avatar,
+          });
+        });
+        friendListContext.setFriendList(friendList);
+      } else {
+        friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    },
+  });
 
   return (
     <Box
@@ -87,7 +118,7 @@ const ChatList: FC<ChatListProps> = () => {
             </IconButton>
             <IconButton
               sx={{ padding: "0 0 0 0" }}
-              onClick={() => setOpenCreateGroup(true)}
+              onClick={handleOpenCreateGroup}
             >
               <GroupAddIcon />
             </IconButton>

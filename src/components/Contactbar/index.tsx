@@ -34,14 +34,14 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
   // const [searchGroup, setSearchGroup] = useState({searchText: ''} as GroupListDto)
 
+  const friendListContext = useFriendList();
+  const friendRequestContext = useFriendRequest();
+  const groupListContext = useGroupList();
+
   const handleClose = () => {
     setOpenCreateGroup(false);
     setOpenSearchFriend(false);
   };
-
-  const friendListContext = useFriendList();
-  const friendRequestContext = useFriendRequest();
-  const groupListContext = useGroupList();
 
   const handleOpenCreateGroup = () => {
     setOpenCreateGroup(true);
