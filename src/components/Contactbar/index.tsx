@@ -101,7 +101,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -127,7 +127,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -146,7 +146,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -158,6 +158,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   const getGroupList = useMutation(groupAPI.groupList, {
     onSuccess: (response) => {
+      console.log(response.data)
       if (response.data.count > 0) {
         const responseGroupList = [];
         response.data.groups.forEach((e) => {
@@ -165,14 +166,15 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             id: e.group.id,
             name: e.group.name,
             avatar: e.group.avatar,
+            group_members: [...e.group.group_members],
           });
         });
-        groupListContext.setGroupList(responseGroupList);
+        groupListContext.setGroupList([...responseGroupList]);
         groupListContext.setCount(response.data.count);
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 

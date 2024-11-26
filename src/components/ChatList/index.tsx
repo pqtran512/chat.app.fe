@@ -11,34 +11,14 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useState, FC } from "react";
 import SingleChat from "./SingleChat";
-import { ChatLists } from "src/data";
 import GroupChat from "./GroupChat";
-import { faker } from "@faker-js/faker";
 import SearchFriend from "../SearchFriend";
 import CreateGroup from "../CreateGroup";
 import { useQuery } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { ListChatBoxByUserResult } from "src/types/api/response/chatbox";
-
-const ChatGroupHistory = [
-  {
-    id: 0,
-    group: true,
-    img: [
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-      faker.image.avatar(),
-    ],
-    name: "Software Architrcture Group",
-    msg: faker.music.songName(),
-    time: "9:36",
-    unread: 0,
-    online: true,
-  },
-];
+import { useChat } from "src/contexts/ChatContext";
+import moment from "moment";
 
 interface ChatListProps {
   onSuccess?: (data: ListChatBoxByUserResult) => void;
@@ -47,6 +27,7 @@ interface ChatListProps {
 const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
+  const { toUserId, toGroupId, setToUserId, setToGroupId } = useChat();
 
   const handleClose = () => {
     setOpenCreateGroup(false);
@@ -61,6 +42,15 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
       if (onSuccess) {
         onSuccess(rs.data);
       }
+      // console.log(rs.data);
+      if (rs.data.count > 0 && !toUserId && !toGroupId) {
+        const firstChatBox = rs.data.data[0];
+        if (firstChatBox.to_group_profile) {
+          setToGroupId(firstChatBox.to_group_profile.id);
+        } else {
+          setToUserId(firstChatBox.to_user_profile.id);
+        }
+      }
       return rs.data;
     },
   });
@@ -74,11 +64,12 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
       }}
     >
-      <Stack sx={{ height: "100vh" }} direction="column" p={2} spacing={2}>
+      <Stack sx={{ height: "100vh" }} direction="column" spacing={2}>
         <Stack
           direction="row"
           alignItems="center"
           justifyContent="space-between"
+          p={2}
         >
           <TextField
             id="search"
@@ -111,7 +102,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
           </Stack>
         </Stack>
 
-        <Stack spacing={1}>
+        <Stack spacing={1} p={2}>
           <Stack
             direction="row"
             alignItems="center"
@@ -148,16 +139,50 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
         </Stack>
 
         <Stack
-          sx={{ flexGrow: 1, overflow: "scroll", height: "100%" }}
+          sx={{
+            flexGrow: 1,
+            overflow: "scroll",
+            height: "100%",
+            marginTop: "0px !important",
+          }}
           direction="column"
-          spacing={1}
         >
           {data &&
             data.data.map((el, index) => {
-              if (el.to_user) {
-                return <SingleChat key={index} />;
+              const time = moment(el.latest_updated_date).format("HH:mm");
+              const lastChatLogContent =
+                el.chatbox_chatlogs[0].chat_log.content;
+              const isNewMessage = el.new_message;
+              const chatboxId = el.id;
+              if (el.to_user_profile) {
+                const { fullname, avatar } = el.to_user_profile.profile[0];
+                return (
+                  <SingleChat
+                    key={index}
+                    id={el.to_user_profile.id}
+                    chatboxId={chatboxId}
+                    name={fullname}
+                    img={avatar}
+                    time={time}
+                    msg={lastChatLogContent}
+                    newMessage={isNewMessage}
+                  />
+                );
               }
-              return <GroupChat key={index} />;
+              const { name, avatar, id, group_members } = el.to_group_profile;
+              return (
+                <GroupChat
+                  key={index}
+                  id={id}
+                  chatboxId={chatboxId}
+                  name={name}
+                  img={avatar}
+                  time={time}
+                  memberCount={group_members.length}
+                  msg={lastChatLogContent}
+                  newMessage={isNewMessage}
+                />
+              );
             })}
         </Stack>
       </Stack>

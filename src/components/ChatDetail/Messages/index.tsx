@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect, useRef } from "react";
 import { Chat_History } from "src/data";
 import {
   TimeLineBreak,
@@ -20,6 +20,7 @@ interface MessagesProps {}
 const Messages: FC<MessagesProps> = () => {
   const { chatboxId, toGroupId, toUserId } = useChat();
   const { userId } = useAuth();
+  const ref = useRef<HTMLDivElement>(null);
 
   const { isLoading, data } = useQuery({
     queryKey: ["ChatDetail", chatboxId, toGroupId, toUserId],
@@ -30,14 +31,21 @@ const Messages: FC<MessagesProps> = () => {
         to_user: toUserId,
       }),
     select: (rs) => {
-      console.log(rs.data);
       return rs.data;
     },
   });
 
+  useEffect(() => {
+    if (data?.length) {
+      ref.current?.scrollIntoView({
+        block: "end",
+      });
+    }
+  }, [data?.length]);
+
   return (
-    <Box overflow={"scroll"}>
-      <Stack minHeight={800} spacing={1}>
+    <Box height={"100%"} overflow={"scroll"}>
+      <Stack p={1} height={"100%"} spacing={1}>
         {/* {Chat_History.map((el, index) => {
           switch (el.type) {
             case "divider":
@@ -64,7 +72,13 @@ const Messages: FC<MessagesProps> = () => {
           data.map((el, index) => {
             switch (el.chat_log.content_type.code) {
               case ChatLogContentTypeCode.TEXT:
-                return <TextMsg key={index} {...el} />;
+                return (
+                  <TextMsg
+                    key={index}
+                    incoming={el.chat_log.owner_id !== userId}
+                    message={el.chat_log.content}
+                  />
+                );
               case ChatLogContentTypeCode.IMAGE:
                 return <ImgMSg key={index} {...el} />;
               case ChatLogContentTypeCode.VIDEO:
@@ -89,6 +103,7 @@ const Messages: FC<MessagesProps> = () => {
                 return <></>;
             }
           })}
+        <div ref={ref} />
       </Stack>
     </Box>
   );

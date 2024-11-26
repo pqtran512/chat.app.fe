@@ -48,7 +48,7 @@ const Friend: FC<FriendProps> = (props) => {
       getFriendList.mutate();
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
   const getFriendList = useMutation(friendAPI.friendList, {
@@ -68,7 +68,7 @@ const Friend: FC<FriendProps> = (props) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 

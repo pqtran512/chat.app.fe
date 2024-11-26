@@ -11,7 +11,7 @@ interface ChatDetailProps {
 
 const ChatDetail: FC<ChatDetailProps> = (props) => {
   return (
-    <Stack height={"100%"} maxHeight={"100vh"} width={"100%"}>
+    <Stack maxHeight={"100vh"} width={"100%"}>
       {/* maxHeight={"100vh"} */}
       {/* header */}
       <Header {...props}/>

@@ -1,5 +1,9 @@
 import { FC } from "react";
 import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
+import { useChat } from "src/contexts/ChatContext";
+import { useMutation, useQueryClient } from "react-query";
+import { chatAPI } from "src/api/chat.api";
+import { enqueueSnackbar } from "notistack";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -31,7 +35,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 interface SingleChatProps {
-  id?: number;
+  id?: string;
+  chatboxId?: string;
   group?: boolean;
   img?: string;
   name?: string;
@@ -39,17 +44,49 @@ interface SingleChatProps {
   time?: string;
   unread?: number;
   online?: boolean;
+  newMessage?: boolean;
+  onSetSeen?: (chatboxId: string, seen: boolean) => void;
 }
 
 const SingleChat: FC<SingleChatProps> = (props) => {
+  const { toUserId, setToUserId, setToGroupId, setChatProfile } = useChat();
+  const queryClient = useQueryClient();
+
+  const setSeen = useMutation(chatAPI.setChatboxSeen, {
+    onSuccess: (res) => {
+      if (res.data) {
+        queryClient.invalidateQueries(['GetChatBoxListByUser']);
+      }
+    },
+    onError: (err: any) => {
+      enqueueSnackbar(err, { variant: "error" });
+    },
+  });
+
+  const handleClick = () => {
+    setToUserId(props.id);
+    setToGroupId("");
+    setChatProfile({
+      id: props.id,
+      name: props.name,
+      isGroupChat: false,
+      avatar: props.img,
+    });
+    if (props.newMessage) {
+      setSeen.mutate(props.chatboxId);
+    }
+  };
+
   return (
     <Box
       sx={{
         width: "100%",
-        borderRadius: 1,
-        backgroundColor: "#f0f0f5",
+        backgroundColor: toUserId === props?.id ? "#e5efff" : "#fff",
+        cursor: "pointer",
+        ":hover": { backgroundColor: "#f0f0f5" },
       }}
       p={1}
+      onClick={handleClick}
     >
       <Stack direction="row">
         <Stack
@@ -61,7 +98,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
           width={"100%"}
         >
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            {props.online ? (
+            {/* {props.online ? (
               <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -71,7 +108,8 @@ const SingleChat: FC<SingleChatProps> = (props) => {
               </StyledBadge>
             ) : (
               <Avatar src={props.img} />
-            )}
+            )} */}
+            <Avatar src={`data:image/png;base64, ${props.img}`} />
 
             <Stack direction={"column"}>
               <Typography variant="subtitle2">{props.name}</Typography>
@@ -81,7 +119,9 @@ const SingleChat: FC<SingleChatProps> = (props) => {
 
           <Stack spacing={2} alignItems="center">
             <Typography sx={{ fontWeight: 300 }}>{props.time}</Typography>
-            <Badge color="primary" badgeContent={props.unread}></Badge>
+            {props.newMessage && (
+              <Badge color="primary" badgeContent=""></Badge>
+            )}
           </Stack>
         </Stack>
       </Stack>

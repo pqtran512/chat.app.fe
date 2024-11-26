@@ -1,3 +1,4 @@
+import { ChatBoxChatLog } from "./chatboxchatlog.entity";
 import { Group } from "./group.entity";
 import { User } from "./user.entity";
 
@@ -11,7 +12,8 @@ export class ChatBox {
   deleted: boolean;
   muted: boolean;
   last_accessed_date: Date;
+  new_message: boolean;
   to_user_profile: User;
   to_group_profile: Group;
-  // chatbox_chatlogs: ChatBoxChatLog[];
+  chatbox_chatlogs: ChatBoxChatLog[];
 }

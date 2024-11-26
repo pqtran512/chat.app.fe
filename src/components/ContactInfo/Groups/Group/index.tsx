@@ -63,7 +63,7 @@ const Group: FC<GroupProps> = (props) => {
       avatar: props.avatar,
       name: props.name,
       isGroupChat: true,
-      memberCount: 5,
+      memberCount: props.memberCount,
     });
   };
 

@@ -1,4 +1,3 @@
-
 export class GetChatBoxDetailDto {
   to_user: string;
   to_group: string;

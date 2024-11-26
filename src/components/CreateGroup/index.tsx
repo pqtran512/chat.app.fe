@@ -62,7 +62,7 @@ const CreateGroupForm = ({ handleClose }) => {
     },
     onError: (error: any) => {
       enqueueSnackbar(
-        `Create ${groupInfo.name} fail - ${error.response.data.message}`,
+        `Create ${groupInfo.name} fail - ${error}`,
         { variant: "warning" }
       );
     },
