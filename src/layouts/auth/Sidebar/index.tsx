@@ -31,6 +31,7 @@ import { enqueueSnackbar } from "notistack";
 import { LogOutDto } from "src/types/api/dto/auth";
 import { useProfile } from "src/contexts/ProfileContext";
 import { STORAGE_KEY } from "src/utils/constants";
+import { disconnectChatSocket } from "src/utils/ws/clients/chat.";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -202,6 +203,7 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
         localStorage.clear();
         setUserId("");
         setAccessToken("");
+        disconnectChatSocket();
       }
     },
     onError: (error: any) => {

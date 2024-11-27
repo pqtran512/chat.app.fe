@@ -9,16 +9,18 @@ import {
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from "react";
 import SingleChat from "./SingleChat";
 import GroupChat from "./GroupChat";
 import SearchFriend from "../SearchFriend";
 import CreateGroup from "../CreateGroup";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { ListChatBoxByUserResult } from "src/types/api/response/chatbox";
 import { useChat } from "src/contexts/ChatContext";
 import moment from "moment";
+import { ReceiveMessageDto } from "src/types/ws/dto/chat";
+import { onReceiveChat } from "src/utils/ws/clients/chat.";
 
 interface ChatListProps {
   onSuccess?: (data: ListChatBoxByUserResult) => void;
@@ -27,13 +29,9 @@ interface ChatListProps {
 const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
-  const { toUserId, toGroupId, setToUserId, setToGroupId, setChatProfile } =
+  const { toUserId, toGroupId, chatboxId, setToUserId, setToGroupId, setChatProfile } =
     useChat();
-
-  const handleClose = () => {
-    setOpenCreateGroup(false);
-    setOpenSearchFriend(false);
-  };
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["GetChatBoxListByUser"],
@@ -58,10 +56,11 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             memberCount: group_members.length,
           });
         } else {
-          const {avatar, fullname} = firstChatBox.to_user_profile.profile[0];
-          setToUserId(firstChatBox.to_user_profile.id);
+          const uid = firstChatBox.to_user_profile.id;
+          const { avatar, fullname } = firstChatBox.to_user_profile.profile[0];
+          setToUserId(uid);
           setChatProfile({
-            id: firstChatBox.to_user_profile.id,
+            id: uid,
             isGroupChat: false,
             name: fullname,
             avatar,
@@ -71,6 +70,11 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
       return rs.data;
     },
   });
+
+  const handleClose = () => {
+    setOpenCreateGroup(false);
+    setOpenSearchFriend(false);
+  };
 
   return (
     <Box
