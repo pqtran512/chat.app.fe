@@ -26,7 +26,7 @@ import Profile from "src/components/Profile";
 import Setting from "src/components/Setting";
 import { useAuth } from "src/contexts/AuthContext";
 import { useMutation } from "react-query";
-import { authAPI, profileAPI } from "src/api";
+import { authAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
 import { LogOutDto } from "src/types/api/dto/auth";
 import { useProfile } from "src/contexts/ProfileContext";
