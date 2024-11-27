@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/contexts/AuthContext";
 import { enqueueSnackbar } from "notistack";
 import { useProfile } from "src/contexts/ProfileContext";
+import { connectChatSocket } from "src/utils/ws/clients/chat.";
 
 interface LoginProps {}
 
@@ -89,6 +90,7 @@ const Login: FC<LoginProps> = ({}) => {
         localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, access_token);
         localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
         getProfile.mutate()
+        connectChatSocket();
 
         setUserId(user.id);
         setAccessToken(access_token);

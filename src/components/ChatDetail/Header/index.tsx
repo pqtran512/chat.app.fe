@@ -44,7 +44,7 @@ const Header: FC<HeaderProps> = (props) => {
           <Button>
             {chatProfile.id && (
               <Stack direction={"row"} spacing={2} alignItems={"center"}>
-                {true ? (
+                {false ? (
                   <StyledBadge
                     overlap="circular"
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -56,9 +56,7 @@ const Header: FC<HeaderProps> = (props) => {
                   </StyledBadge>
                 ) : (
                   <Avatar
-                    src={
-                      "https://cdn.i-scmp.com/sites/default/files/styles/wide_landscape/public/d8/images/canvas/2024/03/21/ffa5b5dc-3fbf-41db-8b5f-d33280f96dee_1d2a602f.jpg?itok=Fpbj3u6T&v=1711010288"
-                    }
+                    src={`data:image/png;base64, ${chatProfile.avatar}`}
                   />
                 )}
 
@@ -78,10 +76,12 @@ const Header: FC<HeaderProps> = (props) => {
         </Box>
         <Box>
           <Stack direction={"row"}>
-            <IconButton>
-              <PersonAddAltIcon />
-            </IconButton>
-            <IconButton>
+            {chatProfile.isGroupChat && (
+              <IconButton>
+                <PersonAddAltIcon />
+              </IconButton>
+            )}
+            {/* <IconButton>
               <SearchIcon />
             </IconButton>
             <IconButton>
@@ -96,7 +96,7 @@ const Header: FC<HeaderProps> = (props) => {
               }}
             >
               <InfoIcon />
-            </IconButton>
+            </IconButton> */}
           </Stack>
         </Box>
       </Stack>
