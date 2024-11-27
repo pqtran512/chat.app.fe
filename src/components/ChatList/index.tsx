@@ -29,9 +29,15 @@ interface ChatListProps {
 const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
-  const { toUserId, toGroupId, chatboxId, setToUserId, setToGroupId, setChatProfile } =
-    useChat();
-  const queryClient = useQueryClient();
+  const {
+    toUserId,
+    toGroupId,
+    chatboxId,
+    setChatboxId,
+    setToUserId,
+    setToGroupId,
+    setChatProfile,
+  } = useChat();
 
   const { data, isLoading } = useQuery({
     queryKey: ["GetChatBoxListByUser"],
@@ -41,9 +47,9 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
       if (onSuccess) {
         onSuccess(rs.data);
       }
-      // console.log(rs.data);
       if (rs.data.count > 0 && !toUserId && !toGroupId) {
         const firstChatBox = rs.data.data[0];
+        setChatboxId(firstChatBox.id);
         if (firstChatBox.to_group_profile) {
           const { avatar, name, id, group_members } =
             firstChatBox.to_group_profile;
@@ -54,6 +60,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             name,
             avatar,
             memberCount: group_members.length,
+            newMessage: firstChatBox.new_message,
           });
         } else {
           const uid = firstChatBox.to_user_profile.id;
@@ -64,6 +71,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             isGroupChat: false,
             name: fullname,
             avatar,
+            newMessage: firstChatBox.new_message,
           });
         }
       }
@@ -169,18 +177,18 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
           direction="column"
         >
           {data &&
-            data.data.map((el, index) => {
-              const time = moment(el.latest_updated_date).format("HH:mm");
+            data.data.map((chatbox, index) => {
+              const time = moment(chatbox.latest_updated_date).format("HH:mm");
               const lastChatLogContent =
-                el.chatbox_chatlogs[0].chat_log.content;
-              const isNewMessage = el.new_message;
-              const chatboxId = el.id;
-              if (el.to_user_profile) {
-                const { fullname, avatar } = el.to_user_profile.profile[0];
+                chatbox.chatbox_chatlogs[0].chat_log.content;
+              const isNewMessage = chatbox.new_message;
+              const chatboxId = chatbox.id;
+              if (chatbox.to_user_profile) {
+                const { fullname, avatar } = chatbox.to_user_profile.profile[0];
                 return (
                   <SingleChat
                     key={index}
-                    id={el.to_user_profile.id}
+                    id={chatbox.to_user_profile.id}
                     chatboxId={chatboxId}
                     name={fullname}
                     img={avatar}
@@ -190,7 +198,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                   />
                 );
               }
-              const { name, avatar, id, group_members } = el.to_group_profile;
+              const { name, avatar, id, group_members } = chatbox.to_group_profile;
               return (
                 <GroupChat
                   key={index}

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
 import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
@@ -26,7 +26,7 @@ interface GroupChatProps {
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {
-  const { toGroupId, setToUserId, setToGroupId, setChatProfile } = useChat();
+  const { toGroupId, setToUserId, setToGroupId, setChatProfile, setChatboxId } = useChat();
   const queryClient = useQueryClient();
 
   const setSeen = useMutation(chatAPI.setChatboxSeen, {
@@ -43,6 +43,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
   const handleClick = () => {
     setToUserId("");
     setToGroupId(props.id);
+    setChatboxId(props.chatboxId);
     setChatProfile({
       id: props.id,
       name: props.name,

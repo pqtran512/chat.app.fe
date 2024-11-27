@@ -6,6 +6,7 @@ type ChatProfile = {
   avatar?: string;
   isGroupChat: boolean;
   memberCount?: number;
+  newMessage?: boolean;
 };
 
 type ChatContext = {
@@ -36,6 +37,7 @@ export const ChatProvider: FC<Props> = ({ children }) => {
     avatar: "",
     isGroupChat: false,
     memberCount: 0,
+    newMessage: false,
   });
 
   return (

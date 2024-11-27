@@ -8,23 +8,19 @@ import ContactInfo from "src/components/ContactInfo";
 import { onReceiveChat } from "src/utils/ws/clients/chat.";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 import { useQueryClient } from "react-query";
-import { useChat } from "src/contexts/ChatContext";
 
 interface HomePageProps {}
 
-const HomePage: FC<HomePageProps> = ({}) => {
+const HomePage: FC<HomePageProps> = (props) => {
   const { showChatBoxList, showChatDetail, showContactInfo, showContactList } =
     useTabs();
 
   const [chosen, setChosen] = useState(0);
   const [openChatInfo, setOpenChatInfo] = useState(false);
   const queryClient = useQueryClient();
-  const { toUserId, toGroupId, chatboxId } =
-    useChat();
 
   useEffect(() => {
     onReceiveChat((data: ReceiveMessageDto) => {
-      console.log(data)
       if (data.payloadId) {
         queryClient.invalidateQueries(["GetChatBoxListByUser"]);
         queryClient.invalidateQueries(["ChatDetail"]);

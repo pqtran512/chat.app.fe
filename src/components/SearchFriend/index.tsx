@@ -15,6 +15,7 @@ import React, { FC, useState } from "react";
 import { useMutation } from "react-query";
 import { authAPI } from "src/api";
 import { friendAPI } from "src/api/friend.api";
+import { userAPI } from "src/api/user.api";
 import { useFriendRequest } from "src/contexts/FriendContext";
 
 interface SearchFriendProps {
@@ -37,6 +38,7 @@ const SearchFriend: FC<SearchFriendProps> = (props) => {
 const SearchFriendForm = ({ handleClose }) => {
   const [phoneInput, setPhoneInput] = useState("");
   const [user, setUser] = useState({
+    fullname: "",
     phone: "",
     avatar:
       "https://www.pngkit.com/png/detail/115-1150714_avatar-single-customer-view-icon.png",
@@ -52,17 +54,22 @@ const SearchFriendForm = ({ handleClose }) => {
     searchFriend.mutate(phoneInput);
   };
 
-  const searchFriend = useMutation(authAPI.checkphone, {
+  const searchFriend = useMutation(userAPI.findByPhone, {
     onSuccess: (response) => {
-      const isUserExist = response.data;
-      if (isUserExist) {
-        setUser((prev) => ({ ...prev, phone: phoneInput }));
+      const { id, phone, profile } = response.data;
+      if (id) {
+        setUser((prev) => ({
+          ...prev,
+          phone: phone,
+          fullname: profile[0].fullname,
+          avatar: profile[0].avatar,
+        }));
       } else {
         enqueueSnackbar("The user does not exist!!", { variant: "error" });
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.respone.data.message, { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -78,10 +85,7 @@ const SearchFriendForm = ({ handleClose }) => {
       });
     },
     onError: (error: any) => {
-      enqueueSnackbar(
-        `You have already sent friend request to ${phoneInput} - ${error.respone.data.message}`,
-        { variant: "warning" }
-      );
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -123,8 +127,11 @@ const SearchFriendForm = ({ handleClose }) => {
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
-              <Avatar alt={user.phone} src={user.avatar} />
-              <Typography>{user.phone}</Typography>
+              <Avatar
+                alt={user.phone}
+                src={`data:image/png;base64, ${user.avatar}`}
+              />
+              <Typography>{user.fullname}</Typography>
             </Stack>
             <Button variant="contained" size="small" onClick={handleAddFriend}>
               Add Friend

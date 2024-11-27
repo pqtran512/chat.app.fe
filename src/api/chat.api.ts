@@ -26,23 +26,4 @@ export const chatAPI = {
   setChatboxSeen(chatboxId: string) {
     return http.get<boolean>(`${CHAT_URL.SET_CHATBOX_SEEN}/${chatboxId}`);
   },
-  // refresh(refreshDto: RefreshDto) {
-  //   return http.post<Token>(AUTH_URL.REFRESH, refreshDto);
-  // },
-  // checkUserExist(phone: string) {
-  //   return http.get<boolean>(`${AUTH_URL.CHECK_USER_EXIST}/${phone}`);
-  // },
-  // logout() {
-  //   return http.post<any>(AUTH_URL.LOGOUT);
-  // },
-  // checkphone(phone: string) {
-  //   // return http.post<CheckPhoneResponse>(`/auth/check-user-exist/${phone}`)
-  //   return http.get<boolean>(`/auth/check-user-exist/${phone}`);
-  // },
-  // resetpassword(resetPasswordDto: ResetPassworDto) {
-  //   return http.post<ResetPasswordResponse>(
-  //     AUTH_URL.RESETPASSWORD,
-  //     resetPasswordDto
-  //   );
-  // },
 };
