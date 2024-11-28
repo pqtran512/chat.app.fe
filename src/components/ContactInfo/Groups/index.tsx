@@ -25,7 +25,6 @@ const Groups: FC<GroupsProps> = (props) => {
 
   const searchGroup = useMutation(groupAPI.groupList, {
     onSuccess: (res) => {
-      console.log(res.data.groups)
       if (res.data.groups.length > 0) {
         const searchGroupResults = [];
         res.data.groups.map((e) => {

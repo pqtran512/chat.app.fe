@@ -18,6 +18,7 @@ import { useGroupList } from "src/contexts/GroupContext";
 import { enqueueSnackbar } from "notistack";
 import { useTabs } from "src/contexts/TabsContext";
 import { useChat } from "src/contexts/ChatContext";
+import { GroupListDto } from "src/types/api/dto";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
@@ -43,10 +44,10 @@ const Group: FC<GroupProps> = (props) => {
     setAnchorEl(null);
   };
   // ------------------------
-  // const groupListContext = useGroupList();
+  const groupListContext = useGroupList();
 
   const handleLeaveGroup = () => {
-    // leaveGroup.mutate(props.id);
+    leaveGroup.mutate(props.id);
     setAnchorEl(null);
   };
 
@@ -66,6 +67,40 @@ const Group: FC<GroupProps> = (props) => {
       memberCount: props.memberCount,
     });
   };
+
+  const leaveGroup = useMutation(groupAPI.leaveGroup, {
+    onSuccess: (response) => {
+      enqueueSnackbar(`You've just leave group ${props.name}`, {variant: "success"})
+      searchGroup.mutate({searchText: ""})
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(`Fail leave group ${props.name} - ${error.message}`, {variant: "error"})
+    }
+  })
+
+  const searchGroup = useMutation(groupAPI.groupList, {
+    onSuccess: (res) => {
+      if (res.data.groups.length > 0) {
+        const searchGroupResults = [];
+        res.data.groups.map((e) => {
+          searchGroupResults.push({
+            id: e.group.id,
+            name: e.group.name,
+            avatar: e.group.avatar,
+            group_members: [...e.group.group_members],
+          });
+        });
+        groupListContext.setGroupList([...searchGroupResults]);
+      } else {
+        enqueueSnackbar("Not found any groups with that name", {
+          variant: "info",
+        });
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error, { variant: "error" });
+    },
+  });
 
   return (
     <Stack direction={"row"} alignItems={"center"}>
