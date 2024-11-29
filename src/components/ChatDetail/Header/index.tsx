@@ -15,6 +15,8 @@ import CallIcon from "@mui/icons-material/Call";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import InfoIcon from "@mui/icons-material/Info";
 import { useChat } from "src/contexts/ChatContext";
+import ProfileGroup from "src/components/ProfileGroup";
+import ProfileFriend from "src/components/ProfileFriend";
 
 interface HeaderProps {
   openChatInfo: boolean;
@@ -22,8 +24,13 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = (props) => {
-  const [openProfile, setOpenProfile] = useState(false);
+  const [openProfileFriendOrGroup, setOpenProfileFriendOrGroup] = useState(false);
   const { chatProfile } = useChat();
+
+  const handleShowProfileFriendOrGroup = () => {
+    setOpenProfileFriendOrGroup(true);
+
+  }
 
   return (
     <Box
@@ -41,7 +48,7 @@ const Header: FC<HeaderProps> = (props) => {
         p={1}
       >
         <Box>
-          <Button>
+          <Button onClick={handleShowProfileFriendOrGroup}>
             {chatProfile.id && (
               <Stack direction={"row"} spacing={2} alignItems={"center"}>
                 {false ? (
@@ -100,7 +107,12 @@ const Header: FC<HeaderProps> = (props) => {
           </Stack>
         </Box>
       </Stack>
-      {/* <Profile open={openProfile} handleClose={setOpenProfile} fullname="Beckham" avatar=""/> */}
+      {chatProfile.isGroupChat 
+      ? 
+      <ProfileGroup open={openProfileFriendOrGroup} handleClose={setOpenProfileFriendOrGroup} />
+      : 
+      <ProfileFriend open={openProfileFriendOrGroup} handleClose={setOpenProfileFriendOrGroup}/>
+    }
     </Box>
   );
 };

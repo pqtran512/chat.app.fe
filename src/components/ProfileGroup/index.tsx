@@ -5,12 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   IconButton,
-  Radio,
-  RadioGroup,
   Stack,
   TextField,
   Typography,
@@ -18,46 +13,80 @@ import {
 import { FC, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "@emotion/styled";
-import { UpdateProfileDto } from "src/types/api/dto";
+import { UpdateProfileGroupDto } from "src/types/api/dto";
 import { useMutation } from "react-query";
-import { profileAPI } from "src/api";
-import { useProfile } from "src/contexts/ProfileContext";
+import { groupAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
+import { useChat } from "src/contexts/ChatContext";
 
-interface ProfileProps {
+interface ProfileGroupProps {
   open: boolean;
   handleClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Profile: FC<ProfileProps> = (props) => {
-  const profileContext = useProfile()
+const ProfileGroup: FC<ProfileGroupProps> = (props) => {
+  const { chatProfile, setChatProfile } = useChat();
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [updateProfileInfo, setUpdateProfileInfo] = useState({
-    profileId: profileContext.profileId,
-    fullname: profileContext.fullname,
-    avatar: profileContext.avatar,
-  } as UpdateProfileDto);
+  const [updateProfileGroupInfo, setUpdateProfileGroupInfo] = useState({
+    id: chatProfile.id,
+    name: chatProfile.name,
+    avatar: chatProfile.avatar,
+    group_status_code: "active",
+    description: "",
+  } as UpdateProfileGroupDto);
 
-  const handleUpdate = (e) => {
-    updateProfile.mutate(updateProfileInfo)
+  const handleUpdateGroup = (e) => {
+    updateProfileGroup.mutate(updateProfileGroupInfo);
   };
 
-  const updateProfile = useMutation(profileAPI.updateProfile, {
+  const updateProfileGroup = useMutation(groupAPI.updateGroup, {
     onSuccess: (response) => {
-      enqueueSnackbar("Update profile successfull!!", {variant: "success"})
-      profileContext.setProfileId(updateProfileInfo.profileId)
-      profileContext.setFulname(updateProfileInfo.fullname)
-      profileContext.setAvatar(updateProfileInfo.avatar)
+      enqueueSnackbar("Update profile successfull!!", { variant: "success" });
+      setChatProfile((prev) => ({ ...prev, id: updateProfileGroupInfo.id }));
+      setChatProfile((prev) => ({
+        ...prev,
+        name: updateProfileGroupInfo.name,
+      }));
+      setChatProfile((prev) => ({
+        ...prev,
+        avatar: updateProfileGroupInfo.avatar,
+      }));
+
       handleClose();
     },
     onError: (error: any) => {
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    },
+  });
 
-      enqueueSnackbar(error.response.data.message, {variant: "error"})
+  const handleLeaveGroup = () => {
+    leaveGroup.mutate(chatProfile.id)
+    handleClose();
+  }
+  const leaveGroup = useMutation(groupAPI.leaveGroup, {
+    onSuccess: (response) => {
+      enqueueSnackbar(`You've just leave group ${chatProfile.name}`, {variant: "success"})
+      // Switch to another leave group
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(`Fail leave group ${chatProfile.name} - ${error.message}`, {variant: "error"})
     }
   })
 
-  const handleInputChange = (e) => {
-    setUpdateProfileInfo((prev) => ({ ...prev, fullname: e.target.value }));
+  const handleNameInputChange = (e) => {
+    setUpdateProfileGroupInfo((prev) => ({ ...prev, name: e.target.value }));
+  };
+
+  const handleDescriptionInputChange = (e) => {
+    setUpdateProfileGroupInfo((prev) => ({
+      ...prev,
+      description: e.target.value,
+    }));
+  };
+
+  const handleClose = () => {
+    props.handleClose(false);
+    setOpenUpdate(false);
   };
 
   const handleSelectedAvatar = async (e) => {
@@ -105,17 +134,12 @@ const Profile: FC<ProfileProps> = (props) => {
         "load",
         () => {
           const avatar = String(fileReader.result).split(",")[1];
-          setUpdateProfileInfo((prev) => ({ ...prev, avatar: avatar }));
+          setUpdateProfileGroupInfo((prev) => ({ ...prev, avatar: avatar }));
         },
         false
       );
     }
   };
-
-  const handleClose = () => {
-    props.handleClose(false);
-    setOpenUpdate(false);
-  }
 
   return (
     <Dialog
@@ -130,9 +154,7 @@ const Profile: FC<ProfileProps> = (props) => {
         ) : (
           <DialogTitle>Profile</DialogTitle>
         )}
-        <IconButton
-          onClick={handleClose}
-        >
+        <IconButton onClick={handleClose}>
           <CloseIcon />
         </IconButton>
       </Stack>
@@ -143,12 +165,10 @@ const Profile: FC<ProfileProps> = (props) => {
             <Stack direction={"row"} spacing={4} alignItems={"center"}>
               <Typography>Change Avatar</Typography>
               <Button component="label" role={undefined} tabIndex={-1}>
-                
-                  <Avatar
-                    sx={{ width: 60, height: 60 }}
-                    src={`data:image/jpeg;base64,${updateProfileInfo.avatar}`}
-                  />
-                
+                <Avatar
+                  sx={{ width: 60, height: 60 }}
+                  src={`data:image/jpeg;base64,${updateProfileGroupInfo.avatar}`}
+                />
 
                 <VisuallyHiddenInput
                   accept=".jpeg, .jpg, .png"
@@ -162,42 +182,22 @@ const Profile: FC<ProfileProps> = (props) => {
               <Typography>Change name</Typography>
               <TextField
                 label="your name"
-                value={updateProfileInfo.fullname
-                }
-                onChange={handleInputChange}
+                value={updateProfileGroupInfo.name}
+                onChange={handleNameInputChange}
+              />
+              <Typography>Change description</Typography>
+              <TextField
+                label="description"
+                value={updateProfileGroupInfo.description}
+                onChange={handleDescriptionInputChange}
               />
             </Stack>
-            {/* <FormControl>
-              <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="male"
-                name="radio-buttons-group"
-              >
-                <FormControlLabel
-                  value="male"
-                  control={<Radio />}
-                  label="Male"
-                />
-                <FormControlLabel
-                  value="female"
-                  control={<Radio />}
-                  label="Female"
-                />
-                <FormControlLabel
-                  value="other"
-                  control={<Radio />}
-                  label="Other"
-                />
-              </RadioGroup>
-            </FormControl> */}
             <Divider />
             <Stack direction={"row"} justifyContent={"right"} spacing={1}>
               <Button variant="text" onClick={() => setOpenUpdate(false)}>
                 Cancel
               </Button>
-              <Button variant="contained" onClick={handleUpdate}>
+              <Button variant="contained" onClick={handleUpdateGroup}>
                 Update
               </Button>
             </Stack>
@@ -206,24 +206,34 @@ const Profile: FC<ProfileProps> = (props) => {
       ) : (
         <DialogContent>
           <Stack spacing={2}>
-            <Stack spacing={2} alignItems={"center"}>
-              <Avatar
-                sx={{ width: 60, height: 60 }}
-                src={`data:image/jpeg;base64,${profileContext.avatar}`}
-              />
-              <Typography variant="h4">{profileContext.fullname}</Typography>
-              <Stack direction={"row"}></Stack>
+            <Stack spacing={1}>
+              <Stack
+                spacing={2}
+                alignItems={"center"}
+                justifyContent={"center"}
+                direction={"row"}
+              >
+                <Avatar
+                  sx={{ width: 60, height: 60 }}
+                  src={`data:image/jpeg;base64,${chatProfile.avatar}`}
+                />
+                <Stack>
+                  <Typography variant="h4">{chatProfile.name}</Typography>
+                  <Typography variant="subtitle2">
+                    {updateProfileGroupInfo.description}
+                  </Typography>
+                </Stack>
+              </Stack>
+              <Button onClick={handleClose}>Chat</Button>
             </Stack>
-
             <Divider />
-            <Stack spacing={2}>
-              <Typography variant="h4">Personal information</Typography>
-              <Typography>Gender: </Typography>
-              <Typography>Birthday: </Typography>
-              <Typography>Phone: </Typography>
-            </Stack>
+            <Typography variant="h4">Members (2)</Typography>
+            <Divider />
+            <Typography variant="h4">Photos/Video</Typography>
             <Divider />
             <Button onClick={() => setOpenUpdate(true)}>Update</Button>
+            <Divider />
+            <Button color="error" onClick={handleLeaveGroup}>Leave Group</Button>
           </Stack>
         </DialogContent>
       )}
@@ -243,4 +253,4 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export default Profile;
+export default ProfileGroup;
