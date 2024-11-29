@@ -45,9 +45,9 @@ const Profile: FC<ProfileProps> = (props) => {
   const updateProfile = useMutation(profileAPI.updateProfile, {
     onSuccess: (response) => {
       enqueueSnackbar("Update profile successfull!!", {variant: "success"})
-      profileContext.setProfileId(updateProfileInfo.profileId)
-      profileContext.setFulname(updateProfileInfo.fullname)
-      profileContext.setAvatar(updateProfileInfo.avatar)
+      profileContext.setProfileId(updateProfileInfo.profileId);
+      profileContext.setFulname(updateProfileInfo.fullname);
+      profileContext.setAvatar(updateProfileInfo.avatar);
       handleClose();
     },
     onError: (error: any) => {

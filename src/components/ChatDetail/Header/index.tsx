@@ -17,6 +17,10 @@ import InfoIcon from "@mui/icons-material/Info";
 import { useChat } from "src/contexts/ChatContext";
 import ProfileGroup from "src/components/ProfileGroup";
 import ProfileFriend from "src/components/ProfileFriend";
+import { useMutation } from "react-query";
+import { groupAPI } from "src/api";
+import { useGroupMembers } from "src/contexts/GroupMemberContext";
+import { enqueueSnackbar } from "notistack";
 
 interface HeaderProps {
   openChatInfo: boolean;
@@ -26,10 +30,34 @@ interface HeaderProps {
 const Header: FC<HeaderProps> = (props) => {
   const [openProfileFriendOrGroup, setOpenProfileFriendOrGroup] = useState(false);
   const { chatProfile } = useChat();
+  const { members, setMembers } = useGroupMembers();
+
+
+  const getGroupMembers = useMutation(groupAPI.getGroupMembers, {
+    onSuccess: (response) => {
+      if (response.status === 200) {
+        const groupMembers = [];
+        response.data.users.forEach((u) => {
+          groupMembers.push({
+            user_id: u.user.id,
+            profile_id: u.user.profile[0].id,
+            fullname: u.user.profile[0].fullname,
+            avatar: u.user.profile[0].avatar,
+            active: 'inactive',
+          });
+        });
+        setMembers(groupMembers)
+      }
+        
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error, {variant: "error"})
+    }
+  })
 
   const handleShowProfileFriendOrGroup = () => {
     setOpenProfileFriendOrGroup(true);
-
+    getGroupMembers.mutate(chatProfile.id)
   }
 
   return (

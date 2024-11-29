@@ -1,5 +1,7 @@
 import {
   Avatar,
+  AvatarGroup,
+  Box,
   Button,
   Dialog,
   DialogContent,
@@ -19,11 +21,15 @@ import { FC, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "@emotion/styled";
 import { UpdateProfileGroupDto } from "src/types/api/dto";
-import { useMutation } from "react-query";
-import { groupAPI } from "src/api";
+import { useMutation, useQuery } from "react-query";
+import { friendAPI, groupAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
 import { useChat } from "src/contexts/ChatContext";
 import { GroupStatusCode } from "src/utils/enums";
+import { useGroupMembers } from "src/contexts/GroupMemberContext";
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import GroupMembers from "./GroupMembers";
+import { useFriendList } from "src/contexts/FriendContext";
 
 interface ProfileGroupProps {
   open: boolean;
@@ -33,6 +39,7 @@ interface ProfileGroupProps {
 const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   const { chatProfile, setChatProfile } = useChat();
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [openMember, setOpenMember] = useState(false);
   const [updateProfileGroupInfo, setUpdateProfileGroupInfo] = useState({
     id: chatProfile.id,
     name: chatProfile.name,
@@ -40,6 +47,9 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
     group_status_code: GroupStatusCode.ACTIVE,
     description: "",
   } as UpdateProfileGroupDto);
+
+  const { members } = useGroupMembers();
+  const friendListContext = useFriendList();
 
   const handleUpdateGroup = (e) => {
     updateProfileGroup.mutate(updateProfileGroupInfo);
@@ -73,13 +83,37 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
       enqueueSnackbar(`You've just leave group ${chatProfile.name}`, {
         variant: "success",
       });
-      // Switch to another leave group
+      // Switch to another group
     },
     onError: (error: any) => {
       enqueueSnackbar(
         `Fail leave group ${chatProfile.name} - ${error.message}`,
         { variant: "error" }
       );
+    },
+  });
+
+  const { refetch } = useQuery({
+    queryKey: ["FriendList"],
+    queryFn: () => friendAPI.searchFriend({ text: "" }),
+    enabled: false,
+    onSuccess: (response) => {
+      if (response.data.length > 0) {
+        const friendList = [];
+        response.data.forEach((e) => {
+          friendList.push({
+            id: e.to_user_profile.id,
+            fullname: e.to_user_profile.profile[0].fullname,
+            avatar: e.to_user_profile.profile[0].avatar,
+          });
+        });
+        friendListContext.setFriendList(friendList);
+      } else {
+        friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -95,13 +129,22 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   };
 
   const handleStatusCode = (e) => {
-    setUpdateProfileGroupInfo((prev) => ({...prev, group_status_code: e.target.value}))
-  }
+    setUpdateProfileGroupInfo((prev) => ({
+      ...prev,
+      group_status_code: e.target.value,
+    }));
+  };
 
   const handleClose = () => {
     props.handleClose(false);
     setOpenUpdate(false);
+    setOpenMember(false);
   };
+
+  const handleOpenMembersOfGroup = () => {
+    setOpenMember(true);
+    refetch();
+  }
 
   const handleSelectedAvatar = async (e) => {
     function resizeImage(file, width) {
@@ -156,6 +199,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   };
 
   return (
+    <Box>
     <Dialog
       open={props.open}
       onClose={props.handleClose}
@@ -216,14 +260,13 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                 name="radio-buttons-group"
               >
                 <FormControlLabel
-                onClick={handleStatusCode}
+                  onClick={handleStatusCode}
                   value={GroupStatusCode.ACTIVE}
                   control={<Radio />}
                   label={GroupStatusCode.ACTIVE}
                 />
                 <FormControlLabel
-                onClick={handleStatusCode}
-
+                  onClick={handleStatusCode}
                   value={GroupStatusCode.INACTIVE}
                   control={<Radio />}
                   label={GroupStatusCode.INACTIVE}
@@ -265,9 +308,17 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
               <Button onClick={handleClose}>Chat</Button>
             </Stack>
             <Divider />
-            <Typography variant="h4">Members (2)</Typography>
+            <Typography variant="h5">{`Members (${members.length})`}</Typography>
+            <Stack direction={'row'}>
+            <AvatarGroup max={3}>
+              {members.map((m) => 
+                <Avatar alt={m.fullname} src={`data:image/jpeg;base64, ${m.avatar}`}/>
+              )}
+            </AvatarGroup>
+            <IconButton onClick={handleOpenMembersOfGroup}><MoreHorizIcon/></IconButton>
+            </Stack>
             <Divider />
-            <Typography variant="h4">Photos/Video</Typography>
+            <Typography variant="h5">Photos/Video</Typography>
             <Divider />
             <Button onClick={() => setOpenUpdate(true)}>Update</Button>
             <Divider />
@@ -278,6 +329,8 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
         </DialogContent>
       )}
     </Dialog>
+    {openMember && <GroupMembers open={openMember} setOpen={setOpenMember} group_id={chatProfile.id}/>}
+    </Box>
   );
 };
 

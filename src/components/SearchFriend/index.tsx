@@ -13,7 +13,6 @@ import {
 import { enqueueSnackbar } from "notistack";
 import React, { FC, useState } from "react";
 import { useMutation } from "react-query";
-import { authAPI } from "src/api";
 import { friendAPI } from "src/api/friend.api";
 import { userAPI } from "src/api/user.api";
 import { useFriendRequest } from "src/contexts/FriendContext";
@@ -40,8 +39,7 @@ const SearchFriendForm = ({ handleClose }) => {
   const [user, setUser] = useState({
     fullname: "",
     phone: "",
-    avatar:
-      "https://www.pngkit.com/png/detail/115-1150714_avatar-single-customer-view-icon.png",
+    avatar:"",
   });
 
   const friendRequestContext = useFriendRequest();
