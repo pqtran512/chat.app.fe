@@ -20,3 +20,8 @@ export enum WsEvent {
   ERROR = 'error',
   EXCEPTION = 'exception',
 }
+
+export enum GroupStatusCode {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}

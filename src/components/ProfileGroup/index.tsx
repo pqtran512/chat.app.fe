@@ -5,7 +5,12 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
   IconButton,
+  Radio,
+  RadioGroup,
   Stack,
   TextField,
   Typography,
@@ -18,6 +23,7 @@ import { useMutation } from "react-query";
 import { groupAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
 import { useChat } from "src/contexts/ChatContext";
+import { GroupStatusCode } from "src/utils/enums";
 
 interface ProfileGroupProps {
   open: boolean;
@@ -31,12 +37,13 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
     id: chatProfile.id,
     name: chatProfile.name,
     avatar: chatProfile.avatar,
-    group_status_code: "active",
+    group_status_code: GroupStatusCode.ACTIVE,
     description: "",
   } as UpdateProfileGroupDto);
 
   const handleUpdateGroup = (e) => {
     updateProfileGroup.mutate(updateProfileGroupInfo);
+    handleClose();
   };
 
   const updateProfileGroup = useMutation(groupAPI.updateGroup, {
@@ -51,8 +58,6 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
         ...prev,
         avatar: updateProfileGroupInfo.avatar,
       }));
-
-      handleClose();
     },
     onError: (error: any) => {
       enqueueSnackbar(error.response.data.message, { variant: "error" });
@@ -60,18 +65,23 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   });
 
   const handleLeaveGroup = () => {
-    leaveGroup.mutate(chatProfile.id)
+    leaveGroup.mutate(chatProfile.id);
     handleClose();
-  }
+  };
   const leaveGroup = useMutation(groupAPI.leaveGroup, {
     onSuccess: (response) => {
-      enqueueSnackbar(`You've just leave group ${chatProfile.name}`, {variant: "success"})
+      enqueueSnackbar(`You've just leave group ${chatProfile.name}`, {
+        variant: "success",
+      });
       // Switch to another leave group
     },
     onError: (error: any) => {
-      enqueueSnackbar(`Fail leave group ${chatProfile.name} - ${error.message}`, {variant: "error"})
-    }
-  })
+      enqueueSnackbar(
+        `Fail leave group ${chatProfile.name} - ${error.message}`,
+        { variant: "error" }
+      );
+    },
+  });
 
   const handleNameInputChange = (e) => {
     setUpdateProfileGroupInfo((prev) => ({ ...prev, name: e.target.value }));
@@ -83,6 +93,10 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
       description: e.target.value,
     }));
   };
+
+  const handleStatusCode = (e) => {
+    setUpdateProfileGroupInfo((prev) => ({...prev, group_status_code: e.target.value}))
+  }
 
   const handleClose = () => {
     props.handleClose(false);
@@ -193,6 +207,30 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
               />
             </Stack>
             <Divider />
+            <FormControl>
+              <FormLabel id="demo-radio-buttons-group-label">Status</FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="male"
+                name="radio-buttons-group"
+              >
+                <FormControlLabel
+                onClick={handleStatusCode}
+                  value={GroupStatusCode.ACTIVE}
+                  control={<Radio />}
+                  label={GroupStatusCode.ACTIVE}
+                />
+                <FormControlLabel
+                onClick={handleStatusCode}
+
+                  value={GroupStatusCode.INACTIVE}
+                  control={<Radio />}
+                  label={GroupStatusCode.INACTIVE}
+                />
+              </RadioGroup>
+            </FormControl>
+            <Divider />
             <Stack direction={"row"} justifyContent={"right"} spacing={1}>
               <Button variant="text" onClick={() => setOpenUpdate(false)}>
                 Cancel
@@ -233,7 +271,9 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
             <Divider />
             <Button onClick={() => setOpenUpdate(true)}>Update</Button>
             <Divider />
-            <Button color="error" onClick={handleLeaveGroup}>Leave Group</Button>
+            <Button color="error" onClick={handleLeaveGroup}>
+              Leave Group
+            </Button>
           </Stack>
         </DialogContent>
       )}
