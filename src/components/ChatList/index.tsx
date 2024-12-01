@@ -105,15 +105,6 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             label="Tìm kiếm"
             variant="outlined"
             sx={{ width: 250 }}
-            // slotProps={{
-            //   input: {
-            //     startAdornment: <InputAdornment position="start">
-            //       <IconButton>
-            //         <SearchIcon/>
-            //       </IconButton>
-            //     </InputAdornment>
-            //   }
-            // }}
           />
           <Stack direction={"row"} spacing={1}>
             <IconButton
@@ -152,16 +143,6 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
               </Button>
             </Stack>
             <Stack direction="row" alignItems="center" spacing={1}>
-              <Button
-                variant="text"
-                sx={{ padding: "0 0 0 0", color: "#6e7278" }}
-              >
-                Phân loại
-                <KeyboardArrowUpIcon />
-              </Button>
-              {/* <IconButton sx={{ padding: "0 0 0 0" }}>
-                  <MoreHorizIcon />
-                </IconButton> */}
             </Stack>
           </Stack>
           <Divider />

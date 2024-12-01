@@ -11,16 +11,16 @@ const FriendRequests: FC<FriendRequestsProps> = (props) => {
   const {friendSentList, friendReceivedList} = useFriendRequest();
 
   return (
-    <Stack>
+    <Stack sx={{height: "100vh"}}>
       <Box sx={{ backgroundColor: "#fff", padding: 2 }}>
         <Stack direction={"row"}>
           <PersonAddAltIcon sx={{ marginRight: 2 }} />
-          <Typography variant="h4">Friend list</Typography>
+          <Typography variant="h4">Lời mời kiết bạn</Typography>
         </Stack>
       </Box>
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
         <Box sx={{ padding: 3 }}>
-          <Typography>{`Requests sent (${friendSentList[0].id === '' ? 0 : friendSentList.length})`}</Typography>
+          <Typography>{`Lời mời đã gửi (${friendSentList[0].id === '' ? 0 : friendSentList.length})`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
           {friendSentList[0].id !== '' && friendSentList.map((f) => (
@@ -28,7 +28,7 @@ const FriendRequests: FC<FriendRequestsProps> = (props) => {
           ))}
         </Stack>
         <Box sx={{ padding: 3 }}>
-          <Typography>{`Requests received (${friendReceivedList[0].id === '' ? 0 : friendReceivedList.length})`}</Typography>
+          <Typography>{`Lời mới đã nhận (${friendReceivedList[0].id === '' ? 0 : friendReceivedList.length})`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
           {friendReceivedList[0].id !== '' && friendReceivedList.map((f) => (

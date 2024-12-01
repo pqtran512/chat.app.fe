@@ -12,13 +12,15 @@ import {
 } from "@mui/material";
 import { FC, useState } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { groupAPI } from "src/api/group.api";
 import { useGroupList } from "src/contexts/GroupContext";
 import { enqueueSnackbar } from "notistack";
 import { useTabs } from "src/contexts/TabsContext";
 import { useChat } from "src/contexts/ChatContext";
-import { GroupListDto } from "src/types/api/dto";
+import { useAuth } from "src/contexts/AuthContext";
+import { Padding } from "@mui/icons-material";
+import { group } from "console";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
@@ -31,10 +33,12 @@ interface GroupProps {
   name: string;
   avatar: string;
   memberCount?: number;
+  owner_id?: string;
 }
 
 const Group: FC<GroupProps> = (props) => {
   // make ui more beatifull
+  console.log(props.owner_id);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,6 +49,9 @@ const Group: FC<GroupProps> = (props) => {
   };
   // ------------------------
   const groupListContext = useGroupList();
+  const { userId } = useAuth();
+
+  const queryClient = useQueryClient();
 
   const handleLeaveGroup = () => {
     leaveGroup.mutate(props.id);
@@ -58,7 +65,7 @@ const Group: FC<GroupProps> = (props) => {
     setShowContactInfo(false);
     setShowChatDetail(true);
     setToGroupId(props.id);
-    setToUserId('');
+    setToUserId("");
     setChatProfile({
       id: props.id,
       avatar: props.avatar,
@@ -70,13 +77,17 @@ const Group: FC<GroupProps> = (props) => {
 
   const leaveGroup = useMutation(groupAPI.leaveGroup, {
     onSuccess: (response) => {
-      enqueueSnackbar(`You've just leave group ${props.name}`, {variant: "success"})
-      searchGroup.mutate({searchText: ""})
+      enqueueSnackbar(`Rời nhóm ${props.name}`, {
+        variant: "success",
+      });
+      searchGroup.mutate({ searchText: "" });
     },
     onError: (error: any) => {
-      enqueueSnackbar(`Fail leave group ${props.name} - ${error.message}`, {variant: "error"})
-    }
-  })
+      enqueueSnackbar(`Rời nhóm ${props.name} không thành công - ${error.message}`, {
+        variant: "error",
+      });
+    },
+  });
 
   const searchGroup = useMutation(groupAPI.groupList, {
     onSuccess: (res) => {
@@ -92,7 +103,7 @@ const Group: FC<GroupProps> = (props) => {
         });
         groupListContext.setGroupList([...searchGroupResults]);
       } else {
-        enqueueSnackbar("Not found any groups with that name", {
+        enqueueSnackbar("", {
           variant: "info",
         });
       }
@@ -101,6 +112,21 @@ const Group: FC<GroupProps> = (props) => {
       enqueueSnackbar(error, { variant: "error" });
     },
   });
+
+  const handleRemoveGroup = () => {
+    removeGroup.mutate(props.id)
+    handleClose();
+  }
+  const removeGroup = useMutation(groupAPI.deleteGroup, {
+    onSuccess: (response) => {
+      enqueueSnackbar("Giải tán nhóm", {variant: "success"})
+      queryClient.invalidateQueries(["GetListGroupByUser"]);
+
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error, {variant: "error"})
+    }
+  })
 
   return (
     <Stack direction={"row"} alignItems={"center"}>
@@ -117,7 +143,10 @@ const Group: FC<GroupProps> = (props) => {
         >
           <Avatar alt="Travis Howard" src={props.avatar[1]} />
         </Badge> */}
-        <Avatar alt={props.name} src={`data:image/png;base64, ${props.avatar}`} />
+        <Avatar
+          alt={props.name}
+          src={`data:image/png;base64, ${props.avatar}`}
+        />
 
         <Typography variant="h4" sx={{ marginLeft: 3 }}>
           {props.name}
@@ -141,9 +170,12 @@ const Group: FC<GroupProps> = (props) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem sx={{ padding: 0 }} onClick={handleLeaveGroup}>
-          <Button size="small">Leave group</Button>
+        <MenuItem onClick={handleLeaveGroup}>
+          <Typography color="primary" variant="h5">Rời nhóm</Typography>
         </MenuItem>
+        {props.owner_id && props.owner_id === userId && (
+          <MenuItem onClick={handleRemoveGroup}><Typography color="error" variant="h5">Giải tán nhóm</Typography></MenuItem>
+        )}
       </Menu>
       <Divider />
     </Stack>

@@ -73,7 +73,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
 
   const addMember = useMutation(groupAPI.addMembers, {
     onSuccess: (response) => {
-      enqueueSnackbar("Add to Group Successfull", { variant: "success" });
+      enqueueSnackbar("Thêm vào nhóm thành công", { variant: "success" });
       getGroupMembers.mutate(props.group_id);
     },
     onError: (error: any) => {
@@ -83,7 +83,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
 
   const removeMember = useMutation(groupAPI.removeMembers, {
     onSuccess: (response) => {
-      enqueueSnackbar("Remove Successfull", { variant: "success" });
+      enqueueSnackbar("Xoá thành viên thành công", { variant: "success" });
       getGroupMembers.mutate(props.group_id);
     },
     onError: (error: any) => {
@@ -120,7 +120,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Typography variant="h4">Members</Typography>
+          <Typography variant="h4">Thành viên nhóm</Typography>
           <IconButton onClick={() => props.setOpen(false)}>
             <CloseIcon />
           </IconButton>
@@ -135,7 +135,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           variant="contained"
           onClick={handleAddMember}
         >
-          Add members
+          Thêm thành viên
         </Button>
         <Autocomplete
           multiple
@@ -150,8 +150,8 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Search Friend"
-              placeholder="Add members"
+              label="Tìm kiếm bạn bè"
+              placeholder="Thêm thành viên"
             />
           )}
           onChange={(event, value) => setSelectedFriend(value)}
@@ -163,7 +163,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           variant="contained"
           onClick={handleRemoveMember}
         >
-          Remove members
+          Xóa thành viên
         </Button>
         <Autocomplete
           multiple
@@ -178,8 +178,8 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Choose members"
-              placeholder="Add members"
+              label="Chọn thành viên"
+              placeholder="Chọn thành viên"
             />
           )}
           onChange={(event, value) => setSelectedMember(value)}
@@ -187,7 +187,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
         <Typography
           variant="h5"
           padding={2}
-        >{`List members (${members.length})`}</Typography>
+        >{`Danh sách thành viên (${members.length})`}</Typography>
         <Stack spacing={2}>
           {members.map((m) => (
             <Member id={m.user_id} fullname={m.fullname} avatar={m.avatar} />

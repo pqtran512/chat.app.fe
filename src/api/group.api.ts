@@ -8,7 +8,8 @@ export const GROUP_URL = {
   LEAVE_GROUP: "/group-members/leave-group",
   GET_MEMBERS: "/group-members/list-by-group",
   ADD_MEMBERS: "/group-members", 
-  REMOVE_MEMBERS: "/group-members/remove-members"
+  REMOVE_MEMBERS: "/group-members/remove-members",
+  DELETE_GROUP: "/group",
 };
 
 export const groupAPI = {
@@ -38,5 +39,9 @@ export const groupAPI = {
 
   removeMembers(removeMembersDto: RemoveMembersDto) {
     return http.post<any>(GROUP_URL.REMOVE_MEMBERS, removeMembersDto)
+  },
+
+  deleteGroup(id: string) {
+    return http.delete<any>(`${GROUP_URL.DELETE_GROUP}/${id}`)
   }
 };

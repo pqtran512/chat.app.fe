@@ -25,7 +25,7 @@ interface SearchFriendProps {
 const SearchFriend: FC<SearchFriendProps> = (props) => {
   return (
     <Dialog fullWidth maxWidth="xs" open={props.open}>
-      <DialogTitle>Add friend</DialogTitle>
+      <DialogTitle>Kết bạn</DialogTitle>
       <Divider />
       <DialogContent>
         <SearchFriendForm handleClose={props.handleClose} />
@@ -63,7 +63,7 @@ const SearchFriendForm = ({ handleClose }) => {
           avatar: profile[0].avatar,
         }));
       } else {
-        enqueueSnackbar("The user does not exist!!", { variant: "error" });
+        enqueueSnackbar("Không tìm thấy tài khoản", { variant: "error" });
       }
     },
     onError: (error: any) => {
@@ -78,7 +78,7 @@ const SearchFriendForm = ({ handleClose }) => {
   const addFriend = useMutation(friendAPI.addFriend, {
     onSuccess: (responese) => {
       getFriendSents.mutate();
-      enqueueSnackbar(`Sent friend request to ${phoneInput}`, {
+      enqueueSnackbar(`Gửi lời mời kết bạn tới ${phoneInput}`, {
         variant: "success",
       });
     },
@@ -116,30 +116,30 @@ const SearchFriendForm = ({ handleClose }) => {
         value={phoneInput}
         onChange={handleChangeSearch}
         id="searchfriend"
-        label="Search friend"
+        label="Tìm kiếm"
         variant="standard"
       />
-      <Button onClick={onSearch}>Search</Button>
-      <Typography variant="h6">Results</Typography>
+      <Button onClick={onSearch}>Tìm kiếm</Button>
+      <Typography variant="h6">Kết quả</Typography>
       {user.phone ? (
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
               <Avatar
                 alt={user.phone}
-                src={`data:image/png;base64, ${user.avatar}`}
+                src={`data:image/jpeg;base64, ${user.avatar}`}
               />
               <Typography>{user.fullname}</Typography>
             </Stack>
             <Button variant="contained" size="small" onClick={handleAddFriend}>
-              Add Friend
+              Kết bạn
             </Button>
           </Stack>
         </Box>
       ) : (
         <Box></Box>
       )}
-      <Button onClick={handleClose}>Cancel</Button>
+      <Button onClick={handleClose}>Quay lại</Button>
     </Stack>
   );
 };

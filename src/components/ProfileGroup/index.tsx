@@ -58,7 +58,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
 
   const updateProfileGroup = useMutation(groupAPI.updateGroup, {
     onSuccess: (response) => {
-      enqueueSnackbar("Update profile successfull!!", { variant: "success" });
+      enqueueSnackbar("Cập nhật thành công", { variant: "success" });
       setChatProfile((prev) => ({ ...prev, id: updateProfileGroupInfo.id }));
       setChatProfile((prev) => ({
         ...prev,
@@ -80,14 +80,14 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   };
   const leaveGroup = useMutation(groupAPI.leaveGroup, {
     onSuccess: (response) => {
-      enqueueSnackbar(`You've just leave group ${chatProfile.name}`, {
+      enqueueSnackbar(`Bạn vừa rời khỏi nhóm ${chatProfile.name}`, {
         variant: "success",
       });
       // Switch to another group
     },
     onError: (error: any) => {
       enqueueSnackbar(
-        `Fail leave group ${chatProfile.name} - ${error.message}`,
+        `Rời nhóm không thành công ${chatProfile.name} - ${error.message}`,
         { variant: "error" }
       );
     },
@@ -208,9 +208,9 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
     >
       <Stack direction={"row"} justifyContent={"space-between"}>
         {openUpdate ? (
-          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogTitle>Chỉnh sửa thông tin nhóm</DialogTitle>
         ) : (
-          <DialogTitle>Profile</DialogTitle>
+          <DialogTitle>Thông tin nhóm</DialogTitle>
         )}
         <IconButton onClick={handleClose}>
           <CloseIcon />
@@ -221,7 +221,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
         <DialogContent>
           <Stack spacing={2}>
             <Stack direction={"row"} spacing={4} alignItems={"center"}>
-              <Typography>Change Avatar</Typography>
+              <Typography>Đổi ảnh đại diện</Typography>
               <Button component="label" role={undefined} tabIndex={-1}>
                 <Avatar
                   sx={{ width: 60, height: 60 }}
@@ -237,22 +237,22 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
             </Stack>
 
             <Stack spacing={1}>
-              <Typography>Change name</Typography>
+              <Typography>Đổi tên nhóm</Typography>
               <TextField
-                label="your name"
+                label="Tên nhóm"
                 value={updateProfileGroupInfo.name}
                 onChange={handleNameInputChange}
               />
-              <Typography>Change description</Typography>
+              <Typography>Đổi miêu tả nhóm</Typography>
               <TextField
-                label="description"
+                label="Miêu tả nhóm"
                 value={updateProfileGroupInfo.description}
                 onChange={handleDescriptionInputChange}
               />
             </Stack>
             <Divider />
             <FormControl>
-              <FormLabel id="demo-radio-buttons-group-label">Status</FormLabel>
+              <FormLabel id="demo-radio-buttons-group-label">Trạng thái</FormLabel>
               <RadioGroup
                 row
                 aria-labelledby="demo-radio-buttons-group-label"
@@ -263,23 +263,23 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                   onClick={handleStatusCode}
                   value={GroupStatusCode.ACTIVE}
                   control={<Radio />}
-                  label={GroupStatusCode.ACTIVE}
+                  label="Hoạt động"
                 />
                 <FormControlLabel
                   onClick={handleStatusCode}
                   value={GroupStatusCode.INACTIVE}
                   control={<Radio />}
-                  label={GroupStatusCode.INACTIVE}
+                  label="không hoạt động"
                 />
               </RadioGroup>
             </FormControl>
             <Divider />
             <Stack direction={"row"} justifyContent={"right"} spacing={1}>
               <Button variant="text" onClick={() => setOpenUpdate(false)}>
-                Cancel
+                Quay lại
               </Button>
               <Button variant="contained" onClick={handleUpdateGroup}>
-                Update
+                Cập nhật
               </Button>
             </Stack>
           </Stack>
@@ -305,10 +305,10 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                   </Typography>
                 </Stack>
               </Stack>
-              <Button onClick={handleClose}>Chat</Button>
+              <Button onClick={handleClose}>Nhắn tin</Button>
             </Stack>
             <Divider />
-            <Typography variant="h5">{`Members (${members.length})`}</Typography>
+            <Typography variant="h5">{`Thành viên (${members.length})`}</Typography>
             <Stack direction={'row'}>
             <AvatarGroup max={3}>
               {members.map((m) => 
@@ -318,12 +318,12 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
             <IconButton onClick={handleOpenMembersOfGroup}><MoreHorizIcon/></IconButton>
             </Stack>
             <Divider />
-            <Typography variant="h5">Photos/Video</Typography>
+            <Typography variant="h5">Ảnh/Videos</Typography>
             <Divider />
-            <Button onClick={() => setOpenUpdate(true)}>Update</Button>
+            <Button onClick={() => setOpenUpdate(true)}>Cập nhật</Button>
             <Divider />
             <Button color="error" onClick={handleLeaveGroup}>
-              Leave Group
+              Rời nhóm
             </Button>
           </Stack>
         </DialogContent>

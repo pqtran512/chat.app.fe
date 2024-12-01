@@ -10,18 +10,21 @@ import {
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { FC, useEffect, useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { groupAPI } from "src/api/group.api";
 import { useFriendList } from "src/contexts/FriendContext";
+import { useGroupList } from "src/contexts/GroupContext";
 import { CreateGroupDto } from "src/types/api/dto";
 
 const CreateGroupForm = ({ handleClose }) => {
   const [selectedFriend, setSelectedFriend] = useState([]);
+  const groupListContext = useGroupList();
   const [groupInfo, setGroupInfo] = useState({
     name: "",
     description: "",
     user_ids: [],
   } as CreateGroupDto);
+  const queryClient = useQueryClient();
 
   const { friendList } = useFriendList();
 
@@ -42,11 +45,11 @@ const CreateGroupForm = ({ handleClose }) => {
     }));
   };
 
-  useEffect(()=> {
-    const selectedFriendID = []
-    selectedFriend.map((i) => selectedFriendID.push(i.id))
-    setGroupInfo((prev) => ({...prev, user_ids: selectedFriendID}))
-  },[selectedFriend])
+  useEffect(() => {
+    const selectedFriendID = [];
+    selectedFriend.map((i) => selectedFriendID.push(i.id));
+    setGroupInfo((prev) => ({ ...prev, user_ids: selectedFriendID }));
+  }, [selectedFriend]);
 
   const handleCreateGroup = () => {
     createGroup.mutate(groupInfo);
@@ -55,16 +58,41 @@ const CreateGroupForm = ({ handleClose }) => {
 
   const createGroup = useMutation(groupAPI.createGroup, {
     onSuccess: (response) => {
-      console.log(response.data)
-      enqueueSnackbar(`Create ${groupInfo.name} successfull`, {
+      queryClient.invalidateQueries(["GetListGroupByUser"]);
+      enqueueSnackbar(`Tạo nhóm ${groupInfo.name} thành công`, {
         variant: "success",
       });
     },
     onError: (error: any) => {
       enqueueSnackbar(
-        `Create ${groupInfo.name} fail - ${error}`,
-        { variant: "warning" }
+        `Tạo nhóm ${groupInfo.name} không thành công - ${error}`,
+        {
+          variant: "warning",
+        }
       );
+    },
+  });
+
+  const getGroupList = useMutation(groupAPI.groupList, {
+    onSuccess: (response) => {
+      console.log(response.data);
+      if (response.data.count > 0) {
+        const responseGroupList = [];
+        response.data.groups.forEach((e) => {
+          responseGroupList.push({
+            id: e.group.id,
+            name: e.group.name,
+            avatar: e.group.avatar,
+            group_members: [...e.group.group_members],
+            owner_id: e.group.owner_id,
+          });
+        });
+        groupListContext.setGroupList([...responseGroupList]);
+        groupListContext.setCount(response.data.count);
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error, { variant: "error" });
     },
   });
 
@@ -72,7 +100,7 @@ const CreateGroupForm = ({ handleClose }) => {
     <Stack spacing={3}>
       <TextField
         id="group-name"
-        label="Enter group name..."
+        label="Tên nhóm"
         variant="standard"
         onChange={handleChangeSearch}
       />
@@ -87,16 +115,18 @@ const CreateGroupForm = ({ handleClose }) => {
         getOptionLabel={(option) => option.fullname}
         filterSelectedOptions
         renderInput={(params) => (
-          <TextField {...params} label="Members" placeholder="Add members" />
+          <TextField
+            {...params}
+            label="Thành viên"
+            placeholder="Thêm thành viên"
+          />
         )}
-        // event, value) => {setGroupInfo((prev) => ({...prev, user_ids: [..., value]}))}
-        // onInputChange={() => console.log('change ...')}
         onChange={(event, value) => setSelectedFriend(value)}
       ></Autocomplete>
       <Stack direction={"row"} justifyContent={"space-between"}>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>Quay lại</Button>
         <Button type="submit" variant="contained" onClick={handleCreateGroup}>
-          Create
+          Tạo nhóm
         </Button>
       </Stack>
     </Stack>
@@ -110,7 +140,7 @@ interface CreateGroupProps {
 const CreateGroup: FC<CreateGroupProps> = (props) => {
   return (
     <Dialog fullWidth maxWidth="xs" open={props.open}>
-      <DialogTitle>Create group</DialogTitle>
+      <DialogTitle>Tạo nhóm</DialogTitle>
       <Divider />
       <DialogContent>
         <CreateGroupForm handleClose={props.handleClose} />

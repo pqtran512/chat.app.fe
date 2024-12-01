@@ -3,8 +3,8 @@ import { FC, useState } from "react";
 import Group from "./Group";
 
 import GroupsIcon from "@mui/icons-material/Groups";
-import { useGroupList } from "src/contexts/GroupContext";
-import { useMutation } from "react-query";
+import { GroupListContext, useGroupList } from "src/contexts/GroupContext";
+import { useMutation, useQuery } from "react-query";
 import { groupAPI } from "src/api/group.api";
 import { GroupListDto } from "src/types/api/dto";
 import { enqueueSnackbar } from "notistack";
@@ -12,6 +12,7 @@ import { enqueueSnackbar } from "notistack";
 interface GroupsProps {}
 const Groups: FC<GroupsProps> = (props) => {
   const [input, setInput] = useState({ searchText: "" } as GroupListDto);
+  const [searchText, setSearchText] = useState("");
   const { groupList, setGroupList } = useGroupList();
 
   const handleChangeInput = (e) => {
@@ -20,24 +21,37 @@ const Groups: FC<GroupsProps> = (props) => {
 
   const handleSearchGroup = (e) => {
     e.preventDefault();
-    searchGroup.mutate(input);
+    setSearchText(input.searchText);
+    // searchGroup.mutate(input);
   };
+
+  const { isLoading, data } = useQuery({
+    queryKey: ["GetListGroupByUser", searchText],
+    queryFn: () => groupAPI.groupList({ searchText: searchText }),
+    select: (res) => {
+      return res.data;
+    },
+  });
 
   const searchGroup = useMutation(groupAPI.groupList, {
     onSuccess: (res) => {
+      console.log(res);
+
       if (res.data.groups.length > 0) {
         const searchGroupResults = [];
         res.data.groups.map((e) => {
+          console.log(e);
           searchGroupResults.push({
             id: e.group.id,
             name: e.group.name,
             avatar: e.group.avatar,
             group_members: [...e.group.group_members],
+            owner_id: e.group.owner_id,
           });
         });
         setGroupList([...searchGroupResults]);
       } else {
-        enqueueSnackbar("Not found any groups with that name", {
+        enqueueSnackbar("Không tìm thấy", {
           variant: "info",
         });
       }
@@ -48,23 +62,23 @@ const Groups: FC<GroupsProps> = (props) => {
   });
 
   return (
-    <Stack>
+    <Stack sx={{height: "100vh"}}>
       <Box sx={{ backgroundColor: "#fff", padding: 2 }}>
         <Stack direction={"row"}>
           <GroupsIcon sx={{ marginRight: 2 }} />
-          <Typography variant="h4">Groups</Typography>
+          <Typography variant="h4">Danh sách nhóm</Typography>
         </Stack>
       </Box>
 
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
         <Box sx={{ padding: 3 }}>
-          <Typography>Groups(99)</Typography>
+          <Typography>Nhóm (99)</Typography>
         </Box>
-        <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
+        <Stack spacing={1} sx={{ backgroundColor: "#fff"}}>
           <Stack direction={"row"} padding={1} spacing={2} component={"form"}>
             <TextField
               size="small"
-              label="Search Group"
+              label="Tìm kiếm nhóm"
               value={input.searchText}
               onChange={handleChangeInput}
             />
@@ -74,14 +88,21 @@ const Groups: FC<GroupsProps> = (props) => {
               variant="contained"
               onClick={handleSearchGroup}
             >
-              Search
+              Tìm kiếm
             </Button>
           </Stack>
-          {groupList.map((g, index) => (
-            <Group key={index} {...g} memberCount={g?.group_members?.length || 0} />
-          ))}
+          {!isLoading &&
+            data.groups.map((g, index) => {
+              console.log(g);
+              return (
+                <Group
+                  key={index}
+                  {...g.group}
+                  memberCount={g?.group_members?.length || 0}
+                />
+              );
+            })}
         </Stack>
-        ;
       </Box>
     </Stack>
   );
