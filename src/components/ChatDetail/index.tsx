@@ -4,6 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Messages from "./Messages";
 import { useChat } from "src/contexts/ChatContext";
+import { GroupMemberProvider } from "src/contexts/GroupMemberContext";
 
 interface ChatDetailProps {
   openChatInfo: boolean;
@@ -13,24 +14,26 @@ interface ChatDetailProps {
 const ChatDetail: FC<ChatDetailProps> = (props) => {
   const { chatboxId, chatProfile } = useChat();
   return (
-    <Stack
-      onClick={() => {
-        console.log("chat box", chatboxId);
-        console.log("new message", chatProfile.newMessage);
-      }}
-      maxHeight={"100vh"}
-      width={"100%"}
-    >
-      {/* maxHeight={"100vh"} */}
-      {/* header */}
-      <Header {...props} />
+    <GroupMemberProvider>
+      <Stack
+        onClick={() => {
+          console.log("chat box", chatboxId);
+          console.log("new message", chatProfile.newMessage);
+        }}
+        maxHeight={"100vh"}
+        width={"100%"}
+      >
+        {/* maxHeight={"100vh"} */}
+        {/* header */}
+        <Header {...props} />
 
-      {/* body */}
-      <Messages />
+        {/* body */}
+        <Messages />
 
-      {/* footer */}
-      <Footer />
-    </Stack>
+        {/* footer */}
+        <Footer />
+      </Stack>
+    </GroupMemberProvider>
   );
 };
 

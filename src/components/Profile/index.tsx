@@ -45,9 +45,9 @@ const Profile: FC<ProfileProps> = (props) => {
   const updateProfile = useMutation(profileAPI.updateProfile, {
     onSuccess: (response) => {
       enqueueSnackbar("Update profile successfull!!", {variant: "success"})
-      profileContext.setProfileId(updateProfileInfo.profileId)
-      profileContext.setFulname(updateProfileInfo.fullname)
-      profileContext.setAvatar(updateProfileInfo.avatar)
+      profileContext.setProfileId(updateProfileInfo.profileId);
+      profileContext.setFulname(updateProfileInfo.fullname);
+      profileContext.setAvatar(updateProfileInfo.avatar);
       handleClose();
     },
     onError: (error: any) => {
@@ -167,7 +167,7 @@ const Profile: FC<ProfileProps> = (props) => {
                 onChange={handleInputChange}
               />
             </Stack>
-            <FormControl>
+            {/* <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
               <RadioGroup
                 row
@@ -191,7 +191,7 @@ const Profile: FC<ProfileProps> = (props) => {
                   label="Other"
                 />
               </RadioGroup>
-            </FormControl>
+            </FormControl> */}
             <Divider />
             <Stack direction={"row"} justifyContent={"right"} spacing={1}>
               <Button variant="text" onClick={() => setOpenUpdate(false)}>
