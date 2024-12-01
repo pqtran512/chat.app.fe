@@ -20,3 +20,8 @@ export enum WsEvent {
   ERROR = 'error',
   EXCEPTION = 'exception',
 }
+
+export enum Platform {
+  MOBILE = 'mobile',
+  WEB = 'web',
+}

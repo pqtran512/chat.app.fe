@@ -67,7 +67,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
   const handleClick = () => {
     setToUserId(props.id);
     setToGroupId("");
-    setChatboxId(props.chatboxId);
+    // setChatboxId(props.chatboxId);
     setChatProfile({
       id: props.id,
       name: props.name,

@@ -90,7 +90,7 @@ const Login: FC<LoginProps> = ({}) => {
         localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, access_token);
         localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
         getProfile.mutate()
-        connectChatSocket();
+        // connectChatSocket();
 
         setUserId(user.id);
         setAccessToken(access_token);

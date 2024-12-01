@@ -5,7 +5,7 @@ import ChatDetail from "src/components/ChatDetail";
 import ContactBar from "src/components/Contactbar";
 import { useTabs } from "src/contexts/TabsContext";
 import ContactInfo from "src/components/ContactInfo";
-import { onReceiveChat } from "src/utils/ws/clients/chat.";
+import { connectChatSocket, onReceiveChat } from "src/utils/ws/clients/chat.";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 import { useQueryClient } from "react-query";
 
@@ -20,6 +20,7 @@ const HomePage: FC<HomePageProps> = (props) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    connectChatSocket();
     onReceiveChat((data: ReceiveMessageDto) => {
       if (data.payloadId) {
         queryClient.invalidateQueries(["GetChatBoxListByUser"]);

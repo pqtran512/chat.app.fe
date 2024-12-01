@@ -49,7 +49,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
       }
       if (rs.data.count > 0 && !toUserId && !toGroupId) {
         const firstChatBox = rs.data.data[0];
-        setChatboxId(firstChatBox.id);
+        // setChatboxId(firstChatBox.id);
         if (firstChatBox.to_group_profile) {
           const { avatar, name, id, group_members } =
             firstChatBox.to_group_profile;

@@ -43,7 +43,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
   const handleClick = () => {
     setToUserId("");
     setToGroupId(props.id);
-    setChatboxId(props.chatboxId);
+    // setChatboxId(props.chatboxId);
     setChatProfile({
       id: props.id,
       name: props.name,
