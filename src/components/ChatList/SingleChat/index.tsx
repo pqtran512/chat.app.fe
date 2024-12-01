@@ -73,7 +73,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
       name: props.name,
       isGroupChat: false,
       avatar: props.img,
-      isGroupOwner: false,
+      groupOwnerId: "",
     });
     if (props.newMessage) {
       setSeen.mutate(props.chatboxId);

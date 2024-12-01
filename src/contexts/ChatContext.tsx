@@ -7,7 +7,7 @@ type ChatProfile = {
   isGroupChat: boolean;
   memberCount?: number;
   newMessage?: boolean;
-  isGroupOwner?: boolean;
+  groupOwnerId?: string;
 };
 
 type ChatContext = {
@@ -39,7 +39,7 @@ export const ChatProvider: FC<Props> = ({ children }) => {
     isGroupChat: false,
     memberCount: 0,
     newMessage: false,
-    isGroupOwner: false,
+    groupOwnerId: "",
   });
 
   return (

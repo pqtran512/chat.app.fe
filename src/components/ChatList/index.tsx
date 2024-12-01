@@ -63,7 +63,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             avatar,
             memberCount: group_members.length,
             newMessage: firstChatBox.new_message,
-            isGroupOwner: firstChatBox.to_group_profile.owner_id === userId,
+            groupOwnerId: firstChatBox.to_group_profile.owner_id,
           });
         } else {
           const uid = firstChatBox.to_user_profile.id;
@@ -75,7 +75,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             name: fullname,
             avatar,
             newMessage: firstChatBox.new_message,
-            isGroupOwner: false,
+            groupOwnerId: '',
           });
         }
       }

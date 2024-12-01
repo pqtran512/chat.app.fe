@@ -341,7 +341,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
           open={openMember}
           setOpen={setOpenMember}
           group_id={chatProfile.id}
-          isOwner={chatProfile.isGroupOwner}
+          ownerId={chatProfile.groupOwnerId}
         />
       )}
     </Box>

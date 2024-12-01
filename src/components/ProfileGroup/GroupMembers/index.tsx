@@ -25,7 +25,7 @@ interface GroupMembersProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   group_id: string;
-  isOwner?: boolean;
+  ownerId?: string;
 }
 
 const GroupMembers: FC<GroupMembersProps> = (props) => {
@@ -205,7 +205,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           )}
           onChange={(event, value) => setSelectedFriend(value)}
         ></Autocomplete>
-        {props.isOwner && (
+        {props.ownerId && props.ownerId === userId && (
           <>
             <Button
               size="small"
@@ -256,6 +256,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
                     id={m.user_id}
                     fullname={fullname}
                     avatar={avatar}
+                    isOwner={props.ownerId === m.user_id}
                   />
                 );
               })}

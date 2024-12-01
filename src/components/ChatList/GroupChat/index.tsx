@@ -54,7 +54,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
       isGroupChat: true,
       avatar: props.img,
       memberCount: props.memberCount,
-      isGroupOwner: props.ownerId === userId,
+      groupOwnerId: props.ownerId,
     });
     if (props.newMessage) {
       setSeen.mutate(props.chatboxId);
