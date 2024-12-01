@@ -21,13 +21,13 @@ import { FC, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "@emotion/styled";
 import { UpdateProfileGroupDto } from "src/types/api/dto";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { friendAPI, groupAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
 import { useChat } from "src/contexts/ChatContext";
 import { GroupStatusCode } from "src/utils/enums";
 import { useGroupMembers } from "src/contexts/GroupMemberContext";
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import GroupMembers from "./GroupMembers";
 import { useFriendList } from "src/contexts/FriendContext";
 
@@ -47,6 +47,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
     group_status_code: GroupStatusCode.ACTIVE,
     description: "",
   } as UpdateProfileGroupDto);
+  const queryClient = useQueryClient();
 
   const { members } = useGroupMembers();
   const friendListContext = useFriendList();
@@ -59,18 +60,16 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   const updateProfileGroup = useMutation(groupAPI.updateGroup, {
     onSuccess: (response) => {
       enqueueSnackbar("Cập nhật thành công", { variant: "success" });
-      setChatProfile((prev) => ({ ...prev, id: updateProfileGroupInfo.id }));
       setChatProfile((prev) => ({
         ...prev,
+        id: updateProfileGroupInfo.id,
         name: updateProfileGroupInfo.name,
-      }));
-      setChatProfile((prev) => ({
-        ...prev,
         avatar: updateProfileGroupInfo.avatar,
       }));
+      queryClient.invalidateQueries(['GetChatBoxListByUser']);
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, { variant: "error" });
+      enqueueSnackbar(error.mesage, { variant: "error" });
     },
   });
 
@@ -87,7 +86,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
     },
     onError: (error: any) => {
       enqueueSnackbar(
-        `Rời nhóm không thành công ${chatProfile.name} - ${error.message}`,
+        `Rời nhóm ${chatProfile.name} không thành công - ${error.message}`,
         { variant: "error" }
       );
     },
@@ -144,7 +143,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   const handleOpenMembersOfGroup = () => {
     setOpenMember(true);
     refetch();
-  }
+  };
 
   const handleSelectedAvatar = async (e) => {
     function resizeImage(file, width) {
@@ -200,136 +199,150 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
 
   return (
     <Box>
-    <Dialog
-      open={props.open}
-      onClose={props.handleClose}
-      fullWidth
-      maxWidth="xs"
-    >
-      <Stack direction={"row"} justifyContent={"space-between"}>
+      <Dialog
+        open={props.open}
+        onClose={props.handleClose}
+        fullWidth
+        maxWidth="xs"
+      >
+        <Stack direction={"row"} justifyContent={"space-between"}>
+          {openUpdate ? (
+            <DialogTitle>Chỉnh sửa thông tin nhóm</DialogTitle>
+          ) : (
+            <DialogTitle>Thông tin nhóm</DialogTitle>
+          )}
+          <IconButton onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+        <Divider />
         {openUpdate ? (
-          <DialogTitle>Chỉnh sửa thông tin nhóm</DialogTitle>
-        ) : (
-          <DialogTitle>Thông tin nhóm</DialogTitle>
-        )}
-        <IconButton onClick={handleClose}>
-          <CloseIcon />
-        </IconButton>
-      </Stack>
-      <Divider />
-      {openUpdate ? (
-        <DialogContent>
-          <Stack spacing={2}>
-            <Stack direction={"row"} spacing={4} alignItems={"center"}>
-              <Typography>Đổi ảnh đại diện</Typography>
-              <Button component="label" role={undefined} tabIndex={-1}>
-                <Avatar
-                  sx={{ width: 60, height: 60 }}
-                  src={`data:image/jpeg;base64,${updateProfileGroupInfo.avatar}`}
-                />
+          <DialogContent>
+            <Stack spacing={2}>
+              <Stack direction={"row"} spacing={4} alignItems={"center"}>
+                <Typography>Đổi ảnh đại diện</Typography>
+                <Button component="label" role={undefined} tabIndex={-1}>
+                  <Avatar
+                    sx={{ width: 60, height: 60 }}
+                    src={`data:image/jpeg;base64,${updateProfileGroupInfo.avatar}`}
+                  />
 
-                <VisuallyHiddenInput
-                  accept=".jpeg, .jpg, .png"
-                  type="file"
-                  onChange={handleSelectedAvatar}
-                />
-              </Button>
-            </Stack>
-
-            <Stack spacing={1}>
-              <Typography>Đổi tên nhóm</Typography>
-              <TextField
-                label="Tên nhóm"
-                value={updateProfileGroupInfo.name}
-                onChange={handleNameInputChange}
-              />
-              <Typography>Đổi miêu tả nhóm</Typography>
-              <TextField
-                label="Miêu tả nhóm"
-                value={updateProfileGroupInfo.description}
-                onChange={handleDescriptionInputChange}
-              />
-            </Stack>
-            <Divider />
-            <FormControl>
-              <FormLabel id="demo-radio-buttons-group-label">Trạng thái</FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="male"
-                name="radio-buttons-group"
-              >
-                <FormControlLabel
-                  onClick={handleStatusCode}
-                  value={GroupStatusCode.ACTIVE}
-                  control={<Radio />}
-                  label="Hoạt động"
-                />
-                <FormControlLabel
-                  onClick={handleStatusCode}
-                  value={GroupStatusCode.INACTIVE}
-                  control={<Radio />}
-                  label="không hoạt động"
-                />
-              </RadioGroup>
-            </FormControl>
-            <Divider />
-            <Stack direction={"row"} justifyContent={"right"} spacing={1}>
-              <Button variant="text" onClick={() => setOpenUpdate(false)}>
-                Quay lại
-              </Button>
-              <Button variant="contained" onClick={handleUpdateGroup}>
-                Cập nhật
-              </Button>
-            </Stack>
-          </Stack>
-        </DialogContent>
-      ) : (
-        <DialogContent>
-          <Stack spacing={2}>
-            <Stack spacing={1}>
-              <Stack
-                spacing={2}
-                alignItems={"center"}
-                justifyContent={"center"}
-                direction={"row"}
-              >
-                <Avatar
-                  sx={{ width: 60, height: 60 }}
-                  src={`data:image/jpeg;base64,${chatProfile.avatar}`}
-                />
-                <Stack>
-                  <Typography variant="h4">{chatProfile.name}</Typography>
-                  <Typography variant="subtitle2">
-                    {updateProfileGroupInfo.description}
-                  </Typography>
-                </Stack>
+                  <VisuallyHiddenInput
+                    accept=".jpeg, .jpg, .png"
+                    type="file"
+                    onChange={handleSelectedAvatar}
+                  />
+                </Button>
               </Stack>
-              <Button onClick={handleClose}>Nhắn tin</Button>
+
+              <Stack spacing={1}>
+                <Typography>Đổi tên nhóm</Typography>
+                <TextField
+                  label="Tên nhóm"
+                  value={updateProfileGroupInfo.name}
+                  onChange={handleNameInputChange}
+                />
+                <Typography>Đổi miêu tả nhóm</Typography>
+                <TextField
+                  label="Miêu tả nhóm"
+                  value={updateProfileGroupInfo.description}
+                  onChange={handleDescriptionInputChange}
+                />
+              </Stack>
+              <Divider />
+              <FormControl>
+                <FormLabel id="demo-radio-buttons-group-label">
+                  Trạng thái
+                </FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="male"
+                  name="radio-buttons-group"
+                >
+                  <FormControlLabel
+                    onClick={handleStatusCode}
+                    value={GroupStatusCode.ACTIVE}
+                    control={<Radio />}
+                    label="Hoạt động"
+                  />
+                  <FormControlLabel
+                    onClick={handleStatusCode}
+                    value={GroupStatusCode.INACTIVE}
+                    control={<Radio />}
+                    label="không hoạt động"
+                  />
+                </RadioGroup>
+              </FormControl>
+              <Divider />
+              <Stack direction={"row"} justifyContent={"right"} spacing={1}>
+                <Button variant="text" onClick={() => setOpenUpdate(false)}>
+                  Quay lại
+                </Button>
+                <Button variant="contained" onClick={handleUpdateGroup}>
+                  Cập nhật
+                </Button>
+              </Stack>
             </Stack>
-            <Divider />
-            <Typography variant="h5">{`Thành viên (${members.length})`}</Typography>
-            <Stack direction={'row'}>
-            <AvatarGroup max={3}>
-              {members.map((m) => 
-                <Avatar alt={m.fullname} src={`data:image/jpeg;base64, ${m.avatar}`}/>
-              )}
-            </AvatarGroup>
-            <IconButton onClick={handleOpenMembersOfGroup}><MoreHorizIcon/></IconButton>
+          </DialogContent>
+        ) : (
+          <DialogContent>
+            <Stack spacing={2}>
+              <Stack spacing={1}>
+                <Stack
+                  spacing={2}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  direction={"row"}
+                >
+                  <Avatar
+                    sx={{ width: 60, height: 60 }}
+                    src={`data:image/jpeg;base64,${chatProfile.avatar}`}
+                  />
+                  <Stack>
+                    <Typography variant="h4">{chatProfile.name}</Typography>
+                    <Typography variant="subtitle2">
+                      {updateProfileGroupInfo.description}
+                    </Typography>
+                  </Stack>
+                </Stack>
+                <Button onClick={handleClose}>Nhắn tin</Button>
+              </Stack>
+              <Divider />
+              <Typography variant="h5">{`Thành viên (${members.length})`}</Typography>
+              <Stack direction={"row"}>
+                <AvatarGroup max={3}>
+                  {members.map((m) => (
+                    <Avatar
+                      key={m.user_id}
+                      alt={m.fullname}
+                      src={`data:image/jpeg;base64, ${m.avatar}`}
+                    />
+                  ))}
+                </AvatarGroup>
+                <IconButton onClick={handleOpenMembersOfGroup}>
+                  <MoreHorizIcon />
+                </IconButton>
+              </Stack>
+              <Divider />
+              <Typography variant="h5">Ảnh/Videos</Typography>
+              <Divider />
+              <Button onClick={() => setOpenUpdate(true)}>Cập nhật</Button>
+              <Divider />
+              <Button color="error" onClick={handleLeaveGroup}>
+                Rời nhóm
+              </Button>
             </Stack>
-            <Divider />
-            <Typography variant="h5">Ảnh/Videos</Typography>
-            <Divider />
-            <Button onClick={() => setOpenUpdate(true)}>Cập nhật</Button>
-            <Divider />
-            <Button color="error" onClick={handleLeaveGroup}>
-              Rời nhóm
-            </Button>
-          </Stack>
-        </DialogContent>
+          </DialogContent>
+        )}
+      </Dialog>
+      {openMember && (
+        <GroupMembers
+          open={openMember}
+          setOpen={setOpenMember}
+          group_id={chatProfile.id}
+        />
       )}
-    </Dialog>
-    {openMember && <GroupMembers open={openMember} setOpen={setOpenMember} group_id={chatProfile.id}/>}
     </Box>
   );
 };

@@ -17,8 +17,8 @@ const ChatDetail: FC<ChatDetailProps> = (props) => {
     <GroupMemberProvider>
       <Stack
         onClick={() => {
-          console.log("chat box", chatboxId);
-          console.log("new message", chatProfile.newMessage);
+          // console.log("chat box", chatboxId);
+          // console.log("new message", chatProfile.newMessage);
         }}
         maxHeight={"100vh"}
         width={"100%"}

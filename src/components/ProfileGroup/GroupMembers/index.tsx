@@ -10,12 +10,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useGroupMembers } from "src/contexts/GroupMemberContext";
 import Member from "./Member";
-import { useMutation } from "react-query";
-import { groupAPI } from "src/api";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { friendAPI, groupAPI } from "src/api";
 import { useFriendList } from "src/contexts/FriendContext";
 import { enqueueSnackbar } from "notistack";
 
@@ -27,18 +27,75 @@ interface GroupMembersProps {
 
 const GroupMembers: FC<GroupMembersProps> = (props) => {
   const [selectedFriend, setSelectedFriend] = useState([]);
-  const [selectedMember, setSelectedMember] = useState([]);
-  const { friendList } = useFriendList();
+  const [selectedRemovingMember, setSelectedRemovingMember] = useState([]);
+  // const { friendList } = useFriendList();
   const { members, setMembers } = useGroupMembers();
+  const queryClient = useQueryClient();
 
-  const friendsOption = friendList.map((option) => {
-    const firstLetter =
-      option.fullname !== "" ? option.fullname[0].toUpperCase() : "";
-    return {
-      firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
-      ...option,
-    };
+  const {
+    isLoading,
+    data: friendList,
+    refetch: refetchGetFriendList,
+  } = useQuery({
+    queryKey: ["getFriends"],
+    queryFn: () => friendAPI.friendList(),
+    select: (rs) => {
+      return rs.data;
+    },
   });
+
+  const {
+    isLoading: loadingGetGroupMembers,
+    data: groupMembers,
+    refetch: refetchGetGroupMembers,
+  } = useQuery({
+    queryKey: ["getGroupMembers", props.group_id],
+    queryFn: () => groupAPI.getGroupMembers(props.group_id),
+    select: (rs) => {
+      return rs.data;
+    },
+  });
+
+  const addableMembers = useMemo(() => {
+    if (friendList && groupMembers) {
+      const addableMembers = friendList.filter(
+        (o) =>
+          groupMembers.users.findIndex(
+            (u) => u.user_id === o.to_user_profile.id
+          ) === -1
+      );
+
+      const friendsOption = addableMembers.map((option) => {
+        const firstLetter =
+          option.to_user_profile.profile[0].fullname !== ""
+            ? option.to_user_profile.profile[0].fullname[0].toUpperCase()
+            : "";
+        return {
+          firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
+          ...option,
+        };
+      });
+
+      return friendsOption;
+    }
+  }, [friendList, groupMembers]);
+
+  const removableMembers = useMemo(() => {
+    if (groupMembers) {
+      const friendsOption = groupMembers.users.map((option) => {
+        const firstLetter =
+          option.user.profile[0].fullname !== ""
+            ? option.user.profile[0].fullname[0].toUpperCase()
+            : "";
+        return {
+          firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
+          ...option,
+        };
+      });
+
+      return friendsOption;
+    }
+  }, [groupMembers]);
 
   const membersOption = members.map((option) => {
     const firstLetter =
@@ -52,7 +109,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
   const handleAddMember = () => {
     const user_ids = [];
     selectedFriend.forEach((e) => {
-      user_ids.push(e.id);
+      user_ids.push(e.to_user_profile.id);
     });
     addMember.mutate({
       group_id: props.group_id,
@@ -62,7 +119,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
 
   const handleRemoveMember = () => {
     const user_ids = [];
-    selectedMember.forEach((e) => {
+    selectedRemovingMember.forEach((e) => {
       user_ids.push(e.user_id);
     });
     removeMember.mutate({
@@ -74,7 +131,10 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
   const addMember = useMutation(groupAPI.addMembers, {
     onSuccess: (response) => {
       enqueueSnackbar("Thêm vào nhóm thành công", { variant: "success" });
-      getGroupMembers.mutate(props.group_id);
+      setSelectedFriend([]);
+      refetchGetFriendList();
+      refetchGetGroupMembers();
+      queryClient.invalidateQueries(["GetChatBoxListByUser"]);
     },
     onError: (error: any) => {
       enqueueSnackbar(error, { variant: "error" });
@@ -84,7 +144,10 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
   const removeMember = useMutation(groupAPI.removeMembers, {
     onSuccess: (response) => {
       enqueueSnackbar("Xoá thành viên thành công", { variant: "success" });
-      getGroupMembers.mutate(props.group_id);
+      setSelectedRemovingMember([]);
+      // refetchGetFriendList();
+      refetchGetGroupMembers();
+      queryClient.invalidateQueries(["GetChatBoxListByUser"]);
     },
     onError: (error: any) => {
       enqueueSnackbar(error, { variant: "error" });
@@ -139,13 +202,19 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
         </Button>
         <Autocomplete
           multiple
+          value={selectedFriend}
           id="group-members"
           disableCloseOnSelect
-          options={friendsOption.sort(
-            (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
-          )}
+          options={
+            addableMembers &&
+            addableMembers.sort(
+              (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
+            )
+          }
           groupBy={(option) => option.firstLetter}
-          getOptionLabel={(option) => option.fullname}
+          getOptionLabel={(option) =>
+            option.to_user_profile.profile[0].fullname
+          }
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
@@ -166,14 +235,18 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           Xóa thành viên
         </Button>
         <Autocomplete
+          value={selectedRemovingMember}
           multiple
           id="group-members"
           disableCloseOnSelect
-          options={membersOption.sort(
-            (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
-          )}
-          groupBy={(option) => option.firstLetter}
-          getOptionLabel={(option) => option.fullname}
+          options={
+            removableMembers &&
+            removableMembers.sort(
+              (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
+            )
+          }
+          groupBy={(option: any) => option.firstLetter}
+          getOptionLabel={(option: any) => option.user.profile[0].fullname}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
@@ -182,17 +255,29 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
               placeholder="Chọn thành viên"
             />
           )}
-          onChange={(event, value) => setSelectedMember(value)}
+          onChange={(event, value) => setSelectedRemovingMember(value)}
         ></Autocomplete>
-        <Typography
-          variant="h5"
-          padding={2}
-        >{`Danh sách thành viên (${members.length})`}</Typography>
-        <Stack spacing={2}>
-          {members.map((m) => (
-            <Member id={m.user_id} fullname={m.fullname} avatar={m.avatar} />
-          ))}
-        </Stack>
+        {!loadingGetGroupMembers && (
+          <>
+            <Typography
+              variant="h5"
+              padding={2}
+            >{`Danh sách thành viên (${groupMembers.count})`}</Typography>
+            <Stack spacing={2}>
+              {groupMembers.users.map((m) => {
+                const { fullname, avatar } = m.user.profile[0];
+                return (
+                  <Member
+                    key={m.user_id}
+                    id={m.user_id}
+                    fullname={fullname}
+                    avatar={avatar}
+                  />
+                );
+              })}
+            </Stack>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

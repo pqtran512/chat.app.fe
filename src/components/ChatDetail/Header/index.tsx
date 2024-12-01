@@ -111,11 +111,11 @@ const Header: FC<HeaderProps> = (props) => {
         </Box>
         <Box>
           <Stack direction={"row"}>
-            {chatProfile.isGroupChat && (
-              <IconButton>
-                <PersonAddAltIcon />
-              </IconButton>
-            )}
+            {/* {chatProfile.isGroupChat && (
+              // <IconButton>
+              //   <PersonAddAltIcon />
+              // </IconButton>
+            )} */}
             {/* <IconButton>
               <SearchIcon />
             </IconButton>

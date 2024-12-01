@@ -1,5 +1,6 @@
 import { AddFriendDto, SearchFriendDto } from "src/types/api/dto";
 import { AddFriendResponse } from "src/types/api/response";
+import { FriendResponse } from "src/types/api/response/friend";
 import http from "src/utils/http";
 
 export const FRIEND_URL = {
@@ -15,7 +16,7 @@ export const FRIEND_URL = {
 
 export const friendAPI = {
   friendList() {
-    return http.get<any>(FRIEND_URL.FRIEND_LIST)
+    return http.get<FriendResponse[]>(FRIEND_URL.FRIEND_LIST)
   },
 
   addFriend(addFriendDto: AddFriendDto) {

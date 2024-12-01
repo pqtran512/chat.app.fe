@@ -21,6 +21,7 @@ import { useChat } from "src/contexts/ChatContext";
 import moment from "moment";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 import { onReceiveChat } from "src/utils/ws/clients/chat.";
+import { useAuth } from "src/contexts/AuthContext";
 
 interface ChatListProps {
   onSuccess?: (data: ListChatBoxByUserResult) => void;
@@ -38,6 +39,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
     setToGroupId,
     setChatProfile,
   } = useChat();
+  const { userId } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: ["GetChatBoxListByUser"],
@@ -61,6 +63,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             avatar,
             memberCount: group_members.length,
             newMessage: firstChatBox.new_message,
+            isGroupOwner: firstChatBox.to_group_profile.owner_id === userId,
           });
         } else {
           const uid = firstChatBox.to_user_profile.id;
@@ -72,6 +75,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             name: fullname,
             avatar,
             newMessage: firstChatBox.new_message,
+            isGroupOwner: false,
           });
         }
       }
@@ -142,8 +146,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                 Chưa đọc
               </Button>
             </Stack>
-            <Stack direction="row" alignItems="center" spacing={1}>
-            </Stack>
+            <Stack direction="row" alignItems="center" spacing={1}></Stack>
           </Stack>
           <Divider />
         </Stack>
@@ -179,7 +182,8 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                   />
                 );
               }
-              const { name, avatar, id, group_members } = chatbox.to_group_profile;
+              const { name, avatar, id, group_members } =
+                chatbox.to_group_profile;
               return (
                 <GroupChat
                   key={index}
