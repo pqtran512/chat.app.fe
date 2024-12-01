@@ -4,6 +4,7 @@ import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { enqueueSnackbar } from "notistack";
+import { useAuth } from "src/contexts/AuthContext";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
@@ -23,16 +24,19 @@ interface GroupChatProps {
   online?: boolean;
   memberCount?: number;
   newMessage?: boolean;
+  ownerId?: string;
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {
-  const { toGroupId, setToUserId, setToGroupId, setChatProfile, setChatboxId } = useChat();
+  const { toGroupId, setToUserId, setToGroupId, setChatProfile, setChatboxId } =
+    useChat();
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
 
   const setSeen = useMutation(chatAPI.setChatboxSeen, {
     onSuccess: (res) => {
       if (res.data) {
-        queryClient.invalidateQueries(['GetChatBoxListByUser']);
+        queryClient.invalidateQueries(["GetChatBoxListByUser"]);
       }
     },
     onError: (err: any) => {
@@ -50,6 +54,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
       isGroupChat: true,
       avatar: props.img,
       memberCount: props.memberCount,
+      isGroupOwner: props.ownerId === userId,
     });
     if (props.newMessage) {
       setSeen.mutate(props.chatboxId);

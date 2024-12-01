@@ -66,7 +66,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
         name: updateProfileGroupInfo.name,
         avatar: updateProfileGroupInfo.avatar,
       }));
-      queryClient.invalidateQueries(['GetChatBoxListByUser']);
+      queryClient.invalidateQueries(["GetChatBoxListByUser"]);
     },
     onError: (error: any) => {
       enqueueSnackbar(error.mesage, { variant: "error" });
@@ -341,6 +341,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
           open={openMember}
           setOpen={setOpenMember}
           group_id={chatProfile.id}
+          isOwner={chatProfile.isGroupOwner}
         />
       )}
     </Box>

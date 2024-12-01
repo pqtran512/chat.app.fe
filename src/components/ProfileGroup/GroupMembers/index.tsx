@@ -18,19 +18,22 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { friendAPI, groupAPI } from "src/api";
 import { useFriendList } from "src/contexts/FriendContext";
 import { enqueueSnackbar } from "notistack";
+import { useAuth } from "src/contexts/AuthContext";
+import { useChat } from "src/contexts/ChatContext";
 
 interface GroupMembersProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   group_id: string;
+  isOwner?: boolean;
 }
 
 const GroupMembers: FC<GroupMembersProps> = (props) => {
   const [selectedFriend, setSelectedFriend] = useState([]);
   const [selectedRemovingMember, setSelectedRemovingMember] = useState([]);
-  // const { friendList } = useFriendList();
-  const { members, setMembers } = useGroupMembers();
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+  const { setChatProfile } = useChat();
 
   const {
     isLoading,
@@ -52,12 +55,13 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
     queryKey: ["getGroupMembers", props.group_id],
     queryFn: () => groupAPI.getGroupMembers(props.group_id),
     select: (rs) => {
-      return rs.data;
+      return rs.data; 
     },
   });
 
   const addableMembers = useMemo(() => {
     if (friendList && groupMembers) {
+      setChatProfile((prev) => ({ ...prev, memberCount: groupMembers.count }));
       const addableMembers = friendList.filter(
         (o) =>
           groupMembers.users.findIndex(
@@ -82,7 +86,11 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
 
   const removableMembers = useMemo(() => {
     if (groupMembers) {
-      const friendsOption = groupMembers.users.map((option) => {
+      setChatProfile((prev) => ({ ...prev, memberCount: groupMembers.count }));
+      const filterdGroupMembers = groupMembers.users.filter(
+        (o) => o.user_id !== userId
+      );
+      const friendsOption = filterdGroupMembers.map((option) => {
         const firstLetter =
           option.user.profile[0].fullname !== ""
             ? option.user.profile[0].fullname[0].toUpperCase()
@@ -96,15 +104,6 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
       return friendsOption;
     }
   }, [groupMembers]);
-
-  const membersOption = members.map((option) => {
-    const firstLetter =
-      option.fullname !== "" ? option.fullname[0].toUpperCase() : "";
-    return {
-      firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
-      ...option,
-    };
-  });
 
   const handleAddMember = () => {
     const user_ids = [];
@@ -143,31 +142,12 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
 
   const removeMember = useMutation(groupAPI.removeMembers, {
     onSuccess: (response) => {
-      enqueueSnackbar("Xoá thành viên thành công", { variant: "success" });
-      setSelectedRemovingMember([]);
-      // refetchGetFriendList();
-      refetchGetGroupMembers();
-      queryClient.invalidateQueries(["GetChatBoxListByUser"]);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error, { variant: "error" });
-    },
-  });
-
-  const getGroupMembers = useMutation(groupAPI.getGroupMembers, {
-    onSuccess: (response) => {
-      if (response.status === 200) {
-        const groupMembers = [];
-        response.data.users.forEach((u) => {
-          groupMembers.push({
-            user_id: u.user.id,
-            profile_id: u.user.profile[0].id,
-            fullname: u.user.profile[0].fullname,
-            avatar: u.user.profile[0].avatar,
-            active: "inactive",
-          });
-        });
-        setMembers(groupMembers);
+      if (response.data && response.data === true) {
+        enqueueSnackbar("Xoá thành viên thành công", { variant: "success" });
+        setSelectedRemovingMember([]);
+        // refetchGetFriendList();
+        refetchGetGroupMembers();
+        queryClient.invalidateQueries(["GetChatBoxListByUser"]);
       }
     },
     onError: (error: any) => {
@@ -225,38 +205,42 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           )}
           onChange={(event, value) => setSelectedFriend(value)}
         ></Autocomplete>
-        <Button
-          size="small"
-          color="error"
-          sx={{ width: "100%", marginBottom: 1, marginTop: 1 }}
-          variant="contained"
-          onClick={handleRemoveMember}
-        >
-          Xóa thành viên
-        </Button>
-        <Autocomplete
-          value={selectedRemovingMember}
-          multiple
-          id="group-members"
-          disableCloseOnSelect
-          options={
-            removableMembers &&
-            removableMembers.sort(
-              (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
-            )
-          }
-          groupBy={(option: any) => option.firstLetter}
-          getOptionLabel={(option: any) => option.user.profile[0].fullname}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Chọn thành viên"
-              placeholder="Chọn thành viên"
-            />
-          )}
-          onChange={(event, value) => setSelectedRemovingMember(value)}
-        ></Autocomplete>
+        {props.isOwner && (
+          <>
+            <Button
+              size="small"
+              color="error"
+              sx={{ width: "100%", marginBottom: 1, marginTop: 1 }}
+              variant="contained"
+              onClick={handleRemoveMember}
+            >
+              Xóa thành viên
+            </Button>
+            <Autocomplete
+              value={selectedRemovingMember}
+              multiple
+              id="group-members"
+              disableCloseOnSelect
+              options={
+                removableMembers &&
+                removableMembers.sort(
+                  (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
+                )
+              }
+              groupBy={(option: any) => option.firstLetter}
+              getOptionLabel={(option: any) => option.user.profile[0].fullname}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Chọn thành viên"
+                  placeholder="Chọn thành viên"
+                />
+              )}
+              onChange={(event, value) => setSelectedRemovingMember(value)}
+            ></Autocomplete>
+          </>
+        )}
         {!loadingGetGroupMembers && (
           <>
             <Typography

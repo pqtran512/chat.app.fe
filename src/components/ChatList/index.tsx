@@ -182,7 +182,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                   />
                 );
               }
-              const { name, avatar, id, group_members } =
+              const { name, avatar, id, group_members, owner_id } =
                 chatbox.to_group_profile;
               return (
                 <GroupChat
@@ -195,6 +195,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                   memberCount={group_members.length}
                   msg={lastChatLogContent}
                   newMessage={isNewMessage}
+                  ownerId={owner_id}
                 />
               );
             })}

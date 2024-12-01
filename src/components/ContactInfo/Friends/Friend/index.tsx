@@ -82,6 +82,7 @@ const Friend: FC<FriendProps> = (props) => {
       name: props.fullname,
       isGroupChat: false,
       avatar: props.avatar,
+      isGroupOwner: false,
     });
   };
 

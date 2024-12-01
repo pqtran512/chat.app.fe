@@ -38,7 +38,6 @@ interface GroupProps {
 
 const Group: FC<GroupProps> = (props) => {
   // make ui more beatifull
-  console.log(props.owner_id);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -72,6 +71,7 @@ const Group: FC<GroupProps> = (props) => {
       name: props.name,
       isGroupChat: true,
       memberCount: props.memberCount,
+      isGroupOwner: props.owner_id === userId,
     });
   };
 
@@ -83,9 +83,12 @@ const Group: FC<GroupProps> = (props) => {
       searchGroup.mutate({ searchText: "" });
     },
     onError: (error: any) => {
-      enqueueSnackbar(`Rời nhóm ${props.name} không thành công - ${error.message}`, {
-        variant: "error",
-      });
+      enqueueSnackbar(
+        `Rời nhóm ${props.name} không thành công - ${error.message}`,
+        {
+          variant: "error",
+        }
+      );
     },
   });
 
@@ -114,19 +117,18 @@ const Group: FC<GroupProps> = (props) => {
   });
 
   const handleRemoveGroup = () => {
-    removeGroup.mutate(props.id)
+    removeGroup.mutate(props.id);
     handleClose();
-  }
+  };
   const removeGroup = useMutation(groupAPI.deleteGroup, {
     onSuccess: (response) => {
-      enqueueSnackbar("Giải tán nhóm", {variant: "success"})
+      enqueueSnackbar("Giải tán nhóm", { variant: "success" });
       queryClient.invalidateQueries(["GetListGroupByUser"]);
-
     },
     onError: (error: any) => {
-      enqueueSnackbar(error, {variant: "error"})
-    }
-  })
+      enqueueSnackbar(error, { variant: "error" });
+    },
+  });
 
   return (
     <Stack direction={"row"} alignItems={"center"}>
@@ -171,10 +173,16 @@ const Group: FC<GroupProps> = (props) => {
         }}
       >
         <MenuItem onClick={handleLeaveGroup}>
-          <Typography color="primary" variant="h5">Rời nhóm</Typography>
+          <Typography color="primary" variant="h5">
+            Rời nhóm
+          </Typography>
         </MenuItem>
         {props.owner_id && props.owner_id === userId && (
-          <MenuItem onClick={handleRemoveGroup}><Typography color="error" variant="h5">Giải tán nhóm</Typography></MenuItem>
+          <MenuItem onClick={handleRemoveGroup}>
+            <Typography color="error" variant="h5">
+              Giải tán nhóm
+            </Typography>
+          </MenuItem>
         )}
       </Menu>
       <Divider />
