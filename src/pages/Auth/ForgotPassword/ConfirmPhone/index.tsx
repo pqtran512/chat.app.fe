@@ -48,7 +48,6 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // goi api
     checkphone.mutate(phone);
   };
 
@@ -67,7 +66,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
       if (isPhoneValid) {
         onClick(isPhoneValid, phone);
       } else {
-        enqueueSnackbar("phone is invalid", { variant: "error" });
+        enqueueSnackbar("Không tồn tại tài khoản", { variant: "error" });
       }
     },
     onError: (error: any) => {

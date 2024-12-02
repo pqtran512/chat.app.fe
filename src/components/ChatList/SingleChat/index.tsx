@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
 import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
@@ -49,7 +49,7 @@ interface SingleChatProps {
 }
 
 const SingleChat: FC<SingleChatProps> = (props) => {
-  const { toUserId, setToUserId, setToGroupId, setChatProfile, setChatboxId } =
+  const { toUserId, setToUserId, setToGroupId, setChatProfile } =
     useChat();
   const queryClient = useQueryClient();
 
@@ -73,6 +73,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
       name: props.name,
       isGroupChat: false,
       avatar: props.img,
+      groupOwnerId: "",
     });
     if (props.newMessage) {
       setSeen.mutate(props.chatboxId);

@@ -5,12 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   IconButton,
-  Radio,
-  RadioGroup,
   Stack,
   TextField,
   Typography,
@@ -19,42 +14,41 @@ import { FC, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "@emotion/styled";
 import { UpdateProfileDto } from "src/types/api/dto";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { profileAPI } from "src/api";
-import { useProfile } from "src/contexts/ProfileContext";
 import { enqueueSnackbar } from "notistack";
+import { Profile } from "src/types/entities";
 
 interface ProfileProps {
   open: boolean;
+  profile?: Profile;
   handleClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Profile: FC<ProfileProps> = (props) => {
-  const profileContext = useProfile()
+const ProfileComponent: FC<ProfileProps> = (props) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [updateProfileInfo, setUpdateProfileInfo] = useState({
-    profileId: profileContext.profileId,
-    fullname: profileContext.fullname,
-    avatar: profileContext.avatar,
+    profileId: props.profile.id,
+    fullname: props.profile.fullname,
+    avatar: props.profile.avatar,
   } as UpdateProfileDto);
+  const queryClient = useQueryClient();
 
   const handleUpdate = (e) => {
-    updateProfile.mutate(updateProfileInfo)
+    updateProfile.mutate(updateProfileInfo);
   };
 
   const updateProfile = useMutation(profileAPI.updateProfile, {
     onSuccess: (response) => {
-      enqueueSnackbar("Update profile successfull!!", {variant: "success"})
-      profileContext.setProfileId(updateProfileInfo.profileId)
-      profileContext.setFulname(updateProfileInfo.fullname)
-      profileContext.setAvatar(updateProfileInfo.avatar)
+      enqueueSnackbar("Update profile successfull!!", { variant: "success" });
+      queryClient.invalidateQueries("GetPersonalProfile");
+
       handleClose();
     },
     onError: (error: any) => {
-
-      enqueueSnackbar(error.response.data.message, {variant: "error"})
-    }
-  })
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    },
+  });
 
   const handleInputChange = (e) => {
     setUpdateProfileInfo((prev) => ({ ...prev, fullname: e.target.value }));
@@ -115,7 +109,7 @@ const Profile: FC<ProfileProps> = (props) => {
   const handleClose = () => {
     props.handleClose(false);
     setOpenUpdate(false);
-  }
+  };
 
   return (
     <Dialog
@@ -130,9 +124,7 @@ const Profile: FC<ProfileProps> = (props) => {
         ) : (
           <DialogTitle>Profile</DialogTitle>
         )}
-        <IconButton
-          onClick={handleClose}
-        >
+        <IconButton onClick={handleClose}>
           <CloseIcon />
         </IconButton>
       </Stack>
@@ -143,12 +135,10 @@ const Profile: FC<ProfileProps> = (props) => {
             <Stack direction={"row"} spacing={4} alignItems={"center"}>
               <Typography>Change Avatar</Typography>
               <Button component="label" role={undefined} tabIndex={-1}>
-                
-                  <Avatar
-                    sx={{ width: 60, height: 60 }}
-                    src={`data:image/jpeg;base64,${updateProfileInfo.avatar}`}
-                  />
-                
+                <Avatar
+                  sx={{ width: 60, height: 60 }}
+                  src={`data:image/jpeg;base64,${updateProfileInfo.avatar}`}
+                />
 
                 <VisuallyHiddenInput
                   accept=".jpeg, .jpg, .png"
@@ -162,12 +152,11 @@ const Profile: FC<ProfileProps> = (props) => {
               <Typography>Change name</Typography>
               <TextField
                 label="your name"
-                value={updateProfileInfo.fullname
-                }
+                value={updateProfileInfo.fullname}
                 onChange={handleInputChange}
               />
             </Stack>
-            <FormControl>
+            {/* <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
               <RadioGroup
                 row
@@ -191,14 +180,14 @@ const Profile: FC<ProfileProps> = (props) => {
                   label="Other"
                 />
               </RadioGroup>
-            </FormControl>
+            </FormControl> */}
             <Divider />
             <Stack direction={"row"} justifyContent={"right"} spacing={1}>
               <Button variant="text" onClick={() => setOpenUpdate(false)}>
-                Cancel
+                Hủy
               </Button>
               <Button variant="contained" onClick={handleUpdate}>
-                Update
+                Cập nhật
               </Button>
             </Stack>
           </Stack>
@@ -209,21 +198,21 @@ const Profile: FC<ProfileProps> = (props) => {
             <Stack spacing={2} alignItems={"center"}>
               <Avatar
                 sx={{ width: 60, height: 60 }}
-                src={`data:image/jpeg;base64,${profileContext.avatar}`}
+                src={`data:image/jpeg;base64,${props.profile.avatar}`}
               />
-              <Typography variant="h4">{profileContext.fullname}</Typography>
+              <Typography variant="h4">{props.profile.fullname}</Typography>
               <Stack direction={"row"}></Stack>
             </Stack>
 
-            <Divider />
-            <Stack spacing={2}>
+            {/* <Divider /> */}
+            {/* <Stack spacing={2}>
               <Typography variant="h4">Personal information</Typography>
               <Typography>Gender: </Typography>
               <Typography>Birthday: </Typography>
               <Typography>Phone: </Typography>
-            </Stack>
+            </Stack> */}
             <Divider />
-            <Button onClick={() => setOpenUpdate(true)}>Update</Button>
+            <Button onClick={() => setOpenUpdate(true)}>Cập nhật</Button>
           </Stack>
         </DialogContent>
       )}
@@ -243,4 +232,4 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export default Profile;
+export default ProfileComponent;

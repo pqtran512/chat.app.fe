@@ -47,7 +47,6 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
   const defaultTheme = createTheme();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    // check phone
     event.preventDefault();
     if (passwordInput.password === passwordInput.confirmPassword) {
       setResetInfo((prev)=>({
@@ -55,11 +54,10 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
         phone: phoneNumber,
         new_password: passwordInput.password,
       }));
-      // mutate
       reset.mutate(resetInfo);
 
     } else {
-      enqueueSnackbar("Not match!!", { variant: "error" });
+      enqueueSnackbar("Mật khẩu không khớp", { variant: "error" });
     }
   };
 
@@ -67,12 +65,10 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setPasswordInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    // setResetInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const reset = useMutation(authAPI.resetpassword, {
     onSuccess: (response) => {
-      console.log(`respone: ${response}`);
       const { access_token, refresh_token, user, is_success } = response.data;
       if (is_success) {
         localStorage.setItem(STORAGE_KEY.ID, user.id);

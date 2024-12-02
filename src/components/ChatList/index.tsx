@@ -21,6 +21,7 @@ import { useChat } from "src/contexts/ChatContext";
 import moment from "moment";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 import { onReceiveChat } from "src/utils/ws/clients/chat.";
+import { useAuth } from "src/contexts/AuthContext";
 
 interface ChatListProps {
   onSuccess?: (data: ListChatBoxByUserResult) => void;
@@ -38,6 +39,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
     setToGroupId,
     setChatProfile,
   } = useChat();
+  const { userId } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: ["GetChatBoxListByUser"],
@@ -61,6 +63,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             avatar,
             memberCount: group_members.length,
             newMessage: firstChatBox.new_message,
+            groupOwnerId: firstChatBox.to_group_profile.owner_id,
           });
         } else {
           const uid = firstChatBox.to_user_profile.id;
@@ -72,6 +75,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             name: fullname,
             avatar,
             newMessage: firstChatBox.new_message,
+            groupOwnerId: '',
           });
         }
       }
@@ -105,15 +109,6 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             label="Tìm kiếm"
             variant="outlined"
             sx={{ width: 250 }}
-            // slotProps={{
-            //   input: {
-            //     startAdornment: <InputAdornment position="start">
-            //       <IconButton>
-            //         <SearchIcon/>
-            //       </IconButton>
-            //     </InputAdornment>
-            //   }
-            // }}
           />
           <Stack direction={"row"} spacing={1}>
             <IconButton
@@ -151,18 +146,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                 Chưa đọc
               </Button>
             </Stack>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <Button
-                variant="text"
-                sx={{ padding: "0 0 0 0", color: "#6e7278" }}
-              >
-                Phân loại
-                <KeyboardArrowUpIcon />
-              </Button>
-              {/* <IconButton sx={{ padding: "0 0 0 0" }}>
-                  <MoreHorizIcon />
-                </IconButton> */}
-            </Stack>
+            <Stack direction="row" alignItems="center" spacing={1}></Stack>
           </Stack>
           <Divider />
         </Stack>
@@ -180,7 +164,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             data.data.map((chatbox, index) => {
               const time = moment(chatbox.latest_updated_date).format("HH:mm");
               const lastChatLogContent =
-                chatbox.chatbox_chatlogs[0].chat_log.content;
+                chatbox?.chatbox_chatlogs[0]?.chat_log.content;
               const isNewMessage = chatbox.new_message;
               const chatboxId = chatbox.id;
               if (chatbox.to_user_profile) {
@@ -198,7 +182,8 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                   />
                 );
               }
-              const { name, avatar, id, group_members } = chatbox.to_group_profile;
+              const { name, avatar, id, group_members, owner_id } =
+                chatbox.to_group_profile;
               return (
                 <GroupChat
                   key={index}
@@ -210,6 +195,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                   memberCount={group_members.length}
                   msg={lastChatLogContent}
                   newMessage={isNewMessage}
+                  ownerId={owner_id}
                 />
               );
             })}

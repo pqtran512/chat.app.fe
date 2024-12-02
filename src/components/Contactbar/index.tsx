@@ -153,12 +153,12 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const handleGroupList = () => {
     showChatDetailActions();
     props.setChosen(1);
-    getGroupList.mutate({ searchText: "" });
+    // getGroupList.mutate({ searchText: "" });
   };
 
   const getGroupList = useMutation(groupAPI.groupList, {
     onSuccess: (response) => {
-      console.log(response.data)
+      console.log(response.data);
       if (response.data.count > 0) {
         const responseGroupList = [];
         response.data.groups.forEach((e) => {
@@ -167,6 +167,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             name: e.group.name,
             avatar: e.group.avatar,
             group_members: [...e.group.group_members],
+            owner_id: e.group.owner_id,
           });
         });
         groupListContext.setGroupList([...responseGroupList]);
@@ -239,7 +240,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             onClick={handleFriendList}
           >
             <PersonIcon sx={{ marginRight: 2 }} />
-            <Typography variant="h4">Friend list</Typography>
+            <Typography variant="h4">Danh sách bạn bè</Typography>
           </Button>
           <Button
             key={1}
@@ -249,7 +250,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             onClick={handleGroupList}
           >
             <GroupsIcon sx={{ marginRight: 2 }} />
-            <Typography variant="h4">Joined groups and communities</Typography>
+            <Typography variant="h4">Danh sách nhóm</Typography>
           </Button>
           <Button
             variant={props.chosen === 2 ? "contained" : "text"}
@@ -259,7 +260,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             onClick={handleFriendRequests}
           >
             <PersonAddAlt1Icon sx={{ marginRight: 2 }} />
-            <Typography variant="h4">Friend requests</Typography>
+            <Typography variant="h4">Lời mời kết bạn</Typography>
           </Button>
           {/* <Button
             variant={props.chosen == 3 ? "contained" : "text"}

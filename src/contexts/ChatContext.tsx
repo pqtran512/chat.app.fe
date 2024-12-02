@@ -1,12 +1,13 @@
 import { FC, useState, createContext, useContext, ReactNode } from "react";
 
-type ChatProfile = {
+export type ChatProfile = {
   id: string;
   name: string;
   avatar?: string;
   isGroupChat: boolean;
   memberCount?: number;
   newMessage?: boolean;
+  groupOwnerId?: string;
 };
 
 type ChatContext = {
@@ -38,6 +39,7 @@ export const ChatProvider: FC<Props> = ({ children }) => {
     isGroupChat: false,
     memberCount: 0,
     newMessage: false,
+    groupOwnerId: "",
   });
 
   return (

@@ -16,7 +16,9 @@ interface FriendSentContext {
   friendSentList: FriendSentRespone[];
   setFriendSentList: React.Dispatch<React.SetStateAction<FriendSentRespone[]>>;
   friendReceivedList: FriendSentRespone[];
-  setFriendReceivedList: React.Dispatch<React.SetStateAction<FriendSentRespone[]>>;
+  setFriendReceivedList: React.Dispatch<
+    React.SetStateAction<FriendSentRespone[]>
+  >;
 }
 
 export const FriendRequestContext = createContext<FriendSentContext>(
@@ -35,9 +37,15 @@ export const FriendSentProvider: FC<Props> = ({ children }) => {
     { id: "", fullname: "", avatar: "" },
   ] as FriendSentRespone[]);
 
-
   return (
-    <FriendRequestContext.Provider value={{ friendSentList, setFriendSentList, friendReceivedList, setFriendReceivedList }}>
+    <FriendRequestContext.Provider
+      value={{
+        friendSentList,
+        setFriendSentList,
+        friendReceivedList,
+        setFriendReceivedList,
+      }}
+    >
       {children}
     </FriendRequestContext.Provider>
   );
@@ -49,8 +57,6 @@ export const useFriendRequest = () => {
 
   return context;
 };
-
-
 
 interface FriendListRespone {
   id: string;
@@ -66,7 +72,6 @@ interface FriendListContext {
 export const FriendListContext = createContext<FriendListContext>(
   {} as FriendListContext
 );
-
 
 export const FriendListProvider: FC<Props> = ({ children }) => {
   const [friendList, setFriendList] = useState([
@@ -86,5 +91,3 @@ export const useFriendList = () => {
 
   return context;
 };
-
-

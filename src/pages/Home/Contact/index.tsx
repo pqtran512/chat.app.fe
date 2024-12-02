@@ -24,7 +24,7 @@ const Contact: FC<ContactProps> = (props) => {
   const getFriendList = useMutation(friendAPI.friendList, {
     onSuccess: (response) => {
       const friendList = [];
-      if (response.data !== "") {
+      if (response.data) {
         response.data.forEach((e) => {
           friendList.push({
             id: e.to_user_profile.profile[0].id,

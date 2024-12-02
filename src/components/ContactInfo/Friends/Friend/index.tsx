@@ -44,7 +44,7 @@ const Friend: FC<FriendProps> = (props) => {
 
   const unfriend = useMutation(friendAPI.unfriend, {
     onSuccess: (response) => {
-      enqueueSnackbar(`unfriend Sucessfull`, { variant: "success" });
+      enqueueSnackbar(`Bỏ kết bạn thành công`, { variant: "success" });
       getFriendList.mutate();
     },
     onError: (error: any) => {
@@ -82,6 +82,7 @@ const Friend: FC<FriendProps> = (props) => {
       name: props.fullname,
       isGroupChat: false,
       avatar: props.avatar,
+      groupOwnerId: '',
     });
   };
 
@@ -118,7 +119,7 @@ const Friend: FC<FriendProps> = (props) => {
         }}
       >
         <MenuItem sx={{ padding: 0 }} onClick={handleUnfriend}>
-          <Button>Unfriend</Button>
+          <Button>Bỏ kết bạn</Button>
         </MenuItem>
       </Menu>
       <Divider />

@@ -14,7 +14,6 @@ interface HomePageProps {}
 const HomePage: FC<HomePageProps> = (props) => {
   const { showChatBoxList, showChatDetail, showContactInfo, showContactList } =
     useTabs();
-
   const [chosen, setChosen] = useState(0);
   const [openChatInfo, setOpenChatInfo] = useState(false);
   const queryClient = useQueryClient();
@@ -28,7 +27,6 @@ const HomePage: FC<HomePageProps> = (props) => {
       }
     });
   }, []);
-  
 
   return (
     <Box>

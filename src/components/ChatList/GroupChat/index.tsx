@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
 import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
@@ -23,16 +23,18 @@ interface GroupChatProps {
   online?: boolean;
   memberCount?: number;
   newMessage?: boolean;
+  ownerId?: string;
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {
-  const { toGroupId, setToUserId, setToGroupId, setChatProfile, setChatboxId } = useChat();
+  const { toGroupId, setToUserId, setToGroupId, setChatProfile } =
+    useChat();
   const queryClient = useQueryClient();
 
   const setSeen = useMutation(chatAPI.setChatboxSeen, {
     onSuccess: (res) => {
       if (res.data) {
-        queryClient.invalidateQueries(['GetChatBoxListByUser']);
+        queryClient.invalidateQueries(["GetChatBoxListByUser"]);
       }
     },
     onError: (err: any) => {
@@ -50,6 +52,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
       isGroupChat: true,
       avatar: props.img,
       memberCount: props.memberCount,
+      groupOwnerId: props.ownerId,
     });
     if (props.newMessage) {
       setSeen.mutate(props.chatboxId);

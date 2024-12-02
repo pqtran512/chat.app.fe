@@ -21,6 +21,11 @@ export enum WsEvent {
   EXCEPTION = 'exception',
 }
 
+export enum GroupStatusCode {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
+  
 export enum Platform {
   MOBILE = 'mobile',
   WEB = 'web',
