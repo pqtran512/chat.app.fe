@@ -77,6 +77,12 @@ const Footer: FC<FooterProps> = () => {
     });
   };
 
+  const keyPress = (e) => {
+    if(e.keyCode == 13){
+      handleSendMessage();
+    }
+ }
+
   return (
     <Box
       sx={{
@@ -123,7 +129,7 @@ const Footer: FC<FooterProps> = () => {
               </Box>
               <StyleInput
                 size="small"
-                multiline
+                // multiline
                 margin="none"
                 fullWidth
                 variant="outlined"
@@ -132,6 +138,7 @@ const Footer: FC<FooterProps> = () => {
                 onChange={(e) => {
                   setText(e.target.value);
                 }}
+                onKeyDown={keyPress}
                 slotProps={{
                   input: {
                     endAdornment: (

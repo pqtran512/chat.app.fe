@@ -1,10 +1,9 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
 import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { enqueueSnackbar } from "notistack";
-import { useAuth } from "src/contexts/AuthContext";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
@@ -28,10 +27,9 @@ interface GroupChatProps {
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {
-  const { toGroupId, setToUserId, setToGroupId, setChatProfile, setChatboxId } =
+  const { toGroupId, setToUserId, setToGroupId, setChatProfile } =
     useChat();
   const queryClient = useQueryClient();
-  const { userId } = useAuth();
 
   const setSeen = useMutation(chatAPI.setChatboxSeen, {
     onSuccess: (res) => {
