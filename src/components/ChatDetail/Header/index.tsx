@@ -28,10 +28,10 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = (props) => {
-  const [openProfileFriendOrGroup, setOpenProfileFriendOrGroup] = useState(false);
+  const [openProfileFriendOrGroup, setOpenProfileFriendOrGroup] =
+    useState(false);
   const { chatProfile } = useChat();
   const { members, setMembers } = useGroupMembers();
-
 
   const getGroupMembers = useMutation(groupAPI.getGroupMembers, {
     onSuccess: (response) => {
@@ -43,22 +43,21 @@ const Header: FC<HeaderProps> = (props) => {
             profile_id: u.user.profile[0].id,
             fullname: u.user.profile[0].fullname,
             avatar: u.user.profile[0].avatar,
-            active: 'inactive',
+            active: "inactive",
           });
         });
-        setMembers(groupMembers)
+        setMembers(groupMembers);
       }
-        
     },
     onError: (error: any) => {
-      enqueueSnackbar(error, {variant: "error"})
-    }
-  })
+      enqueueSnackbar(error, { variant: "error" });
+    },
+  });
 
   const handleShowProfileFriendOrGroup = () => {
     setOpenProfileFriendOrGroup(true);
-    getGroupMembers.mutate(chatProfile.id)
-  }
+    getGroupMembers.mutate(chatProfile.id);
+  };
 
   return (
     <Box
@@ -135,12 +134,20 @@ const Header: FC<HeaderProps> = (props) => {
           </Stack>
         </Box>
       </Stack>
-      {chatProfile.isGroupChat 
-      ? 
-      <ProfileGroup open={openProfileFriendOrGroup} handleClose={setOpenProfileFriendOrGroup} />
-      : 
-      <ProfileFriend open={openProfileFriendOrGroup} handleClose={setOpenProfileFriendOrGroup}/>
-    }
+      {chatProfile.isGroupChat ? (
+        chatProfile.id && (
+          <ProfileGroup
+            profile={chatProfile}
+            open={openProfileFriendOrGroup}
+            handleClose={setOpenProfileFriendOrGroup}
+          />
+        )
+      ) : (
+        <ProfileFriend
+          open={openProfileFriendOrGroup}
+          handleClose={setOpenProfileFriendOrGroup}
+        />
+      )}
     </Box>
   );
 };

@@ -4,7 +4,6 @@ import { SidebarContext } from "src/contexts/SidebarContext";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
-
 import {
   Box,
   Drawer,
@@ -29,7 +28,6 @@ import { useMutation, useQuery } from "react-query";
 import { authAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
 import { LogOutDto } from "src/types/api/dto/auth";
-import { useProfile } from "src/contexts/ProfileContext";
 import { STORAGE_KEY } from "src/utils/constants";
 import { disconnectChatSocket } from "src/utils/ws/clients/chat.";
 import { userAPI } from "src/api/user.api";
@@ -53,8 +51,6 @@ function Sidebar() {
 
   const [openMyProfile, setOpenMyProfile] = useState(false);
   const [openSetting, setOpenSetting] = useState(false);
-
-  const profileContext = useProfile();
 
   const handleClickProfile = () => {
     setOpenMyProfile(true);
@@ -196,8 +192,17 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
-      <ProfileComponent profile={personalProfile} open={openMyProfile} handleClose={setOpenMyProfile} />
-      <Setting open={openSetting} handleClose={setOpenSetting} />
+      {!loadingGetPersonalProfile && (
+        <>
+          {" "}
+          <ProfileComponent
+            profile={personalProfile}
+            open={openMyProfile}
+            handleClose={setOpenMyProfile}
+          />
+          <Setting open={openSetting} handleClose={setOpenSetting} />
+        </>
+      )}
     </>
   );
 }

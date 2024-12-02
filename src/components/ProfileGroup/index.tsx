@@ -17,14 +17,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "@emotion/styled";
 import { UpdateProfileGroupDto } from "src/types/api/dto";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { friendAPI, groupAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
-import { useChat } from "src/contexts/ChatContext";
+import { ChatProfile, useChat } from "src/contexts/ChatContext";
 import { GroupStatusCode } from "src/utils/enums";
 import { useGroupMembers } from "src/contexts/GroupMemberContext";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -33,18 +33,18 @@ import { useFriendList } from "src/contexts/FriendContext";
 
 interface ProfileGroupProps {
   open: boolean;
+  profile?: ChatProfile;
   handleClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ProfileGroup: FC<ProfileGroupProps> = (props) => {
-  const { chatProfile, setChatProfile, setToGroupId } = useChat();
+  const { setChatProfile, setToGroupId } = useChat();
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openMember, setOpenMember] = useState(false);
   const [updateProfileGroupInfo, setUpdateProfileGroupInfo] = useState({
-    id: chatProfile.id,
-    name: chatProfile.name,
-    avatar: chatProfile.avatar,
-    group_status_code: GroupStatusCode.ACTIVE,
+    id: props.profile.id,
+    name: props.profile.name,
+    avatar: props.profile.avatar,
     description: "",
   } as UpdateProfileGroupDto);
   const queryClient = useQueryClient();
@@ -74,12 +74,12 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   });
 
   const handleLeaveGroup = () => {
-    leaveGroup.mutate(chatProfile.id);
+    leaveGroup.mutate(props.profile.id);
     handleClose();
   };
   const leaveGroup = useMutation(groupAPI.leaveGroup, {
     onSuccess: (response) => {
-      enqueueSnackbar(`Bạn vừa rời khỏi nhóm ${chatProfile.name}`, {
+      enqueueSnackbar(`Bạn vừa rời khỏi nhóm ${props.profile.name}`, {
         variant: "success",
       });
       setToGroupId("");
@@ -88,7 +88,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
     },
     onError: (error: any) => {
       enqueueSnackbar(
-        `Rời nhóm ${chatProfile.name} không thành công - ${error.message}`,
+        `Rời nhóm ${props.profile.name} không thành công - ${error.message}`,
         { variant: "error" }
       );
     },
@@ -117,6 +117,15 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
       enqueueSnackbar(error, { variant: "error" });
     },
   });
+
+  useEffect(() => {
+    setUpdateProfileGroupInfo({
+      id: props.profile.id,
+      name: props.profile.name,
+      avatar: props.profile.avatar,
+      description: "",
+    } as UpdateProfileGroupDto);
+  }, [props.profile.id]);
 
   const handleNameInputChange = (e) => {
     setUpdateProfileGroupInfo((prev) => ({ ...prev, name: e.target.value }));
@@ -244,15 +253,15 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                   value={updateProfileGroupInfo.name}
                   onChange={handleNameInputChange}
                 />
-                <Typography>Đổi miêu tả nhóm</Typography>
+                {/* <Typography>Đổi miêu tả nhóm</Typography>
                 <TextField
                   label="Miêu tả nhóm"
                   value={updateProfileGroupInfo.description}
                   onChange={handleDescriptionInputChange}
-                />
+                /> */}
               </Stack>
               <Divider />
-              <FormControl>
+              {/* <FormControl>
                 <FormLabel id="demo-radio-buttons-group-label">
                   Trạng thái
                 </FormLabel>
@@ -275,7 +284,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                     label="không hoạt động"
                   />
                 </RadioGroup>
-              </FormControl>
+              </FormControl> */}
               <Divider />
               <Stack direction={"row"} justifyContent={"right"} spacing={1}>
                 <Button variant="text" onClick={() => setOpenUpdate(false)}>
@@ -299,10 +308,10 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                 >
                   <Avatar
                     sx={{ width: 60, height: 60 }}
-                    src={`data:image/jpeg;base64,${chatProfile.avatar}`}
+                    src={`data:image/jpeg;base64,${props.profile.avatar}`}
                   />
                   <Stack>
-                    <Typography variant="h4">{chatProfile.name}</Typography>
+                    <Typography variant="h4">{props.profile.name}</Typography>
                     <Typography variant="subtitle2">
                       {updateProfileGroupInfo.description}
                     </Typography>
@@ -342,8 +351,8 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
         <GroupMembers
           open={openMember}
           setOpen={setOpenMember}
-          group_id={chatProfile.id}
-          ownerId={chatProfile.groupOwnerId}
+          group_id={props.profile.id}
+          ownerId={props.profile.groupOwnerId}
         />
       )}
     </Box>
