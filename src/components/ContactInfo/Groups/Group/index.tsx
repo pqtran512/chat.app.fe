@@ -80,7 +80,8 @@ const Group: FC<GroupProps> = (props) => {
       enqueueSnackbar(`Rời nhóm ${props.name}`, {
         variant: "success",
       });
-      searchGroup.mutate({ searchText: "" });
+      queryClient.invalidateQueries(["GetListGroupByUser"]);
+      // searchGroup.mutate({ searchText: "" });
     },
     onError: (error: any) => {
       enqueueSnackbar(

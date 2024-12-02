@@ -98,7 +98,7 @@ const Groups: FC<GroupsProps> = (props) => {
                 <Group
                   key={index}
                   {...g.group}
-                  memberCount={g?.group_members?.length || 0}
+                  memberCount={g?.group?.group_members?.length || 0}
                 />
               );
             })}

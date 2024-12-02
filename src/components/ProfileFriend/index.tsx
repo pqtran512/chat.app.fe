@@ -6,7 +6,6 @@ interface ProfileFriendProps {
 }
 
 const ProfileFriend: FC<ProfileFriendProps> = () => {
-    console.log("show Friend group")
     return (
         <></>
     )

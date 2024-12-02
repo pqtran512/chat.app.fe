@@ -37,7 +37,7 @@ interface ProfileGroupProps {
 }
 
 const ProfileGroup: FC<ProfileGroupProps> = (props) => {
-  const { chatProfile, setChatProfile } = useChat();
+  const { chatProfile, setChatProfile, setToGroupId } = useChat();
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openMember, setOpenMember] = useState(false);
   const [updateProfileGroupInfo, setUpdateProfileGroupInfo] = useState({
@@ -82,6 +82,8 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
       enqueueSnackbar(`Bạn vừa rời khỏi nhóm ${chatProfile.name}`, {
         variant: "success",
       });
+      setToGroupId("");
+      queryClient.invalidateQueries(["GetChatBoxListByUser"]);
       // Switch to another group
     },
     onError: (error: any) => {

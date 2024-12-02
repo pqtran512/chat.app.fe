@@ -164,7 +164,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             data.data.map((chatbox, index) => {
               const time = moment(chatbox.latest_updated_date).format("HH:mm");
               const lastChatLogContent =
-                chatbox.chatbox_chatlogs[0].chat_log.content;
+                chatbox?.chatbox_chatlogs[0]?.chat_log.content;
               const isNewMessage = chatbox.new_message;
               const chatboxId = chatbox.id;
               if (chatbox.to_user_profile) {
