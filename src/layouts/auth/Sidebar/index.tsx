@@ -22,16 +22,17 @@ import {
 
 import SidebarMenu from "./SidebarMenu";
 import Logo from "src/components/LogoSign";
-import Profile from "src/components/Profile";
+import ProfileComponent from "src/components/Profile";
 import Setting from "src/components/Setting";
 import { useAuth } from "src/contexts/AuthContext";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { authAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
 import { LogOutDto } from "src/types/api/dto/auth";
 import { useProfile } from "src/contexts/ProfileContext";
 import { STORAGE_KEY } from "src/utils/constants";
 import { disconnectChatSocket } from "src/utils/ws/clients/chat.";
+import { userAPI } from "src/api/user.api";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -59,6 +60,18 @@ function Sidebar() {
     setOpenMyProfile(true);
   };
 
+  const {
+    data: personalProfile,
+    isLoading: loadingGetPersonalProfile,
+    refetch: refetchGetPersonalProfile,
+  } = useQuery({
+    queryKey: ["GetPersonalProfile"],
+    queryFn: () => userAPI.getPersonalProfile(),
+    select: (rs) => {
+      return rs.data[0];
+    },
+  });
+
   return (
     <>
       <SidebarWrapper
@@ -76,32 +89,35 @@ function Sidebar() {
         }}
       >
         <Scrollbar>
-          <Box mt={3}>
-            <Box
-              mx={2}
-              sx={{
-                width: 52,
-              }}
-            >
-              <Button
-                // onClick={() => {
-                //   setOpenMyProfile(true);
-                //   console.log("Open profile");
-                //   getProfile.mutate();
-                // }}
-                onClick={handleClickProfile}
-                sx={{ padding: 0 }}
+          {!loadingGetPersonalProfile && (
+            <Box mt={3}>
+              <Box
+                mx={2}
+                sx={{
+                  width: 52,
+                }}
               >
-                <Avatar
-                  sx={{ width: 60, height: 60 }}
-                  alt="Avatar"
-                  // src={profile.avatar}
-                  src={`data:image/jpeg;base64,${profileContext.avatar}`}
-                />
-              </Button>
-              {/* <Logo /> */}
+                <Button
+                  // onClick={() => {
+                  //   setOpenMyProfile(true);
+                  //   console.log("Open profile");
+                  //   getProfile.mutate();
+                  // }}
+                  onClick={handleClickProfile}
+                  sx={{ padding: 0 }}
+                >
+                  <Avatar
+                    sx={{ width: 60, height: 60 }}
+                    alt="Avatar"
+                    // src={profile.avatar}
+                    src={`data:image/jpeg;base64,${personalProfile.avatar}`}
+                  />
+                </Button>
+                {/* <Logo /> */}
+              </Box>
             </Box>
-          </Box>
+          )}
+
           <Divider
             sx={{
               mt: theme.spacing(3),
@@ -180,7 +196,7 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
-      <Profile open={openMyProfile} handleClose={setOpenMyProfile} />
+      <ProfileComponent profile={personalProfile} open={openMyProfile} handleClose={setOpenMyProfile} />
       <Setting open={openSetting} handleClose={setOpenSetting} />
     </>
   );
