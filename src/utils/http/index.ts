@@ -36,7 +36,6 @@ export class Http {
         return response;
       },
       async (error) => {
-        console.log(error);
         const { config } = error;
         if (error?.response?.status === 401) {
           // return Promise.reject(error);
@@ -69,7 +68,6 @@ export class Http {
                 // return this.instance.request(config);
               })
               .catch((error) => {
-                console.log(error);
                 requestsToRefresh.forEach((cb) => cb(null));
                 localStorage.clear();
                 return (window.location.href = "/login");

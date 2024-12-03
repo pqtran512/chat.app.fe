@@ -18,10 +18,12 @@ import { useQuery, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { ListChatBoxByUserResult } from "src/types/api/response/chatbox";
 import { useChat } from "src/contexts/ChatContext";
-import moment from "moment";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 import { onReceiveChat } from "src/utils/ws/clients/chat.";
 import { useAuth } from "src/contexts/AuthContext";
+import moment from "moment";
+import "moment/locale/vi";
+moment.locale("vi");
 
 interface ChatListProps {
   onSuccess?: (data: ListChatBoxByUserResult) => void;
@@ -162,7 +164,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
         >
           {data &&
             data.data.map((chatbox, index) => {
-              const time = moment(chatbox.latest_updated_date).format("HH:mm");
+              const time = moment(chatbox.latest_updated_date).fromNow();;
               const lastChatLogContent =
                 chatbox?.chatbox_chatlogs[0]?.chat_log.content;
               const isNewMessage = chatbox.new_message;
