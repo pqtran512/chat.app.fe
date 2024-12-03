@@ -70,7 +70,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.respone.data.message, {
+      enqueueSnackbar(error.message, {
         variant: "error",
       });
     },
@@ -111,6 +111,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
                 name="phone"
                 autoComplete="phone"
                 autoFocus
+                value={phone}
                 onChange={handleChangePhone}
               />
               

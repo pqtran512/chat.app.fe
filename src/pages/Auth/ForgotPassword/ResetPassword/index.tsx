@@ -36,10 +36,10 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
     confirmPassword: "",
   });
   const [resetInfo, setResetInfo] = useState({
-    phone: "",
+    phone: phoneNumber,
     new_password: "",
   } as ResetPassworDto);
-  
+
   const navigate = useNavigate();
   const { setAccessToken, setUserId } = useAuth();
   const handleClickShowPassword = () =>
@@ -49,13 +49,15 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (passwordInput.password === passwordInput.confirmPassword) {
-      setResetInfo((prev)=>({
-        ...prev,
+      // setResetInfo((prev)=>({
+      //   ...prev,
+      //   phone: phoneNumber,
+      //   new_password: passwordInput.password,
+      // }));
+      reset.mutate({
         phone: phoneNumber,
-        new_password: passwordInput.password,
-      }));
-      reset.mutate(resetInfo);
-
+        new_password: passwordInput.confirmPassword,
+      });
     } else {
       enqueueSnackbar("Mật khẩu không khớp", { variant: "error" });
     }
@@ -77,8 +79,10 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
 
         setUserId(user.id);
         setAccessToken(access_token);
+        
         navigate("/");
-    }},
+      }
+    },
     onError: (error: any) => {
       enqueueSnackbar(error, {
         variant: "error",

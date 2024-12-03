@@ -5,9 +5,9 @@ import { Token } from "src/types/api/response/token.response";
 import http from "src/utils/http";
 
 export const AUTH_URL = {
-  LOGIN: '/auth/login',
-  REFRESH: '/auth/refresh',
-  CHECK_USER_EXIST: '/auth/check-user-exist',
+  LOGIN: "/auth/login",
+  REFRESH: "/auth/refresh",
+  CHECK_USER_EXIST: "/auth/check-user-exist",
   LOGOUT: "/auth/logout",
   CHECKPHONE: "/auth/check-user-exist",
   RESETPASSWORD: "/auth/reset-password",
@@ -26,7 +26,7 @@ export const authAPI = {
   logout(logOutDto: LogOutDto) {
     return http.post<boolean>(AUTH_URL.LOGOUT, logOutDto, {
       headers: {
-        "refresh_token": logOutDto.refresh_token,
+        refresh_token: logOutDto.refresh_token,
       },
     });
   },
@@ -40,4 +40,3 @@ export const authAPI = {
     );
   },
 };
-
