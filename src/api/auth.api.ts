@@ -1,5 +1,5 @@
 import { LogInDto, RefreshDto, ResetPassworDto } from "src/types/api/dto";
-import { LogOutDto } from "src/types/api/dto/auth";
+import { LogOutDto, RegisterDto } from "src/types/api/dto/auth";
 import { LoginResponse, ResetPasswordResponse } from "src/types/api/response";
 import { Token } from "src/types/api/response/token.response";
 import http from "src/utils/http";
@@ -11,6 +11,7 @@ export const AUTH_URL = {
   LOGOUT: "/auth/logout",
   CHECKPHONE: "/auth/check-user-exist",
   RESETPASSWORD: "/auth/reset-password",
+  REGISTER: "/auth/register",
 };
 
 export const authAPI = {
@@ -38,5 +39,8 @@ export const authAPI = {
       AUTH_URL.RESETPASSWORD,
       resetPasswordDto
     );
+  },
+  register(registerDto: RegisterDto) {
+    return http.post<ResetPasswordResponse>(AUTH_URL.REGISTER, registerDto);
   },
 };
