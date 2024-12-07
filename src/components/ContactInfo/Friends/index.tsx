@@ -55,7 +55,7 @@ const Friends: FC<FriendsProps> = (props) => {
       </Box>
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
         <Box sx={{ padding: 3 }}>
-          <Typography>{`bạn bè (${
+          <Typography>{`Bạn bè (${
             friendList[0].id === "" ? 0 : friendList.length
           })`}</Typography>
         </Box>

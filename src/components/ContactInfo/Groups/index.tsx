@@ -72,7 +72,7 @@ const Groups: FC<GroupsProps> = (props) => {
 
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
         <Box sx={{ padding: 3 }}>
-          <Typography>Nhóm (99)</Typography>
+          <Typography>Nhóm ({data && data.groups.length})</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff"}}>
           <Stack direction={"row"} padding={1} spacing={2} component={"form"}>

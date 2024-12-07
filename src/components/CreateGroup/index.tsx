@@ -180,7 +180,7 @@ const CreateGroup: FC<CreateGroupProps> = (props) => {
 
   return (
     <Dialog fullWidth maxWidth="xs" open={props.open}>
-      <DialogTitle>Tạo nhóm 1</DialogTitle>
+      <DialogTitle>Tạo nhóm</DialogTitle>
       <Divider />
       <DialogContent>
         <CreateGroupForm data={data} handleClose={props.handleClose} />
