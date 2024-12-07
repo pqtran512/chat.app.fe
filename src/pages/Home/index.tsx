@@ -7,7 +7,8 @@ import { useTabs } from "src/contexts/TabsContext";
 import ContactInfo from "src/components/ContactInfo";
 import { connectChatSocket, onReceiveChat } from "src/utils/ws/clients/chat.";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
+import { friendAPI } from "src/api";
 
 interface HomePageProps {}
 
