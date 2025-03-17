@@ -47,6 +47,9 @@ const MenuWrapper = styled(Box)(
 const SubMenuWrapper = styled(Box)(
   ({ theme }) => `
     .MuiList-root {
+      margin: 0;           
+      padding: 0;
+      width: 100%;
 
       .MuiListItem-root {
         padding: 1px 0;
@@ -83,14 +86,15 @@ const SubMenuWrapper = styled(Box)(
           }
 
           .MuiButton-startIcon {
-            color: ${theme.colors.alpha.trueWhite[30]};
-            font-size: ${theme.typography.pxToRem(20)};
+            padding-block: 4px;
+            color: ${theme.colors.alpha.trueWhite[100]};
+            font-size: ${theme.typography.pxToRem(26)};
             margin-right: ${theme.spacing(1)};
           }
           
           .MuiButton-endIcon {
             color: ${theme.colors.alpha.trueWhite[50]};
-            margin-left: auto;
+            margin-inline: auto;
             opacity: .8;
             font-size: ${theme.typography.pxToRem(20)};
           }
@@ -209,7 +213,7 @@ function SidebarMenu() {
         <List component="div">
           <SubMenuWrapper>
             <List component="div">
-              <ListItem component="div" sx={{ marginBottom: 2 }}>
+              <ListItem component="div" sx={{ marginBottom: 2 }} >
                 <Button
                   className={tabs === TabsEnum.CHAT ? 'active' : ''}
                   disableRipple

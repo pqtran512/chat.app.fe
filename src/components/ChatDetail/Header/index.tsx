@@ -21,6 +21,7 @@ import { useMutation } from "react-query";
 import { groupAPI } from "src/api";
 import { useGroupMembers } from "src/contexts/GroupMemberContext";
 import { enqueueSnackbar } from "notistack";
+import { useTheme } from "@mui/material/styles";
 
 interface HeaderProps {
   openChatInfo: boolean;
@@ -28,6 +29,7 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = (props) => {
+  const theme = useTheme();
   const [openProfileFriendOrGroup, setOpenProfileFriendOrGroup] =
     useState(false);
   const { chatProfile } = useChat();
@@ -62,7 +64,7 @@ const Header: FC<HeaderProps> = (props) => {
   return (
     <Box
       sx={{
-        backgroundColor: "#fff",
+        backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
       }}
       alignItems={"center"}
@@ -76,36 +78,40 @@ const Header: FC<HeaderProps> = (props) => {
       >
         <Box>
           <Button onClick={handleShowProfileFriendOrGroup}>
-            {chatProfile.id && (
-              <Stack direction={"row"} spacing={2} alignItems={"center"}>
-                {false ? (
-                  <StyledBadge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    variant="dot"
-                  >
-                    <Avatar
-                      src={`data:image/png;base64, ${chatProfile.avatar}`}
-                    />
-                  </StyledBadge>
-                ) : (
+            {/* {chatProfile.id && ( fix - no comment */}
+            <Stack direction={"row"} spacing={2} alignItems={"center"}>
+              {false ? (
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                >
                   <Avatar
+                    sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid #157FCA' }}
+                    alt="Avatar" // fix - profile name
                     src={`data:image/png;base64, ${chatProfile.avatar}`}
                   />
-                )}
+                </StyledBadge>
+              ) : (
+                <Avatar
+                  sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid #157FCA' }}
+                  alt="Avatar" // fix - profile name
+                  src={`data:image/png;base64, ${chatProfile.avatar}`}
+                />
+              )}
 
-                <Stack direction={"column"}>
-                  <Typography textAlign={"left"} variant="h4">
-                    {chatProfile.name}
+              <Stack direction={"column"}>
+                <Typography textAlign={"left"} variant="h4" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>
+                  {chatProfile.name || "Anna"}
+                </Typography>
+                {chatProfile.isGroupChat && (
+                  <Typography textAlign={"left"} variant="h6" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>
+                    {chatProfile.memberCount} thành viên
                   </Typography>
-                  {chatProfile.isGroupChat && (
-                    <Typography textAlign={"left"} variant="h6">
-                      {chatProfile.memberCount} thành viên
-                    </Typography>
-                  )}
-                </Stack>
+                )}
               </Stack>
-            )}
+            </Stack>
+            {/* )} */}
           </Button>
         </Box>
         <Box>

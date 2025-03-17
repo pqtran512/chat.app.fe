@@ -79,40 +79,33 @@ function Sidebar() {
           position: "fixed",
           left: 0,
           top: 0,
-          background: "#0190f3",
+          background: "#1FAEEB",
           boxShadow:
             theme.palette.mode === "dark" ? theme.sidebar.boxShadow : "none",
         }}
       >
-        <Scrollbar>
-          {!loadingGetPersonalProfile && (
-            <Box mt={3}>
-              <Box
-                mx={2}
-                sx={{
-                  width: 52,
-                }}
+        <Box height={'85vh'}>
+          {/* {!loadingGetPersonalProfile && ( // fix - no comment */}
+          <Box mt={3}>
+            <Box>
+              <Button
+                // onClick={() => {
+                //   setOpenMyProfile(true);
+                //   console.log("Open profile");
+                //   getProfile.mutate();
+                // }}
+                onClick={handleClickProfile}
+                sx={{ mx: 'auto' }}
               >
-                <Button
-                  // onClick={() => {
-                  //   setOpenMyProfile(true);
-                  //   console.log("Open profile");
-                  //   getProfile.mutate();
-                  // }}
-                  onClick={handleClickProfile}
-                  sx={{ padding: 0 }}
-                >
-                  <Avatar
-                    sx={{ width: 60, height: 60 }}
-                    alt="Avatar"
-                    // src={profile.avatar}
-                    src={`data:image/jpeg;base64,${personalProfile.avatar}`}
-                  />
-                </Button>
-                {/* <Logo /> */}
-              </Box>
+                <Avatar
+                  sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid white' }}
+                  alt="Avatar" // fix - profile name
+                  src={`data:image/jpeg;base64,${personalProfile?.avatar}`}
+                />
+              </Button>
             </Box>
-          )}
+          </Box>
+          {/* )} */}
 
           <Divider
             sx={{
@@ -122,7 +115,7 @@ function Sidebar() {
             }}
           />
           <SidebarMenu />
-        </Scrollbar>
+        </Box>
         <Divider
           sx={{
             background: theme.colors.alpha.trueWhite[10],
@@ -135,7 +128,7 @@ function Sidebar() {
           // paddingTop={2.5}
           padding={1}
         >
-          <SettingBotton
+          <SettingButton
             setOpenProfile={setOpenMyProfile}
             setOpenSetting={setOpenSetting}
           />
@@ -192,7 +185,8 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
-      {!loadingGetPersonalProfile && (
+      {/* fix - no comment */}
+      {/* {!loadingGetPersonalProfile && ( */}
         <>
           {" "}
           <ProfileComponent
@@ -202,12 +196,13 @@ function Sidebar() {
           />
           <Setting open={openSetting} handleClose={setOpenSetting} />
         </>
-      )}
+      {/* )} */}
     </>
   );
 }
 
-function SettingBotton({ setOpenProfile, setOpenSetting }) {
+function SettingButton({ setOpenProfile, setOpenSetting }) {
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -250,7 +245,11 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
       >
-        <SettingsIcon fontSize="large" />
+        <SettingsIcon fontSize="large"
+          sx={{
+            color: theme.colors.alpha.trueWhite[100],
+          }}
+        />
       </IconButton>
       <Menu
         id="basic-menu"
@@ -262,6 +261,7 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
+        transitionDuration={0}
       >
         <MenuItem
           sx={{ justifyContent: "space-between" }}
@@ -280,7 +280,7 @@ function SettingBotton({ setOpenProfile, setOpenSetting }) {
             setOpenSetting(true);
           }}
         >
-          <Typography>Setting</Typography>
+          <Typography>Settings</Typography>
           <SettingsIcon />
         </MenuItem>
         <MenuItem

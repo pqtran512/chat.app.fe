@@ -8,7 +8,6 @@ import {
   Box,
   Avatar,
   TextField,
-  Button,
   Grid,
 } from "@mui/material";
 import { FC, useState } from "react";
@@ -20,38 +19,20 @@ import { LoadingButton } from "@mui/lab";
 import { STORAGE_KEY } from "src/utils/constants";
 import { useAuth } from "src/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Copyright from "../../../utils/functions/generateCopyright";
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        HCMUT
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-interface RegisterProps {}
+interface RegisterProps { }
 
 const Register: FC<RegisterProps> = (props) => {
+  const defaultTheme = createTheme();
+  const navigate = useNavigate();
   const [register, setRegister] = useState({
     fullname: "",
     phone: "",
     password: "",
     confirmPassword: "",
   });
-  const navigate = useNavigate();
   const { setUserId, setAccessToken } = useAuth();
-
-  const defaultTheme = createTheme();
 
   const { isLoading, mutate: mutateRegister } = useMutation(authAPI.register, {
     onSuccess: (res) => {
@@ -90,18 +71,34 @@ const Register: FC<RegisterProps> = (props) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xl">
+      <Container component="main" maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: 'relative',
+          height: '100%'
+        }}
+      >
         <CssBaseline />
         <Box
           sx={{
             backgroundColor: "#fff",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            padding: "30px 45px",
-            borderRadius: "2px",
-            width: "500px",
+            justifyContent: "center",
             position: "relative",
+
+            width: { xs: "100%", md: "50%" },
+            maxWidth: '600px',
+            padding: { xs: "40px 20px", md: "30px 45px" },
+            borderRadius: "2px",
             margin: "0 auto",
             boxShadow: "0 8px 24px rgba(21, 48, 142, 0.14)",
           }}
@@ -181,7 +178,7 @@ const Register: FC<RegisterProps> = (props) => {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        <Copyright sx={{ position: 'absolute', bottom: 0, py: 2 }} />
       </Container>
     </ThemeProvider>
   );

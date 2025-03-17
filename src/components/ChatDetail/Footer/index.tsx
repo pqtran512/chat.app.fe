@@ -17,6 +17,7 @@ import {
   TextField,
 } from "@mui/material";
 import styled from "@emotion/styled";
+import { useTheme } from "@mui/material/styles";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { useChat } from "src/contexts/ChatContext";
@@ -32,9 +33,10 @@ const StyleInput = styled(TextField)(({ theme }) => ({
   },
 }));
 
-interface FooterProps {}
+interface FooterProps { }
 
 const Footer: FC<FooterProps> = () => {
+  const theme = useTheme();
   const [openPicker, setOpenPicker] = useState(false);
   const { toUserId, toGroupId, chatboxId, chatProfile } = useChat();
   const [text, setText] = useState("");
@@ -78,15 +80,15 @@ const Footer: FC<FooterProps> = () => {
   };
 
   const keyPress = (e) => {
-    if(e.keyCode == 13){
+    if (e.keyCode == 13) {
       handleSendMessage();
     }
- }
+  }
 
   return (
     <Box
       sx={{
-        backgroundColor: "#fff",
+        backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
       }}
     >
@@ -94,19 +96,19 @@ const Footer: FC<FooterProps> = () => {
         <Box>
           <Stack direction={"row"}>
             <IconButton title="Image">
-              <PhotoCameraBackIcon />
+              <PhotoCameraBackIcon sx={{ color: theme.palette.mode === 'light' ? '#575757' : '#fff' }} />
             </IconButton>
             <IconButton title="File">
-              <AttachFileIcon />
+              <AttachFileIcon sx={{ color: theme.palette.mode === 'light' ? '#575757' : '#fff' }} />
             </IconButton>
             <IconButton title="Send profile">
-              <ContactMailIcon />
+              <ContactMailIcon sx={{ color: theme.palette.mode === 'light' ? '#575757' : '#fff' }} />
             </IconButton>
             <IconButton title="Format">
-              <FormatShapesIcon />
+              <FormatShapesIcon sx={{ color: theme.palette.mode === 'light' ? '#575757' : '#fff' }} />
             </IconButton>
             <IconButton title="more">
-              <MoreHorizIcon />
+              <MoreHorizIcon sx={{ color: theme.palette.mode === 'light' ? '#575757' : '#fff' }} />
             </IconButton>
           </Stack>
         </Box>
@@ -124,12 +126,13 @@ const Footer: FC<FooterProps> = () => {
                 <Picker
                   data={data}
                   onEmojiSelect={console.log}
-                  theme={"light"}
+                  theme={theme.palette.mode}
                 />
               </Box>
               <StyleInput
-                size="small"
-                // multiline
+                size="medium"
+                multiline={true}
+                maxRows={4}
                 margin="none"
                 fullWidth
                 variant="outlined"

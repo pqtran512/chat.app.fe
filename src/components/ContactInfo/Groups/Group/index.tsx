@@ -1,7 +1,5 @@
 import {
   Avatar,
-  Badge,
-  Box,
   Button,
   Divider,
   Menu,
@@ -19,7 +17,6 @@ import { enqueueSnackbar } from "notistack";
 import { useTabs } from "src/contexts/TabsContext";
 import { useChat } from "src/contexts/ChatContext";
 import { useAuth } from "src/contexts/AuthContext";
-import { Padding } from "@mui/icons-material";
 import { group } from "console";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({

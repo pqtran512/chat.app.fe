@@ -28,9 +28,9 @@ interface ProfileProps {
 const ProfileComponent: FC<ProfileProps> = (props) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [updateProfileInfo, setUpdateProfileInfo] = useState({
-    profileId: props.profile.id,
-    fullname: props.profile.fullname,
-    avatar: props.profile.avatar,
+    profileId: props.profile?.id,
+    fullname: props.profile?.fullname,
+    avatar: props.profile?.avatar,
   } as UpdateProfileDto);
   const queryClient = useQueryClient();
 
@@ -137,7 +137,7 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
               <Button component="label" role={undefined} tabIndex={-1}>
                 <Avatar
                   sx={{ width: 60, height: 60 }}
-                  src={`data:image/jpeg;base64,${updateProfileInfo.avatar}`}
+                  src={`data:image/jpeg;base64,${updateProfileInfo?.avatar}`}
                 />
 
                 <VisuallyHiddenInput
@@ -152,7 +152,7 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
               <Typography>Change name</Typography>
               <TextField
                 label="your name"
-                value={updateProfileInfo.fullname}
+                value={updateProfileInfo?.fullname || 'Trân'}
                 onChange={handleInputChange}
               />
             </Stack>
@@ -198,9 +198,9 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
             <Stack spacing={2} alignItems={"center"}>
               <Avatar
                 sx={{ width: 60, height: 60 }}
-                src={`data:image/jpeg;base64,${props.profile.avatar}`}
+                src={`data:image/jpeg;base64,${props.profile?.avatar}`}
               />
-              <Typography variant="h4">{props.profile.fullname}</Typography>
+              <Typography variant="h4">{props.profile?.fullname || 'Trân'}</Typography>
               <Stack direction={"row"}></Stack>
             </Stack>
 

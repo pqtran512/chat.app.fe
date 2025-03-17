@@ -8,9 +8,11 @@ import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { SearchFriendDto } from "src/types/api/dto";
 import { enqueueSnackbar } from "notistack";
+import { useTheme } from "@mui/material/styles";
 
-interface FriendsProps {}
+interface FriendsProps { }
 const Friends: FC<FriendsProps> = (props) => {
+  const theme = useTheme();
   const [input, setInput] = useState({ text: "" } as SearchFriendDto);
   const { friendList, setFriendList } = useFriendList();
 
@@ -46,20 +48,22 @@ const Friends: FC<FriendsProps> = (props) => {
   });
 
   return (
-    <Stack sx={{height: "100vh"}}>
-      <Box sx={{ backgroundColor: "#fff", padding: 2 }}>
+    <Stack sx={{ height: "100vh" }}>
+      <Box sx={{
+        backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
+        padding: 2
+      }}>
         <Stack direction={"row"}>
           <PersonIcon sx={{ marginRight: 2 }} />
           <Typography variant="h4">Danh sách bạn bè</Typography>
         </Stack>
       </Box>
-      <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
+      <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="auto">
         <Box sx={{ padding: 3 }}>
-          <Typography>{`Bạn bè (${
-            friendList[0].id === "" ? 0 : friendList.length
-          })`}</Typography>
+          <Typography>{`Bạn bè (${friendList[0].id === "" ? 0 : friendList.length
+            })`}</Typography>
         </Box>
-        <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
+        <Stack spacing={1} sx={{ backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030' }}>
           <Stack component={"form"} direction={"row"} padding={1} spacing={2}>
             <TextField
               size="small"
@@ -68,7 +72,7 @@ const Friends: FC<FriendsProps> = (props) => {
               onChange={handleChangeInput}
             />
             <Button
-            type="submit"
+              type="submit"
               size="small"
               variant="contained"
               onClick={handleSearchFriend}

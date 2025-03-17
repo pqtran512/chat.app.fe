@@ -9,7 +9,7 @@ import {
   Link,
   Stack,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useState, FC } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -24,42 +24,23 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "src/contexts/AuthContext";
 import { enqueueSnackbar } from "notistack";
 import { useProfile } from "src/contexts/ProfileContext";
-import { connectChatSocket } from "src/utils/ws/clients/chat.";
+import Copyright from "../../../utils/functions/generateCopyright";
 
-interface LoginProps {}
+interface LoginProps { }
 
-const Login: FC<LoginProps> = ({}) => {
+const Login: FC<LoginProps> = ({ }) => {
+  const defaultTheme = createTheme();
+  const navigate = useNavigate();
+  const { setAccessToken, setUserId } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () =>
-    setShowPassword((showPassword) => !showPassword);
+  const profileContext = useProfile();
   const [loginInfo, setLoginInfo] = useState({
     phone: "",
     password: "",
   } as LogInDto);
 
-  function Copyright(props: any) {
-    return (
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        align="center"
-        {...props}
-      >
-        {"Copyright © "}
-        <Link color="inherit" href="https://mui.com/">
-          HCMUT
-        </Link>{" "}
-        {new Date().getFullYear()}
-        {"."}
-      </Typography>
-    );
-  }
-
-  const defaultTheme = createTheme();
-  const navigate = useNavigate();
-  const { setAccessToken, setUserId } = useAuth();
-  const profileContext = useProfile();
-
+  const handleClickShowPassword = () =>
+    setShowPassword((showPassword) => !showPassword);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -107,7 +88,7 @@ const Login: FC<LoginProps> = ({}) => {
 
   const getProfile = useMutation(profileAPI.getprofile, {
     onSuccess: (response) => {
-      if (response.status === 200){
+      if (response.status === 200) {
         const { fullname, avatar, id } = response.data[0];
         localStorage.setItem("fullname", fullname)
         localStorage.setItem("avatar", avatar)
@@ -127,18 +108,34 @@ const Login: FC<LoginProps> = ({}) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xl">
+      <Container component="main" maxWidth="xl"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: 'relative',
+          height: '100%'
+        }}
+      >
         <CssBaseline />
         <Box
           sx={{
             backgroundColor: "#fff",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            padding: "30px 45px",
-            borderRadius: "2px",
-            width: "500px",
+            justifyContent: "center",
             position: "relative",
+
+            width: { xs: "100%", md: "50%" },
+            maxWidth: '600px',
+            padding: { xs: "40px 20px", md: "30px 45px" },
+            borderRadius: "2px",
             margin: "0 auto",
             boxShadow: "0 8px 24px rgba(21, 48, 142, 0.14)",
           }}
@@ -227,7 +224,7 @@ const Login: FC<LoginProps> = ({}) => {
             </Stack>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        <Copyright sx={{ position: 'absolute', bottom: 0, py: 2 }} />
       </Container>
     </ThemeProvider>
   );

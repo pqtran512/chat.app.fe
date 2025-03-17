@@ -129,7 +129,7 @@ const colors = {
   }
 };
 
-export const PureLightTheme = createTheme({
+export const DarkTheme = createTheme({
   // direction: i18n.dir(),
   colors: {
     gradients: {
@@ -254,7 +254,7 @@ export const PureLightTheme = createTheme({
       black: colors.alpha.black[100],
       white: colors.alpha.white[100]
     },
-    mode: 'light',
+    mode: 'dark', // Changed from 'light' to 'dark'
     primary: {
       light: colors.primary.light,
       main: colors.primary.main,
@@ -290,24 +290,24 @@ export const PureLightTheme = createTheme({
       contrastText: colors.alpha.white[100]
     },
     text: {
-      primary: colors.alpha.black[100],
-      secondary: colors.alpha.black[70],
-      disabled: colors.alpha.black[50]
+      primary: colors.alpha.white[100], // Changed from black to white for better contrast
+      secondary: colors.alpha.white[70], // Changed from black to white for better contrast
+      disabled: colors.alpha.white[50] // Changed from black to white for better contrast
     },
     background: {
-      paper: colors.alpha.white[100],
-      default: colors.layout.general.bodyBg
+      paper: colors.alpha.black[100], // Changed from white to black for better contrast
+      default: colors.alpha.black[100] // Changed from bodyBg to black for better contrast
     },
     action: {
-      active: colors.alpha.black[100],
+      active: colors.alpha.white[100], // Changed from black to white for better contrast
       hover: colors.primary.lighter,
       hoverOpacity: 0.1,
-      selected: colors.alpha.black[10],
+      selected: colors.alpha.white[10], // Changed from black to white for better contrast
       selectedOpacity: 0.1,
-      disabled: colors.alpha.black[50],
-      disabledBackground: colors.alpha.black[5],
+      disabled: colors.alpha.white[50], // Changed from black to white for better contrast
+      disabledBackground: colors.alpha.white[5], // Changed from black to white for better contrast
       disabledOpacity: 0.38,
-      focus: colors.alpha.black[10],
+      focus: colors.alpha.white[10], // Changed from black to white for better contrast
       focusOpacity: 0.05,
       activatedOpacity: 0.12
     },
@@ -854,14 +854,14 @@ export const PureLightTheme = createTheme({
             marginTop: 1,
             marginBottom: 1,
             transition: 'all .2s',
-            color: colors.alpha.black[70],
+            color: colors.alpha.white[70],
 
             '& .MuiTouchRipple-root': {
               opacity: 0.2
             },
 
             '&:hover, &:active, &.active, &.Mui-selected': {
-              color: colors.alpha.black[100],
+              color: colors.alpha.white[100],
               background: alpha(colors.primary.lighter, 0.4)
             }
           }

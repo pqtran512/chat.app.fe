@@ -8,9 +8,11 @@ import { useMutation, useQuery } from "react-query";
 import { groupAPI } from "src/api/group.api";
 import { GroupListDto } from "src/types/api/dto";
 import { enqueueSnackbar } from "notistack";
+import { useTheme } from "@mui/material/styles";
 
-interface GroupsProps {}
+interface GroupsProps { }
 const Groups: FC<GroupsProps> = (props) => {
+  const theme = useTheme();
   const [input, setInput] = useState({ searchText: "" } as GroupListDto);
   const [searchText, setSearchText] = useState("");
   const { groupList, setGroupList } = useGroupList();
@@ -62,19 +64,22 @@ const Groups: FC<GroupsProps> = (props) => {
   });
 
   return (
-    <Stack sx={{height: "100vh"}}>
-      <Box sx={{ backgroundColor: "#fff", padding: 2 }}>
+    <Stack sx={{ height: "100vh" }}>
+      <Box sx={{
+        backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
+        padding: 2
+      }}>
         <Stack direction={"row"}>
           <GroupsIcon sx={{ marginRight: 2 }} />
           <Typography variant="h4">Danh sách nhóm</Typography>
         </Stack>
       </Box>
 
-      <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="scroll">
+      <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="auto">
         <Box sx={{ padding: 3 }}>
-          <Typography>Nhóm ({data && data.groups.length})</Typography>
+          <Typography>Nhóm ({data ? data.groups.length : 0})</Typography>
         </Box>
-        <Stack spacing={1} sx={{ backgroundColor: "#fff"}}>
+        <Stack spacing={1} sx={{ backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030' }}>
           <Stack direction={"row"} padding={1} spacing={2} component={"form"}>
             <TextField
               size="small"

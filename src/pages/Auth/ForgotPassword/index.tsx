@@ -1,4 +1,4 @@
-import { useEffect, useState, FC } from "react";
+import { useState, FC } from "react";
 import ConfirmPhone from "./ConfirmPhone";
 import ResetPassword from "./ResetPassword";
 

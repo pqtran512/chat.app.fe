@@ -24,6 +24,7 @@ import { enqueueSnackbar } from "notistack";
 import { groupAPI } from "src/api/group.api";
 import { useGroupList } from "src/contexts/GroupContext";
 import { useTabs } from "src/contexts/TabsContext";
+import { useTheme } from "@mui/material/styles";
 
 interface ContactBarProps {
   chosen?: number;
@@ -31,6 +32,7 @@ interface ContactBarProps {
 }
 
 const ContactBar: FC<ContactBarProps> = (props) => {
+  const theme = useTheme();
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
   const { setShowContactInfo, setShowChatDetail } = useTabs();
@@ -187,7 +189,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   return (
     <Box
       sx={{
-        backgroundColor: "#fff",
+        backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
         width: 500,
         height: "100vh",
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
@@ -217,13 +219,13 @@ const ContactBar: FC<ContactBarProps> = (props) => {
           />
           <Stack direction={"row"} spacing={1}>
             <IconButton
-              sx={{ padding: "0 0 0 0" }}
+              sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? '#157FCA' : '#fff' }}
               onClick={() => setOpenSearchFriend(true)}
             >
-              <PersonAddAltIcon />
+              <PersonAddAlt1Icon />
             </IconButton>
             <IconButton
-              sx={{ padding: "0 0 0 0" }}
+              sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? '#157FCA' : '#fff' }}
               onClick={handleOpenCreateGroup}
             >
               <GroupAddIcon />
@@ -242,6 +244,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             <PersonIcon sx={{ marginRight: 2 }} />
             <Typography variant="h4">Danh sách bạn bè</Typography>
           </Button>
+
           <Button
             key={1}
             variant={props.chosen === 1 ? "contained" : "text"}
@@ -252,6 +255,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             <GroupsIcon sx={{ marginRight: 2 }} />
             <Typography variant="h4">Danh sách nhóm</Typography>
           </Button>
+
           <Button
             variant={props.chosen === 2 ? "contained" : "text"}
             key={2}

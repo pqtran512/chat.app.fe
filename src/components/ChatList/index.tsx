@@ -7,6 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useState, FC, useEffect } from "react";
@@ -21,6 +22,8 @@ import { useChat } from "src/contexts/ChatContext";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 import { onReceiveChat } from "src/utils/ws/clients/chat.";
 import { useAuth } from "src/contexts/AuthContext";
+import { useTheme } from "@mui/material/styles";
+
 import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
@@ -30,6 +33,7 @@ interface ChatListProps {
 }
 
 const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
+  const theme = useTheme();
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
   const {
@@ -95,8 +99,8 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
       sx={{
         position: "relative",
         width: 500,
-        backgroundColor: "#fff",
-        boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+        backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
+        boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
       }}
     >
       <Stack sx={{ height: "100vh" }} direction="column" spacing={2}>
@@ -114,13 +118,13 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
           />
           <Stack direction={"row"} spacing={1}>
             <IconButton
-              sx={{ padding: "0 0 0 0" }}
+              sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? '#157FCA' : '#fff' }}
               onClick={() => setOpenSearchFriend(true)}
             >
-              <PersonAddAltIcon />
+              <PersonAddAlt1Icon />
             </IconButton>
             <IconButton
-              sx={{ padding: "0 0 0 0" }}
+              sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? '#157FCA' : '#fff' }}
               onClick={() => setOpenCreateGroup(true)}
             >
               <GroupAddIcon />
@@ -137,13 +141,13 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             <Stack direction="row" spacing={1}>
               <Button
                 variant="text"
-                sx={{ padding: "0 0 0 0", color: "#6e7278" }}
+                sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? '"#6e7278"' : '#fff' }}
               >
                 Tất cả
               </Button>
               <Button
                 variant="text"
-                sx={{ padding: "0 0 0 0", color: "#6e7278" }}
+                sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? '"#6e7278"' : '#fff' }}
               >
                 Chưa đọc
               </Button>
@@ -156,7 +160,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
         <Stack
           sx={{
             flexGrow: 1,
-            overflow: "scroll",
+            overflow: "auto",
             height: "100%",
             marginTop: "0px !important",
           }}
@@ -164,7 +168,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
         >
           {data &&
             data.data.map((chatbox, index) => {
-              const time = moment(chatbox.latest_updated_date).fromNow();;
+              const time = moment(chatbox.latest_updated_date).fromNow();
               const lastChatLogContent =
                 chatbox?.chatbox_chatlogs[0]?.chat_log.content;
               const isNewMessage = chatbox.new_message;

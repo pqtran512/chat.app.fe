@@ -23,6 +23,7 @@ import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { STORAGE_KEY } from "src/utils/constants";
 import { useAuth } from "src/contexts/AuthContext";
+import Copyright from "../../../../utils/functions/generateCopyright";
 
 interface ResetPasswordProps {
   // onClick?: (isValid: boolean) => void;
@@ -30,6 +31,9 @@ interface ResetPasswordProps {
 }
 
 const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
+  const navigate = useNavigate();
+  const defaultTheme = createTheme();
+  const { setAccessToken, setUserId } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState({
     password: "",
@@ -40,11 +44,8 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
     new_password: "",
   } as ResetPassworDto);
 
-  const navigate = useNavigate();
-  const { setAccessToken, setUserId } = useAuth();
   const handleClickShowPassword = () =>
     setShowPassword((showPassword) => !showPassword);
-  const defaultTheme = createTheme();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -79,7 +80,7 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
 
         setUserId(user.id);
         setAccessToken(access_token);
-        
+
         navigate("/");
       }
     },
@@ -93,18 +94,34 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
-        <Container component="main" maxWidth="xl">
+        <Container component="main" maxWidth="xl"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            position: 'relative',
+            height: '100%'
+          }}
+        >
           <CssBaseline />
           <Box
             sx={{
               backgroundColor: "#fff",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              padding: "30px 45px",
-              borderRadius: "2px",
-              width: "500px",
+              justifyContent: "center",
               position: "relative",
+
+              width: { xs: "100%", md: "50%" },
+              maxWidth: '600px',
+              padding: { xs: "40px 20px", md: "30px 45px" },
+              borderRadius: "2px",
               margin: "0 auto",
               boxShadow: "0 8px 24px rgba(21, 48, 142, 0.14)",
             }}
@@ -195,29 +212,13 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
               </Grid>
             </Box>
           </Box>
-          <Copyright sx={{ mt: 8, mb: 4 }} />
+          <Copyright sx={{ position: 'absolute', bottom: 0, py: 2 }} />
         </Container>
       </ThemeProvider>
     </>
   );
 };
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        HCMUT
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+
 
 export default ResetPassword;

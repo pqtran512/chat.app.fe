@@ -15,33 +15,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useMutation } from "react-query";
 import { authAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
+import Copyright from "../../../../utils/functions/generateCopyright";
 
 interface ConfirmPhoneProps {
   onClick?: (isValid: boolean, phone: string) => void;
 }
 
 const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
-  const navigate = useNavigate();
   const [phone, setPhone] = useState("");
-
-  function Copyright(props: any) {
-    return (
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        align="center"
-        {...props}
-      >
-        {"Copyright © "}
-        <Link color="inherit" href="https://mui.com/">
-          HCMUT
-        </Link>{" "}
-        {new Date().getFullYear()}
-        {"."}
-      </Typography>
-    );
-  }
 
   const defaultTheme = createTheme();
 
@@ -79,18 +60,34 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
-        <Container component="main" maxWidth="xl">
+        <Container component="main" maxWidth="xl"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            position: 'relative',
+            height: '100%'
+          }}
+        >
           <CssBaseline />
           <Box
             sx={{
               backgroundColor: "#fff",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              padding: "30px 45px",
-              borderRadius: "2px",
-              width: "500px",
+              justifyContent: "center",
               position: "relative",
+
+              width: { xs: "100%", md: "50%" },
+              maxWidth: '600px',
+              padding: { xs: "40px 20px", md: "30px 45px" },
+              borderRadius: "2px",
               margin: "0 auto",
               boxShadow: "0 8px 24px rgba(21, 48, 142, 0.14)",
             }}
@@ -114,7 +111,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
                 value={phone}
                 onChange={handleChangePhone}
               />
-              
+
               <Box sx={{ position: "relative" }}>
                 <Button
                   type="submit"
@@ -136,7 +133,7 @@ const ConfirmPhone: FC<ConfirmPhoneProps> = ({ onClick }) => {
               </Grid>
             </Box>
           </Box>
-          <Copyright sx={{ mt: 8, mb: 4 }} />
+          <Copyright sx={{ position: 'absolute', bottom: 0, py: 2 }} />
         </Container>
       </ThemeProvider>
     </>

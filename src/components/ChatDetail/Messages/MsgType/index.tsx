@@ -48,8 +48,8 @@ const TextMsg: FC<TextMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-            ? "#fafffa" // : theme.palette.grey[300],
-            : "#8bbbf7", // : theme.palette.primary.light,
+            ? theme.palette.mode === 'light' ? "#fafffa" : '#303030'
+            : theme.palette.mode === 'light' ? "#8bbbf7" : '#444169',
           borderRadius: 1,
           width: "max-content",
         }}
@@ -78,8 +78,8 @@ const ImgMSg: FC<ImgMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-          ? "#fafffa" // : theme.palette.grey[300],
-          : "#8bbbf7", // : theme.palette.primary.light,
+            ? theme.palette.mode === 'light' ? "#fafffa" : '#303030'
+            : theme.palette.mode === 'light' ? "#8bbbf7" : '#444169',
           borderRadius: 1,
           width: "max-content",
         }}
@@ -116,8 +116,8 @@ const ReplyMsg: FC<ReplyMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-          ? "#fafffa" // : theme.palette.grey[300],
-          : "#8bbbf7", // : theme.palette.primary.light,
+            ? theme.palette.mode === 'light' ? "#fafffa" : '#303030'
+            : theme.palette.mode === 'light' ? "#8bbbf7" : '#444169',
           borderRadius: 1,
           width: "max-content",
         }}
@@ -125,11 +125,12 @@ const ReplyMsg: FC<ReplyMsgProps> = (props) => {
         <Stack>
           <Box
             p={1}
+            mb={1}
             borderRadius={0.5}
             sx={{
               backgroundColor: props.incoming
-                ? "#cccdcf" // ? theme.palette.grey[400]
-                : "#4591ed",// : theme.palette.primary.dark,
+                ? theme.palette.mode === 'light' ? "#cccdcf" :'#706F6F'
+                : theme.palette.mode === 'light' ? "#4591ed" : '#716F81',
             }}
           >
             <Typography>{props.message}</Typography>
@@ -161,8 +162,8 @@ const LinkMsg: FC<LinkMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-          ? "#fafffa" // : theme.palette.grey[300],
-          : "#8bbbf7", // : theme.palette.primary.light,
+            ? theme.palette.mode === 'light' ? "#fafffa" : '#303030'
+            : theme.palette.mode === 'light' ? "#8bbbf7" : '#444169',
           borderRadius: 1,
           width: "max-content",
         }}
@@ -199,8 +200,8 @@ const DocMsg: FC<DocMsgProps> = (props) => {
         p={1.5}
         sx={{
           backgroundColor: props.incoming
-          ? "#fafffa" // : theme.palette.grey[300],
-          : "#8bbbf7", // : theme.palette.primary.light,
+            ? theme.palette.mode === 'light' ? "#fafffa" : '#303030'
+            : theme.palette.mode === 'light' ? "#8bbbf7" : '#444169',
           borderRadius: 1,
           width: "max-content",
         }}
@@ -213,8 +214,8 @@ const DocMsg: FC<DocMsgProps> = (props) => {
             borderRadius={0.5}
             sx={{
               backgroundColor: props.incoming
-              ? "#cccdcf" // ? theme.palette.grey[400]
-              : "#4591ed",// : theme.palette.primary.dark,
+                ? theme.palette.mode === 'light' ? "#cccdcf" : '#303030'
+                : theme.palette.mode === 'light' ? "#4591ed" : '#444169',
             }}
           >
             <InsertDriveFileIcon />

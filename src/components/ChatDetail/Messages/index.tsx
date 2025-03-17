@@ -44,9 +44,10 @@ const Messages: FC<MessagesProps> = () => {
   }, [data?.length]);
 
   return (
-    <Box height={"100%"} overflow={"scroll"}>
+    <Box height={"100%"} overflow={"auto"} px={1} mb={4}>
       <Stack p={1} height={"100%"} spacing={1}>
-        {/* {Chat_History.map((el, index) => {
+        {/* fix - comment history */}
+        {Chat_History.map((el, index) => {
           switch (el.type) {
             case "divider":
               return <TimeLineBreak key={index} {...el} />;
@@ -67,7 +68,8 @@ const Messages: FC<MessagesProps> = () => {
             default:
               return <></>;
           }
-        })} */}
+        })}
+        
         {data &&
           data.map((el, index) => {
             switch (el.chat_log.content_type.code) {
