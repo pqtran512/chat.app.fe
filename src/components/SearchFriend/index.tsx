@@ -11,11 +11,12 @@ import {
   Typography,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import React, { FC, useState } from "react";
+import React, { FC, useState, useContext } from "react";
 import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { userAPI } from "src/api/user.api";
 import { useFriendRequest } from "src/contexts/FriendContext";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 interface SearchFriendProps {
   open: boolean;
@@ -24,7 +25,7 @@ interface SearchFriendProps {
 
 const SearchFriend: FC<SearchFriendProps> = (props) => {
   return (
-    <Dialog fullWidth maxWidth="xs" open={props.open}>
+    <Dialog fullWidth maxWidth="xs" open={props.open} transitionDuration={0}>
       <DialogTitle>Kết bạn</DialogTitle>
       <Divider />
       <DialogContent>
@@ -35,11 +36,12 @@ const SearchFriend: FC<SearchFriendProps> = (props) => {
 };
 
 const SearchFriendForm = ({ handleClose }) => {
+  const { t } = useContext(LanguageContext);
   const [phoneInput, setPhoneInput] = useState("");
   const [user, setUser] = useState({
     fullname: "",
     phone: "",
-    avatar:"",
+    avatar: "",
   });
 
   const friendRequestContext = useFriendRequest();
@@ -116,10 +118,10 @@ const SearchFriendForm = ({ handleClose }) => {
         value={phoneInput}
         onChange={handleChangeSearch}
         id="searchfriend"
-        label="Tìm kiếm"
+        label={t.search}
         variant="standard"
       />
-      <Button onClick={onSearch}>Tìm kiếm</Button>
+      <Button onClick={onSearch}>{t.search}</Button>
       <Typography variant="h6">Kết quả</Typography>
       {user.phone ? (
         <Box>
@@ -139,7 +141,7 @@ const SearchFriendForm = ({ handleClose }) => {
       ) : (
         <Box></Box>
       )}
-      <Button onClick={handleClose}>Quay lại</Button>
+      <Button onClick={handleClose}>{t.back}</Button>
     </Stack>
   );
 };

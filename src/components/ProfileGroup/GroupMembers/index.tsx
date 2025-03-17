@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useState, useContext } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useGroupMembers } from "src/contexts/GroupMemberContext";
 import Member from "./Member";
@@ -20,6 +20,7 @@ import { useFriendList } from "src/contexts/FriendContext";
 import { enqueueSnackbar } from "notistack";
 import { useAuth } from "src/contexts/AuthContext";
 import { useChat } from "src/contexts/ChatContext";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 interface GroupMembersProps {
   open: boolean;
@@ -30,6 +31,7 @@ interface GroupMembersProps {
 
 const GroupMembers: FC<GroupMembersProps> = (props) => {
   const [selectedFriend, setSelectedFriend] = useState([]);
+  const { t } = useContext(LanguageContext);
   const [selectedRemovingMember, setSelectedRemovingMember] = useState([]);
   const queryClient = useQueryClient();
   const { userId } = useAuth();
@@ -55,7 +57,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
     queryKey: ["getGroupMembers", props.group_id],
     queryFn: () => groupAPI.getGroupMembers(props.group_id),
     select: (rs) => {
-      return rs.data; 
+      return rs.data;
     },
   });
 
@@ -199,7 +201,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Tìm kiếm bạn bè"
+              label={t.friend_search}
               placeholder="Thêm thành viên"
             />
           )}

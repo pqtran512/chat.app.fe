@@ -10,7 +10,7 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useState, FC, useEffect } from "react";
+import { useState, FC, useEffect, useContext } from "react";
 import SingleChat from "./SingleChat";
 import GroupChat from "./GroupChat";
 import SearchFriend from "../SearchFriend";
@@ -23,6 +23,7 @@ import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 import { onReceiveChat } from "src/utils/ws/clients/chat.";
 import { useAuth } from "src/contexts/AuthContext";
 import { useTheme } from "@mui/material/styles";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 import moment from "moment";
 import "moment/locale/vi";
@@ -34,6 +35,7 @@ interface ChatListProps {
 
 const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
   const theme = useTheme();
+  const { t } = useContext(LanguageContext);
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
   const {
@@ -112,7 +114,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
         >
           <TextField
             id="search"
-            label="Tìm kiếm"
+            label={t.search}
             variant="outlined"
             sx={{ width: 250 }}
           />
@@ -141,15 +143,15 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
             <Stack direction="row" spacing={1}>
               <Button
                 variant="text"
-                sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? '"#6e7278"' : '#fff' }}
+                sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? 'black' : 'white' }}
               >
-                Tất cả
+                {t.all}
               </Button>
               <Button
                 variant="text"
-                sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? '"#6e7278"' : '#fff' }}
+                sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? 'black' : 'white' }}
               >
-                Chưa đọc
+                {t.un_read}
               </Button>
             </Stack>
             <Stack direction="row" alignItems="center" spacing={1}></Stack>

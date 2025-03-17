@@ -17,7 +17,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useContext } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "@emotion/styled";
 import { UpdateProfileGroupDto } from "src/types/api/dto";
@@ -30,6 +30,7 @@ import { useGroupMembers } from "src/contexts/GroupMemberContext";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import GroupMembers from "./GroupMembers";
 import { useFriendList } from "src/contexts/FriendContext";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 interface ProfileGroupProps {
   open: boolean;
@@ -39,6 +40,7 @@ interface ProfileGroupProps {
 
 const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   const { setChatProfile, setToGroupId } = useChat();
+  const { t } = useContext(LanguageContext);
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openMember, setOpenMember] = useState(false);
   const [updateProfileGroupInfo, setUpdateProfileGroupInfo] = useState({
@@ -249,7 +251,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
               <Stack spacing={1}>
                 <Typography>Đổi tên nhóm</Typography>
                 <TextField
-                  label="Tên nhóm"
+                  label={t.group_name}
                   value={updateProfileGroupInfo.name}
                   onChange={handleNameInputChange}
                 />
@@ -288,7 +290,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
               <Divider />
               <Stack direction={"row"} justifyContent={"right"} spacing={1}>
                 <Button variant="text" onClick={() => setOpenUpdate(false)}>
-                  Quay lại
+                  {t.back}
                 </Button>
                 <Button variant="contained" onClick={handleUpdateGroup}>
                   Cập nhật

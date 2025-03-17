@@ -1,5 +1,5 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useState, useContext } from "react";
 import Group from "./Group";
 
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -9,10 +9,12 @@ import { groupAPI } from "src/api/group.api";
 import { GroupListDto } from "src/types/api/dto";
 import { enqueueSnackbar } from "notistack";
 import { useTheme } from "@mui/material/styles";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 interface GroupsProps { }
 const Groups: FC<GroupsProps> = (props) => {
   const theme = useTheme();
+  const { t } = useContext(LanguageContext);
   const [input, setInput] = useState({ searchText: "" } as GroupListDto);
   const [searchText, setSearchText] = useState("");
   const { groupList, setGroupList } = useGroupList();
@@ -71,19 +73,19 @@ const Groups: FC<GroupsProps> = (props) => {
       }}>
         <Stack direction={"row"}>
           <GroupsIcon sx={{ marginRight: 2 }} />
-          <Typography variant="h4">Danh sách nhóm</Typography>
+          <Typography variant="h4">{t.group_list}</Typography>
         </Stack>
       </Box>
 
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="auto">
         <Box sx={{ padding: 3 }}>
-          <Typography>Nhóm ({data ? data.groups.length : 0})</Typography>
+          <Typography>{t.group} ({data ? data.groups.length : 0})</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030' }}>
           <Stack direction={"row"} padding={1} spacing={2} component={"form"}>
             <TextField
               size="small"
-              label="Tìm kiếm nhóm"
+              label={t.group_search}
               value={input.searchText}
               onChange={handleChangeInput}
             />
@@ -93,7 +95,7 @@ const Groups: FC<GroupsProps> = (props) => {
               variant="contained"
               onClick={handleSearchGroup}
             >
-              Tìm kiếm
+              {t.search}
             </Button>
           </Stack>
           {!isLoading &&

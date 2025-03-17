@@ -10,11 +10,12 @@ import {
     Stack,
     Typography,
   } from "@mui/material";
-  import { FC } from "react";
+  import { FC, useContext } from "react";
   import CloseIcon from "@mui/icons-material/Close";
   import { useMutation } from "react-query";
   import { profileAPI } from "src/api";
   import { enqueueSnackbar } from "notistack";
+  import { LanguageContext } from "src/language/LanguageProvider";
   
   const user = {
     name: "Beckham",
@@ -32,7 +33,7 @@ import {
     avatar: string;
   }
   const Profile: FC<ProfileProps> = (props) => {
-  
+    const { t } = useContext(LanguageContext);
   
     return (
       <Dialog
@@ -42,7 +43,7 @@ import {
         maxWidth="xs"
       >
         <Stack direction={"row"} justifyContent={"space-between"}>
-          <DialogTitle>Profile</DialogTitle>
+          <DialogTitle>{t.profile}</DialogTitle>
           <IconButton onClick={() => props.handleClose(false)}>
             <CloseIcon />
           </IconButton>

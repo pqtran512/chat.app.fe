@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useContext } from "react";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
@@ -25,6 +25,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { enqueueSnackbar } from "notistack";
 import { ChatLogContentTypeCode } from "src/utils/enums";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 const StyleInput = styled(TextField)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -37,6 +38,7 @@ interface FooterProps { }
 
 const Footer: FC<FooterProps> = () => {
   const theme = useTheme();
+    const { t } = useContext(LanguageContext);
   const [openPicker, setOpenPicker] = useState(false);
   const { toUserId, toGroupId, chatboxId, chatProfile } = useChat();
   const [text, setText] = useState("");
@@ -136,7 +138,7 @@ const Footer: FC<FooterProps> = () => {
                 margin="none"
                 fullWidth
                 variant="outlined"
-                placeholder="Nhập tin nhắn ..."
+                placeholder={t.enter_msg}
                 value={text}
                 onChange={(e) => {
                   setText(e.target.value);

@@ -5,14 +5,17 @@ import { CssBaseline } from "@mui/material";
 import "./App.css";
 
 import ThemeProvider from "./theme/ThemeProvider";
+import LanguageProvider from "./language/LanguageProvider";
 
 function App() {
   const content = useRoutes(router);
 
   return (
     <ThemeProvider>
-      <CssBaseline />
-      {content}
+      <LanguageProvider>
+        <CssBaseline />
+        {content}
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

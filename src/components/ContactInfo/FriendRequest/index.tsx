@@ -1,15 +1,17 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, useContext } from "react";
 
 import { useFriendRequest } from "src/contexts/FriendContext";
 import FriendSent from "./FriendSent";
 import FriendReceived from "./FriendReceived";
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { useTheme } from "@mui/material/styles";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 interface FriendRequestsProps { }
 const FriendRequests: FC<FriendRequestsProps> = (props) => {
   const theme = useTheme();
+  const { t } = useContext(LanguageContext);
 
   const { friendSentList, friendReceivedList } = useFriendRequest();
 
@@ -21,12 +23,12 @@ const FriendRequests: FC<FriendRequestsProps> = (props) => {
       }}>
         <Stack direction={"row"}>
           <PersonAddAlt1Icon sx={{ marginRight: 2 }} />
-          <Typography variant="h4">Lời mời kết bạn</Typography>
+          <Typography variant="h4">{t.friend_request}</Typography>
         </Stack>
       </Box>
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="auto">
         <Box sx={{ padding: 3 }}>
-          <Typography>{`Lời mời đã gửi (${friendSentList[0].id === '' ? 0 : friendSentList.length})`}</Typography>
+          <Typography>{`${t.friend_request_sent} (${friendSentList[0].id === '' ? 0 : friendSentList.length})`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
           {friendSentList[0].id !== '' && friendSentList.map((f) => (
@@ -34,7 +36,7 @@ const FriendRequests: FC<FriendRequestsProps> = (props) => {
           ))}
         </Stack>
         <Box sx={{ padding: 3 }}>
-          <Typography>{`Lời mới đã nhận (${friendReceivedList[0].id === '' ? 0 : friendReceivedList.length})`}</Typography>
+          <Typography>{`${t.friend_request_received} (${friendReceivedList[0].id === '' ? 0 : friendReceivedList.length})`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: "#fff" }}>
           {friendReceivedList[0].id !== '' && friendReceivedList.map((f) => (

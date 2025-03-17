@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useContext } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
@@ -25,6 +25,7 @@ import { groupAPI } from "src/api/group.api";
 import { useGroupList } from "src/contexts/GroupContext";
 import { useTabs } from "src/contexts/TabsContext";
 import { useTheme } from "@mui/material/styles";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 interface ContactBarProps {
   chosen?: number;
@@ -33,6 +34,7 @@ interface ContactBarProps {
 
 const ContactBar: FC<ContactBarProps> = (props) => {
   const theme = useTheme();
+  const { t } = useContext(LanguageContext);
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
   const { setShowContactInfo, setShowChatDetail } = useTabs();
@@ -204,7 +206,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
         >
           <TextField
             id="search"
-            label="Tìm kiếm"
+            label={t.search}
             variant="outlined"
             sx={{ width: 250 }}
             slotProps={{
@@ -242,7 +244,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             onClick={handleFriendList}
           >
             <PersonIcon sx={{ marginRight: 2 }} />
-            <Typography variant="h4">Danh sách bạn bè</Typography>
+            <Typography variant="h4">{t.friend_list}</Typography>
           </Button>
 
           <Button
@@ -253,7 +255,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             onClick={handleGroupList}
           >
             <GroupsIcon sx={{ marginRight: 2 }} />
-            <Typography variant="h4">Danh sách nhóm</Typography>
+            <Typography variant="h4">{t.group_list}</Typography>
           </Button>
 
           <Button
@@ -264,7 +266,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
             onClick={handleFriendRequests}
           >
             <PersonAddAlt1Icon sx={{ marginRight: 2 }} />
-            <Typography variant="h4">Lời mời kết bạn</Typography>
+            <Typography variant="h4">{t.friend_request}</Typography>
           </Button>
           {/* <Button
             variant={props.chosen == 3 ? "contained" : "text"}

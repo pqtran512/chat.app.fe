@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState, useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { friendAPI } from "src/api";
 import { groupAPI } from "src/api/group.api";
@@ -17,6 +17,7 @@ import { useFriendList } from "src/contexts/FriendContext";
 import { useGroupList } from "src/contexts/GroupContext";
 import { CreateGroupDto } from "src/types/api/dto";
 import { FriendResponse } from "src/types/api/response/friend";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 const CreateGroupForm = ({
   handleClose,
@@ -25,6 +26,7 @@ const CreateGroupForm = ({
   handleClose: any;
   data: FriendResponse[];
 }) => {
+  const { t } = useContext(LanguageContext);
   const [selectedFriend, setSelectedFriend] = useState([]);
   const groupListContext = useGroupList();
   const [groupInfo, setGroupInfo] = useState({
@@ -125,7 +127,7 @@ const CreateGroupForm = ({
     <Stack spacing={3}>
       <TextField
         id="group-name"
-        label="Tên nhóm"
+        label={t.group_name}
         variant="standard"
         onChange={handleChangeSearch}
       />
@@ -143,14 +145,14 @@ const CreateGroupForm = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Thành viên"
+            label={t.group_member}
             placeholder="Thêm thành viên"
           />
         )}
         onChange={(event, value) => setSelectedFriend(value)}
       ></Autocomplete>
       <Stack direction={"row"} justifyContent={"space-between"}>
-        <Button onClick={handleClose}>Quay lại</Button>
+        <Button onClick={handleClose}>{t.back}</Button>
         <Button type="submit" variant="contained" onClick={handleCreateGroup}>
           Tạo nhóm
         </Button>
@@ -164,6 +166,7 @@ interface CreateGroupProps {
 }
 
 const CreateGroup: FC<CreateGroupProps> = (props) => {
+  const { t } = useContext(LanguageContext);
   const { isLoading, data, refetch } = useQuery({
     queryKey: ["GetFriendList"],
     queryFn: friendAPI.friendList,
@@ -179,8 +182,8 @@ const CreateGroup: FC<CreateGroupProps> = (props) => {
   }, [props.open]);
 
   return (
-    <Dialog fullWidth maxWidth="xs" open={props.open}>
-      <DialogTitle>Tạo nhóm</DialogTitle>
+    <Dialog fullWidth maxWidth="xs" open={props.open} transitionDuration={0}>
+      <DialogTitle>{t.create_group}</DialogTitle>
       <Divider />
       <DialogContent>
         <CreateGroupForm data={data} handleClose={props.handleClose} />

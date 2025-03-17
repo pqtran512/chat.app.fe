@@ -1,5 +1,5 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useState, useContext } from "react";
 import Friend from "./Friend";
 
 import PersonIcon from "@mui/icons-material/Person";
@@ -9,10 +9,12 @@ import { friendAPI } from "src/api/friend.api";
 import { SearchFriendDto } from "src/types/api/dto";
 import { enqueueSnackbar } from "notistack";
 import { useTheme } from "@mui/material/styles";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 interface FriendsProps { }
 const Friends: FC<FriendsProps> = (props) => {
   const theme = useTheme();
+  const { t } = useContext(LanguageContext);
   const [input, setInput] = useState({ text: "" } as SearchFriendDto);
   const { friendList, setFriendList } = useFriendList();
 
@@ -55,19 +57,19 @@ const Friends: FC<FriendsProps> = (props) => {
       }}>
         <Stack direction={"row"}>
           <PersonIcon sx={{ marginRight: 2 }} />
-          <Typography variant="h4">Danh sách bạn bè</Typography>
+          <Typography variant="h4">{t.friend_list}</Typography>
         </Stack>
       </Box>
       <Box sx={{ paddingLeft: 3, paddingRight: 3 }} overflow="auto">
         <Box sx={{ padding: 3 }}>
-          <Typography>{`Bạn bè (${friendList[0].id === "" ? 0 : friendList.length
+          <Typography>{`${t.friend} (${friendList[0].id === "" ? 0 : friendList.length
             })`}</Typography>
         </Box>
         <Stack spacing={1} sx={{ backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030' }}>
           <Stack component={"form"} direction={"row"} padding={1} spacing={2}>
             <TextField
               size="small"
-              label="Tìm kiếm bạn"
+              label={t.friend_search}
               value={input.text}
               onChange={handleChangeInput}
             />
@@ -77,7 +79,7 @@ const Friends: FC<FriendsProps> = (props) => {
               variant="contained"
               onClick={handleSearchFriend}
             >
-              Tìm kiếm
+              {t.search}
             </Button>
           </Stack>
           {friendList[0].id !== "" && friendList.map((f, index) => <Friend key={index} {...f} />)}

@@ -31,6 +31,7 @@ import { LogOutDto } from "src/types/api/dto/auth";
 import { STORAGE_KEY } from "src/utils/constants";
 import { disconnectChatSocket } from "src/utils/ws/clients/chat.";
 import { userAPI } from "src/api/user.api";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -187,21 +188,22 @@ function Sidebar() {
       </Drawer>
       {/* fix - no comment */}
       {/* {!loadingGetPersonalProfile && ( */}
-        <>
-          {" "}
-          <ProfileComponent
-            profile={personalProfile}
-            open={openMyProfile}
-            handleClose={setOpenMyProfile}
-          />
-          <Setting open={openSetting} handleClose={setOpenSetting} />
-        </>
+      <>
+        {" "}
+        <ProfileComponent
+          profile={personalProfile}
+          open={openMyProfile}
+          handleClose={setOpenMyProfile}
+        />
+        <Setting open={openSetting} handleClose={setOpenSetting} />
+      </>
       {/* )} */}
     </>
   );
 }
 
 function SettingButton({ setOpenProfile, setOpenSetting }) {
+  const { t } = useContext(LanguageContext);
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -270,7 +272,7 @@ function SettingButton({ setOpenProfile, setOpenSetting }) {
             setOpenProfile(true);
           }}
         >
-          <Typography>Profile</Typography>
+          <Typography>{t.profile}</Typography>
           <PersonIcon />
         </MenuItem>
         <MenuItem
@@ -280,14 +282,14 @@ function SettingButton({ setOpenProfile, setOpenSetting }) {
             setOpenSetting(true);
           }}
         >
-          <Typography>Settings</Typography>
+          <Typography>{t.settings}</Typography>
           <SettingsIcon />
         </MenuItem>
         <MenuItem
           sx={{ justifyContent: "space-between" }}
           onClick={handleLogout}
         >
-          <Typography>Sign out</Typography>
+          <Typography>{t.signout}</Typography>
           <LogoutIcon sx={{ marginLeft: 2 }} />
         </MenuItem>
       </Menu>
