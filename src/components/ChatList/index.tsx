@@ -5,6 +5,8 @@ import {
   IconButton,
   Stack,
   TextField,
+  Theme,
+  useMediaQuery,
 } from "@mui/material";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
@@ -30,14 +32,17 @@ import "moment/locale/vi";
 moment.locale("vi");
 
 interface ChatListProps {
+  onSelectChat: (chatboxId: string) => void;
   onSuccess?: (data: ListChatBoxByUserResult) => void;
 }
 
-const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
+const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
   const theme = useTheme();
   const { t } = useContext(LanguageContext);
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
+  const { userId } = useAuth();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
   const {
     toUserId,
     toGroupId,
@@ -47,7 +52,6 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
     setToGroupId,
     setChatProfile,
   } = useChat();
-  const { userId } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: ["GetChatBoxListByUser"],
@@ -100,7 +104,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
     <Box
       sx={{
         position: "relative",
-        width: 500,
+        width: isMobile ? "100%" : 500,
         backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
       }}
@@ -171,10 +175,10 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
           {data &&
             data.data.map((chatbox, index) => {
               const time = moment(chatbox.latest_updated_date).fromNow();
-              const lastChatLogContent =
-                chatbox?.chatbox_chatlogs[0]?.chat_log.content;
+              const lastChatLogContent = chatbox?.chatbox_chatlogs[0]?.chat_log.content;
               const isNewMessage = chatbox.new_message;
               const chatboxId = chatbox.id;
+
               if (chatbox.to_user_profile) {
                 const { fullname, avatar } = chatbox.to_user_profile.profile[0];
                 return (
@@ -187,6 +191,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                     time={time}
                     msg={lastChatLogContent}
                     newMessage={isNewMessage}
+                    onClick={() => onSelectChat(chatboxId)}
                   />
                 );
               }
@@ -204,6 +209,7 @@ const ChatList: FC<ChatListProps> = ({ onSuccess }) => {
                   msg={lastChatLogContent}
                   newMessage={isNewMessage}
                   ownerId={owner_id}
+                  onClick={() => onSelectChat(chatboxId)}
                 />
               );
             })}

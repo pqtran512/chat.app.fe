@@ -72,7 +72,13 @@ const Groups: FC<GroupsProps> = (props) => {
         padding: 2
       }}>
         <Stack direction={"row"}>
-          <GroupsIcon sx={{ marginRight: 2 }} />
+          <GroupsIcon sx={{
+              marginRight: 1,
+              marginLeft: {
+                xs: 4,
+                lg: 0,
+              }
+            }} />
           <Typography variant="h4">{t.group_list}</Typography>
         </Stack>
       </Box>

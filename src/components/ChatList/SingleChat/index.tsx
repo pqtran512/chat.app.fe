@@ -46,6 +46,7 @@ interface SingleChatProps {
   online?: boolean;
   newMessage?: boolean;
   onSetSeen?: (chatboxId: string, seen: boolean) => void;
+  onClick?: () => void;
 }
 
 const SingleChat: FC<SingleChatProps> = (props) => {
@@ -75,8 +76,13 @@ const SingleChat: FC<SingleChatProps> = (props) => {
       avatar: props.img,
       groupOwnerId: "",
     });
+
     if (props.newMessage) {
       setSeen.mutate(props.chatboxId);
+    }
+
+    if (props.onClick) {
+      props.onClick();  // Gọi `onClick` nếu được truyền từ `ChatList`
     }
   };
 

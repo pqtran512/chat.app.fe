@@ -73,11 +73,16 @@ function Sidebar() {
     <>
       <SidebarWrapper
         sx={{
-          display: {
-            xs: "none",
-            lg: "inline-block",
+          // display: {
+          //   xs: "none",
+          //   lg: "inline-block",
+          // },
+          display: "inline-block",
+          // position: "fixed",
+          position: {
+            xs: "absolute",
+            lg: "fixed",
           },
-          position: "fixed",
           left: 0,
           top: 0,
           background: "#1FAEEB",

@@ -24,6 +24,7 @@ interface GroupChatProps {
   memberCount?: number;
   newMessage?: boolean;
   ownerId?: string;
+  onClick?: () => void;
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {
@@ -54,8 +55,13 @@ const GroupChat: FC<GroupChatProps> = (props) => {
       memberCount: props.memberCount,
       groupOwnerId: props.ownerId,
     });
+
     if (props.newMessage) {
       setSeen.mutate(props.chatboxId);
+    }
+
+    if (props.onClick) {
+      props.onClick(); // Gọi `onClick` nếu được truyền từ `ChatList`
     }
   };
 

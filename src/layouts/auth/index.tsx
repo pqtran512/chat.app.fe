@@ -75,7 +75,7 @@ const Auth: FC<AuthProps> = () => {
             zIndex: 5,
             display: "block",
             flex: 1,
-            [theme.breakpoints.up("lg")]: {
+            [theme.breakpoints.up("xs")]: {
               ml: `${theme.sidebar.width}`,
             },
           }}

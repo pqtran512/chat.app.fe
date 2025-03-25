@@ -22,7 +22,13 @@ const FriendRequests: FC<FriendRequestsProps> = (props) => {
         padding: 2
       }}>
         <Stack direction={"row"}>
-          <PersonAddAlt1Icon sx={{ marginRight: 2 }} />
+          <PersonAddAlt1Icon sx={{
+              marginRight: 1,
+              marginLeft: {
+                xs: 4,
+                lg: 0,
+              }
+            }} />
           <Typography variant="h4">{t.friend_request}</Typography>
         </Stack>
       </Box>

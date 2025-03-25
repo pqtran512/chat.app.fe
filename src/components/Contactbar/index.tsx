@@ -30,6 +30,7 @@ import { LanguageContext } from "src/language/LanguageProvider";
 interface ContactBarProps {
   chosen?: number;
   setChosen?: React.Dispatch<React.SetStateAction<number>>;
+  onSelectContact?: () => void;
 }
 
 const ContactBar: FC<ContactBarProps> = (props) => {
@@ -61,6 +62,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const handleFriendList = () => {
     showChatDetailActions();
     props.setChosen(0);
+    props.onSelectContact?.();  // Gọi onSelectContact khi chọn
     refetch();
   };
 
@@ -112,6 +114,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const handleFriendRequests = async () => {
     showChatDetailActions();
     props.setChosen(2);
+    props.onSelectContact?.(); 
     getFriendSents.mutate();
     getFriendRecieveds.mutate();
   };
@@ -157,6 +160,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const handleGroupList = () => {
     showChatDetailActions();
     props.setChosen(1);
+    props.onSelectContact?.(); 
     // getGroupList.mutate({ searchText: "" });
   };
 
@@ -192,7 +196,10 @@ const ContactBar: FC<ContactBarProps> = (props) => {
     <Box
       sx={{
         backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
-        width: 500,
+        width: {
+          xs: "100%",
+          lg: 500,
+        },
         height: "100vh",
         boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
         position: "relative",

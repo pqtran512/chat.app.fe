@@ -56,7 +56,15 @@ const Friends: FC<FriendsProps> = (props) => {
         padding: 2
       }}>
         <Stack direction={"row"}>
-          <PersonIcon sx={{ marginRight: 2 }} />
+          <PersonIcon
+            sx={{
+              marginRight: 1,
+              marginLeft: {
+                xs: 4,
+                lg: 0,
+              }
+            }}
+          />
           <Typography variant="h4">{t.friend_list}</Typography>
         </Stack>
       </Box>

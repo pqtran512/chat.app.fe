@@ -5,13 +5,13 @@ import { Token } from "src/types/api/response/token.response";
 import http from "src/utils/http";
 
 export const AUTH_URL = {
-  LOGIN: "/auth/login",
-  REFRESH: "/auth/refresh",
-  CHECK_USER_EXIST: "/auth/check-user-exist",
-  LOGOUT: "/auth/logout",
-  CHECKPHONE: "/auth/check-user-exist",
-  RESETPASSWORD: "/auth/reset-password",
-  REGISTER: "/auth/register",
+  REGISTER: "/signup",
+  LOGIN: "/login",
+  REFRESH: "/refresh",
+  CHECK_USER_EXIST: "/check-user-exist",
+  LOGOUT: "/logout",
+  CHECKPHONE: "/check-user-exist",
+  RESETPASSWORD: "/reset-password",
 };
 
 export const authAPI = {
