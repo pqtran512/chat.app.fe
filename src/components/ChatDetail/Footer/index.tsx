@@ -38,7 +38,7 @@ interface FooterProps { }
 
 const Footer: FC<FooterProps> = () => {
   const theme = useTheme();
-    const { t } = useContext(LanguageContext);
+  const { t } = useContext(LanguageContext);
   const [openPicker, setOpenPicker] = useState(false);
   const { toUserId, toGroupId, chatboxId, chatProfile } = useChat();
   const [text, setText] = useState("");
@@ -68,9 +68,9 @@ const Footer: FC<FooterProps> = () => {
   });
 
   const handleSendMessage = () => {
-    if (!toUserId && !toGroupId) {
-      return;
-    }
+    // if (!toUserId && !toGroupId) {
+    //   return;
+    // }
     const newDate = new Date();
     insertChatLog.mutate({
       content: text,
@@ -127,7 +127,7 @@ const Footer: FC<FooterProps> = () => {
               >
                 <Picker
                   data={data}
-                  onEmojiSelect={console.log}
+                  onEmojiSelect={(emoji) => setText((prev) => prev + emoji.native)}
                   theme={theme.palette.mode}
                 />
               </Box>

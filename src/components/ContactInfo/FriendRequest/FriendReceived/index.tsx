@@ -1,9 +1,10 @@
 import { Avatar, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { useFriendRequest } from "src/contexts/FriendContext";
+import { LanguageContext } from "src/language/LanguageProvider";
 
 interface FriendReceivedProps {
   id: string;
@@ -13,18 +14,27 @@ interface FriendReceivedProps {
 
 const FriendReceived: FC<FriendReceivedProps> = (props) => {
   const friendRequestContext = useFriendRequest();
+    const { t } = useContext(LanguageContext);
 
   const handleAccept = () => {
-    accept.mutate(props.id);
+    // accept.mutate(props.id);
+    accept.mutate({ 
+      userId: '1',
+      friendId: '2'
+    }); // fix - tran
   };
-  const handleDecline = () => {
-    decline.mutate(props.id);
+  const handleReject = () => {
+    // reject.mutate(props.id);
+    reject.mutate({ 
+      userId: '1',
+      friendId: '2'
+    }); // fix - tran
   };
 
   const accept = useMutation(friendAPI.accept, {
     onSuccess: (response) => {
       enqueueSnackbar("Accept successfully", { variant: "success" });
-      getFriendRecieveds.mutate();
+      getFriendRequests.mutate('1'); // fix - tran
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Accept!! - ${error}`, {
@@ -32,10 +42,10 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
       });
     },
   });
-  const decline = useMutation(friendAPI.decline, {
+  const reject = useMutation(friendAPI.reject, {
     onSuccess: (response) => {
       enqueueSnackbar("Decline successfully", { variant: "success" });
-      getFriendRecieveds.mutate();
+      getFriendRequests.mutate('1'); // fix - tran
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Decline!! - ${error}`, {
@@ -44,18 +54,22 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
     },
   });
 
-  const getFriendRecieveds = useMutation(friendAPI.friendRecieved, {
+  const getFriendRequests = useMutation(friendAPI.friendRequests, {
     onSuccess: (response) => {
-      if (response.data.length > 0) {
-        const responseReceicedList = [];
+      if (response.data && response.data.length > 0) {
+
+        const responseReceivedList = [];
         response.data.forEach((e) => {
-          responseReceicedList.push({
-            id: e.id,
+
+          responseReceivedList.push({
+            id: e.friend_id,
             fullname: e.from_user_profile.profile[0].fullname,
             avatar: e.from_user_profile.profile[0].avatar,
           });
         });
-        friendRequestContext.setFriendReceivedList(responseReceicedList);
+
+        friendRequestContext.setFriendReceivedList(responseReceivedList);
+
       } else {
         friendRequestContext.setFriendReceivedList([
           { id: "", fullname: "", avatar: "" },
@@ -80,8 +94,8 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
           <Typography variant="h4">{props.fullname}</Typography>
         </Stack>
         <Stack direction={"row"}>
-          <Button onClick={handleDecline}>Decline</Button>
-          <Button onClick={handleAccept}>Accept</Button>
+        <Button onClick={handleAccept}>{t.accept}</Button>
+          <Button onClick={handleReject}>{t.reject}</Button>
         </Stack>
       </Stack>
 

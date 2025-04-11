@@ -118,7 +118,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
             ) : (
               <Avatar src={props.img} />
             )} */}
-            <Avatar src={`data:image/png;base64, ${props.img}`} />
+            <Avatar src={props.img && `data:image/png;base64, ${props.img}`} />
 
             <Stack direction={"column"}>
               <Typography variant="subtitle2">{props.name}</Typography>

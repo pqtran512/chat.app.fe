@@ -27,8 +27,9 @@ const Register: FC<RegisterProps> = (props) => {
   const defaultTheme = createTheme();
   const navigate = useNavigate();
   const [register, setRegister] = useState({
-    fullname: "",
+    username: "",
     phone: "",
+    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -37,16 +38,28 @@ const Register: FC<RegisterProps> = (props) => {
   const { isLoading, mutate: mutateRegister } = useMutation(authAPI.register, {
     onSuccess: (res) => {
       if (res.data) {
-        const { access_token, refresh_token, user, is_success } = res.data;
-        localStorage.setItem(STORAGE_KEY.ID, user.id);
-        localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, access_token);
-        localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
+        const { AccessToken, id } = res.data;
+        // localStorage.setItem(STORAGE_KEY.ID, user.id);
+        // localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, AccessToken);
 
-        setUserId(user.id);
-        setAccessToken(access_token);
+        // setUserId(user.id);
+        // setAccessToken(AccessToken);
 
-        navigate("/");
+        navigate("/login");
       }
+    },
+    onError: (error: any) => {
+      let err_msg
+      if (error?.error.toLowerCase().includes('duplicate')) {
+        err_msg = 'Số điện thoại hoặc email đã tồn tại.'
+      }
+      else {
+        err_msg = 'Đăng ký thất bại. Vui lòng thử lại !'
+      }
+
+      enqueueSnackbar(err_msg, {
+        variant: "error",
+      });
     },
   });
 
@@ -63,9 +76,10 @@ const Register: FC<RegisterProps> = (props) => {
       return;
     }
     mutateRegister({
-      fullname: register.fullname,
+      username: register.username,
       password: register.password,
       phone: register.phone,
+      email: register.email,
     });
   };
 
@@ -114,11 +128,11 @@ const Register: FC<RegisterProps> = (props) => {
               margin="normal"
               required
               fullWidth
-              id="fullname"
+              id="username"
               label="Họ và tên"
-              name="fullname"
+              name="username"
               autoFocus
-              value={register.fullname}
+              value={register.username}
               disabled={isLoading}
               onChange={onFormChangeHandler}
             />
@@ -130,6 +144,17 @@ const Register: FC<RegisterProps> = (props) => {
               label="Số điện thoại"
               name="phone"
               value={register.phone}
+              disabled={isLoading}
+              onChange={onFormChangeHandler}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email"
+              name="email"
+              value={register.email}
               disabled={isLoading}
               onChange={onFormChangeHandler}
             />

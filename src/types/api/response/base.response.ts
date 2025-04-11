@@ -1,7 +1,7 @@
 export type Base = {
-  is_success: boolean;
+  is_success?: boolean;
   error?: string;
-  user: {
+  // user: {
     id: string;
-  };
+  // };
 };

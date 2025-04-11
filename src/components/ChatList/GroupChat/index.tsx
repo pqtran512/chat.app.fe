@@ -92,13 +92,13 @@ const GroupChat: FC<GroupChatProps> = (props) => {
               badgeContent={
                 <SmallAvatar
                   alt="Remy Sharp"
-                  src={`data:image/png;base64, ${props.img}`}
+                  src={props.img && `data:image/png;base64, ${props.img}`}
                 />
               }
             >
               <Avatar
                 alt="Travis Howard"
-                src={`data:image/png;base64, ${props.img}`}
+                src={props.img && `data:image/png;base64, ${props.img}`}
               />
             </Badge>
 

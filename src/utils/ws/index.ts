@@ -1,104 +1,83 @@
-import { io, ManagerOptions, Socket, SocketOptions } from "socket.io-client";
-import { WsEvent } from "../enums";
-import { STORAGE_KEY } from "../constants";
-import { authAPI } from "src/api";
-// import { LOCAL_STORAGE_KEY } from './constants';
-// import { CHAT_SOCKET_EVENT, refreshTokenApi } from 'utils';
-// import { message } from 'components';
-// import { ResponseDto } from 'types';
-
-export type SocketClientOptions = {
-  uri: string;
-} & Partial<ManagerOptions & SocketOptions>;
-
-export class SocketClient {
-  protected _socket: Socket;
+export class WebSocketClient {
+  private socket: WebSocket | null = null;
+  private uri: string;
+  private token: string | null;
+  private eventHandlers: Record<string, (data: any) => void> = {};
   private refreshCount = 5;
-  constructor(options: SocketClientOptions) {
-    this._socket = io(options.uri, options);
-    this._socket.on(WsEvent.CONNECT, () => {
-      console.log("Socket is connected successfully");
-      this.refreshCount = 5;
-    });
-    this._socket.on(WsEvent.DISCONNECT, () => {
-      console.log("Socket is disconnected");
-    });
-    this._socket.on(WsEvent.EXCEPTION, (error: any) => {
-      // message.systemError(error.message);
-      console.log('exception', error.message);
-      console.log(error);
-    });
-    this._socket.on(WsEvent.UNAUTHORIZED, () => {
-      console.log("Socket is disconnect due to token is expired");
-      this.refreshCount -= 1;
-      this.reconnect();
-    });
-    this._socket.on(WsEvent.TOKEN_EXPIRED, () => {
-      console.log("Socket token is expiring, refreshing ...");
-      this.renewToken();
-    });
-    this._socket.on(WsEvent.ERROR, (error) => {
-      console.log('error', error.message);
-      if (error.message === WsEvent.UNAUTHORIZED) {
-        this.refreshCount -= 1;
-        this.reconnect();
-      } else {
-        console.error(error);
-      }
-    });
+
+  constructor({ uri }: { uri: string }) {
+    this.uri = uri;
+    this.token = localStorage.getItem("ACCESS_TOKEN");
   }
 
   connect() {
-    const accessToken = localStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
-    if (accessToken) {
-      this.socket.auth = {
-        token: accessToken,
-      };
-      this._socket.connect();
+    if (this.socket) {
+      console.warn("WebSocket is already connected.");
+      return;
     }
+
+    const url = `${this.uri}?token=${this.token}`;
+    this.socket = new WebSocket(url);
+
+    this.socket.onopen = () => {
+      console.log("WebSocket connected.");
+      this.refreshCount = 5;
+    };
+
+    this.socket.onmessage = (event) => {
+      try {
+        const { event: eventName, data } = JSON.parse(event.data);
+        if (this.eventHandlers[eventName]) {
+          this.eventHandlers[eventName](data);
+        }
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
+      }
+    };
+
+    this.socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    this.socket.onclose = () => {
+      console.log("WebSocket disconnected.");
+      this.socket = null;
+    };
   }
 
   disconnect() {
-    this._socket.disconnect();
-  }
-
-  get socket() {
-    return this._socket;
+    this.socket?.close();
+    this.socket = null;
   }
 
   async reconnect() {
-    const refresh_token = localStorage.getItem(STORAGE_KEY.REFRESH_TOKEN);
-    const id = localStorage.getItem(STORAGE_KEY.ID);
+    const refreshToken = localStorage.getItem("REFRESH_TOKEN");
+    const id = localStorage.getItem("ID");
 
-    if (id && refresh_token) {
-      const responseToken = await authAPI.refresh({
-        id,
-        refresh_token,
-        is_new_refresh_token: false,
+    if (id && refreshToken) {
+      const response = await fetch("/api/auth/refresh", {
+        method: "POST",
+        body: JSON.stringify({ id, refresh_token: refreshToken }),
       });
 
-      if (responseToken?.data.access_token) {
-        this.socket.auth = {
-          token: responseToken?.data.access_token,
-        };
+      const result = await response.json();
+      if (result?.data?.access_token) {
+        this.token = result.data.access_token;
+        localStorage.setItem("ACCESS_TOKEN", this.token);
         this.connect();
       }
     }
   }
 
-  async renewToken() {
-    // const refreshToken = localStorage.getItem(LOCAL_STORAGE_KEY.REFRESH_TOKEN);
+  on(event: string, callback: (data: any) => void) {
+    this.eventHandlers[event] = callback;
+  }
 
-    // if (refreshToken) {
-    //   const responseToken = await refreshTokenApi(refreshToken);
+  off(event: string) {
+    delete this.eventHandlers[event];
+  }
 
-    //   if (responseToken?.data.accessToken) {
-    //     const accessToken = responseToken.data.accessToken;
-    //     this._socket.auth = {
-    //       token: accessToken,
-    //     };
-    //     this._socket.emit(CHAT_SOCKET_EVENT.UPDATE_TOKEN, accessToken);
-    //   }
-    // }
+  send(event: string, data: any) {
+    this.socket?.send(JSON.stringify({ event, data }));
   }
 }

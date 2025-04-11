@@ -114,42 +114,49 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const handleFriendRequests = async () => {
     showChatDetailActions();
     props.setChosen(2);
-    props.onSelectContact?.(); 
-    getFriendSents.mutate();
-    getFriendRecieveds.mutate();
+    props.onSelectContact?.();
+    // getFriendSents.mutate('1'); 
+    getFriendRequests.mutate('1'); // fix - tran
   };
 
-  const getFriendSents = useMutation(friendAPI.friendSent, {
-    onSuccess: (response) => {
-      if (response.data.length > 0) {
-        const responeSentList = [];
-        response.data.forEach((e) => {
-          responeSentList.push({
-            id: e.id,
-            fullname: e.to_user_profile.profile[0].fullname,
-            avatar: e.to_user_profile.profile[0].avatar,
-          });
-        });
-        friendRequestContext.setFriendSentList(responeSentList);
-      }
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error, { variant: "error" });
-    },
-  });
+  // const getFriendSents = useMutation(friendAPI.friendRequests, {
+  //   onSuccess: (response) => {
+  //     if (response.data.length > 0) {
+  //       const responeSentList = [];
+  //       response.data.forEach((e) => {
+  //         responeSentList.push({
+  //           id: e.id,
+  //           fullname: e.to_user_profile.profile[0].fullname,
+  //           avatar: e.to_user_profile.profile[0].avatar,
+  //         });
+  //       });
+  //       friendRequestContext.setFriendSentList(responeSentList);
+  //     }
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error, { variant: "error" });
+  //   },
+  // });
 
-  const getFriendRecieveds = useMutation(friendAPI.friendRecieved, {
+  const getFriendRequests = useMutation(friendAPI.friendRequests, {
     onSuccess: (response) => {
-      if (response.data.length > 0) {
-        const responseReceicedList = [];
+
+      if (response.data && response.data.length > 0) {
+        const responseReceivedList = [];
+
         response.data.forEach((e) => {
-          responseReceicedList.push({
-            id: e.id,
-            fullname: e.from_user_profile.profile[0].fullname,
-            avatar: e.from_user_profile.profile[0].avatar,
-          });
+          if (e.status === 'pending') {
+            responseReceivedList.push({
+              id: e.friend_id,
+              // fullname: e.from_user_profile.profile[0].fullname,
+              // avatar: e.from_user_profile.profile[0].avatar,
+              fullname: "Quỳnh Trân", // fix - tran
+              avatar: "Trân"
+            });
+          }
         });
-        friendRequestContext.setFriendReceivedList(responseReceicedList);
+
+        friendRequestContext.setFriendReceivedList(responseReceivedList);
       }
     },
     onError: (error: any) => {
@@ -160,7 +167,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const handleGroupList = () => {
     showChatDetailActions();
     props.setChosen(1);
-    props.onSelectContact?.(); 
+    props.onSelectContact?.();
     // getGroupList.mutate({ searchText: "" });
   };
 

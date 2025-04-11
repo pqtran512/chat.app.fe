@@ -4,39 +4,41 @@ import { FriendResponse } from "src/types/api/response/friend";
 import http from "src/utils/http";
 
 export const FRIEND_URL = {
-  FRIEND_LIST: '/friend',
-  ADD_FRIEND: '/friend-request',
-  FRIEND_SENT: '/friend-request/list-sent',
-  FREIND_RECEIVED: '/friend-request/list-received',
-  ACCEPT: '/friend-request/accept',
-  DECLINE: '/friend-request/decline',
+  FRIEND_LIST: '/getFriends',
+  ADD_FRIEND: '/addFriend',
+  // FRIEND_SENT: '/friend-request/list-sent',
+  FRIEND_REQUESTS: '/getFriendRequests',
+  // FREIND_RECEIVED: '/friend-request/list-received',
+  ACCEPT: '/acceptFriend',
+  REJECT: '/rejectFriend',
   UNFRIEND: '/friend/delete',
   SEARCH_FRIEND: '/friend/find-by-text',
 };
 
 export const friendAPI = {
-  friendList() {
-    return http.get<FriendResponse[]>(FRIEND_URL.FRIEND_LIST)
+  friendList(userId: string) {
+    return http.get<FriendResponse[]>(`FRIEND_URL.FRIEND_LIST/${userId}`)
   },
 
   addFriend(addFriendDto: AddFriendDto) {
-    return http.post<AddFriendResponse>(FRIEND_URL.ADD_FRIEND, addFriendDto)
+    // return http.post<AddFriendResponse>(`${FRIEND_URL.ADD_FRIEND}/:${userId}/:${friendId}`)
+    return http.post<any>(`${FRIEND_URL.ADD_FRIEND}/${addFriendDto.userId}/${addFriendDto.friendId}`)
   },
 
-  friendSent() {
-    return http.get<any>(FRIEND_URL.FRIEND_SENT)
+  friendRequests(userId: string) {
+    return http.get<any>(`${FRIEND_URL.FRIEND_REQUESTS}/${userId}`)
   },
 
-  friendRecieved() {
-    return http.get<any>(FRIEND_URL.FREIND_RECEIVED)
+  // friendRecieved() {
+  //   return http.get<any>(FRIEND_URL.FREIND_RECEIVED)
+  // },
+
+  accept(addFriendDto: AddFriendDto) {
+    return http.put<any>(`${FRIEND_URL.ACCEPT}/${addFriendDto.userId}/${addFriendDto.friendId}`)
   },
 
-  accept(id: string) {
-    return http.get<any>(`${FRIEND_URL.ACCEPT}/${id}`)
-  },
-
-  decline(id: string) {
-    return http.get<any>(`${FRIEND_URL.DECLINE}/${id}`)
+  reject(addFriendDto: AddFriendDto) {
+    return http.put<any>(`${FRIEND_URL.REJECT}/${addFriendDto.userId}/${addFriendDto.friendId}`)
   },
   
   unfriend(id: string) {

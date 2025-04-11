@@ -64,23 +64,31 @@ const Login: FC<LoginProps> = ({ }) => {
 
   const login = useMutation(authAPI.login, {
     onSuccess: (response) => {
-      const { access_token, refresh_token, user, is_success } = response.data;
+      const { AccessToken, id } = response.data;
 
-      if (is_success) {
-        localStorage.setItem(STORAGE_KEY.ID, user.id);
-        localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, access_token);
-        localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
+      // if (is_success) {
+        localStorage.setItem(STORAGE_KEY.ID, id);
+        localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, AccessToken);
+        // localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
         getProfile.mutate()
         // connectChatSocket();
 
-        setUserId(user.id);
-        setAccessToken(access_token);
+        setUserId(id);
+        setAccessToken(AccessToken);
 
         navigate("/");
-      }
+      // }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error, {
+      let err_msg
+      if (error?.error === 'record not found') {
+        err_msg = 'Tài khoản không tồn tại.'
+      }
+      else {
+        err_msg = 'Đăng nhập thất bại. Vui lòng thử lại !'
+      }
+
+      enqueueSnackbar(err_msg, {
         variant: "error",
       });
     },
@@ -100,7 +108,8 @@ const Login: FC<LoginProps> = ({ }) => {
       }
     },
     onError: (error: any) => {
-      enqueueSnackbar(error.response.data.message, {
+      const errorMessage = error?.response?.data?.error || "Tải profile người dùng thất bại.";
+      enqueueSnackbar(errorMessage, {
         variant: "error",
       });
     },

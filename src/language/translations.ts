@@ -16,6 +16,8 @@ export const translations = {
     friend_request_sent: "Sent Requests",
     friend_request_received: "Received Requests",
     friend_search: "Search friends",
+    reject: "Reject",
+    accept: "Accept",
 
     group: "Groups",
     group_list: "Group List",
@@ -54,6 +56,8 @@ export const translations = {
     friend_request_sent: "Lời mời đã gửi",
     friend_request_received: "Lời mời đã nhận",
     friend_search: "Tìm kiếm bạn bè",
+    reject: "Từ chối",
+    accept: "Đồng ý",
 
     group: "Nhóm",
     group_list: "Danh sách nhóm",

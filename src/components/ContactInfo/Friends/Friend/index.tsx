@@ -45,16 +45,18 @@ const Friend: FC<FriendProps> = (props) => {
   const unfriend = useMutation(friendAPI.unfriend, {
     onSuccess: (response) => {
       enqueueSnackbar(`Bỏ kết bạn thành công`, { variant: "success" });
-      getFriendList.mutate();
+      getFriendList.mutate('1'); // fix -tran
     },
     onError: (error: any) => {
       enqueueSnackbar(error, { variant: "error" });
     },
   });
+  
   const getFriendList = useMutation(friendAPI.friendList, {
     onSuccess: (response) => {
       if (response.data.length > 0) {
         const friendList = [];
+
         response.data.forEach((e) => {
           friendList.push({
             id: e.to_user_profile.id,
@@ -62,7 +64,9 @@ const Friend: FC<FriendProps> = (props) => {
             avatar: e.to_user_profile.profile[0].avatar,
           });
         });
+
         FriendListContext.setFriendList(friendList);
+        
       } else {
         FriendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
       }
@@ -96,7 +100,7 @@ const Friend: FC<FriendProps> = (props) => {
       >
         <Avatar
           sx={{ marginRight: 3 }}
-          src={`data:image/png;base64, ${props.avatar}`}
+          src={props.avatar && `data:image/png;base64, ${props.avatar}`}
         />
         <Typography variant="h4">{props.fullname}</Typography>
       </Button>

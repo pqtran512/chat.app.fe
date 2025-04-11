@@ -72,17 +72,17 @@ const ResetPassword: FC<ResetPasswordProps> = ({ phoneNumber }) => {
 
   const reset = useMutation(authAPI.resetpassword, {
     onSuccess: (response) => {
-      const { access_token, refresh_token, user, is_success } = response.data;
-      if (is_success) {
-        localStorage.setItem(STORAGE_KEY.ID, user.id);
-        localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, access_token);
-        localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
+      const { AccessToken, refresh_token, id, is_success } = response.data;
+      // if (is_success) {
+        localStorage.setItem(STORAGE_KEY.ID, id);
+        localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, AccessToken);
+        // localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
 
-        setUserId(user.id);
-        setAccessToken(access_token);
+        setUserId(id);
+        setAccessToken(AccessToken);
 
         navigate("/");
-      }
+      // }
     },
     onError: (error: any) => {
       enqueueSnackbar(error, {

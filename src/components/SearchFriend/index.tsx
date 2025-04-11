@@ -74,12 +74,18 @@ const SearchFriendForm = ({ handleClose }) => {
   });
 
   const handleAddFriend = () => {
-    addFriend.mutate({ to_user_phone: phoneInput });
+    addFriend.mutate({ 
+      // to_user_phone: phoneInput 
+      userId: '1',
+      friendId: '2'
+    }); // fix - tran
+
     handleClose();
   };
+
   const addFriend = useMutation(friendAPI.addFriend, {
     onSuccess: (responese) => {
-      getFriendSents.mutate();
+      // getFriendSents.mutate('1'); // fix - tran
       enqueueSnackbar(`Gửi lời mời kết bạn tới ${phoneInput}`, {
         variant: "success",
       });
@@ -89,28 +95,28 @@ const SearchFriendForm = ({ handleClose }) => {
     },
   });
 
-  const getFriendSents = useMutation(friendAPI.friendSent, {
-    onSuccess: (response) => {
-      if (response.data.length > 0) {
-        const responeSentList = [];
-        response.data.forEach((e) => {
-          responeSentList.push({
-            id: e.id,
-            fullname: e.to_user_profile.profile[0].fullname,
-            avatar: e.to_user_profile.profile[0].avatar,
-          });
-        });
-        friendRequestContext.setFriendSentList(responeSentList);
-      } else {
-        friendRequestContext.setFriendReceivedList([
-          { id: "", fullname: "", avatar: "" },
-        ]);
-      }
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error, { variant: "error" });
-    },
-  });
+  // const getFriendSents = useMutation(friendAPI.friendSent, {
+  //   onSuccess: (response) => {
+  //     if (response.data.length > 0) {
+  //       const responeSentList = [];
+  //       response.data.forEach((e) => {
+  //         responeSentList.push({
+  //           id: e.id,
+  //           fullname: e.to_user_profile.profile[0].fullname,
+  //           avatar: e.to_user_profile.profile[0].avatar,
+  //         });
+  //       });
+  //       friendRequestContext.setFriendSentList(responeSentList);
+  //     } else {
+  //       friendRequestContext.setFriendReceivedList([
+  //         { id: "", fullname: "", avatar: "" },
+  //       ]);
+  //     }
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error, { variant: "error" });
+  //   },
+  // });
 
   return (
     <Stack spacing={3}>
@@ -129,7 +135,7 @@ const SearchFriendForm = ({ handleClose }) => {
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
               <Avatar
                 alt={user.phone}
-                src={`data:image/jpeg;base64, ${user.avatar}`}
+                src={user.avatar && `data:image/jpeg;base64, ${user.avatar}`}
               />
               <Typography>{user.fullname}</Typography>
             </Stack>

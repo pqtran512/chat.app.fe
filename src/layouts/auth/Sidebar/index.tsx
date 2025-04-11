@@ -106,7 +106,7 @@ function Sidebar() {
                 <Avatar
                   sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid white' }}
                   alt="Avatar" // fix - profile name
-                  src={`data:image/jpeg;base64,${personalProfile?.avatar}`}
+                  src={personalProfile?.avatar && `data:image/jpeg;base64,${personalProfile?.avatar}`}
                 />
               </Button>
             </Box>

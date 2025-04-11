@@ -167,12 +167,19 @@ interface CreateGroupProps {
 
 const CreateGroup: FC<CreateGroupProps> = (props) => {
   const { t } = useContext(LanguageContext);
-  const { isLoading, data, refetch } = useQuery({
-    queryKey: ["GetFriendList"],
-    queryFn: friendAPI.friendList,
+  // const { isLoading, data, refetch } = useQuery({
+  //   queryKey: ["GetFriendList"],
+  //   queryFn: friendAPI.friendList,
+  //   select: (res) => res.data,
+  //   enabled: false,
+  // });
+  const { isLoading, data, refetch } = useQuery({ // fix - tran
+    queryKey: ["GetFriendList", '1'],
+    queryFn: () => friendAPI.friendList('1'),
     select: (res) => res.data,
-    enabled: false,
+    // enabled: !!userId, // chỉ chạy nếu có userId
   });
+  
   
   useEffect(() => {
     console.log(props.open)

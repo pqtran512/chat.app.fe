@@ -16,13 +16,17 @@ const FriendSent: FC<FriendSentProps> = (props) => {
   const friendRequestContext = useFriendRequest();
 
   const handleCancel = () => {
-    cancel.mutate(props.id);
+    // cancel.mutate(props.id);
+    cancel.mutate({ 
+      userId: '1',
+      friendId: '2'
+    }); // fix - tran
   };
 
-  const cancel = useMutation(friendAPI.decline, {
+  const cancel = useMutation(friendAPI.reject, {
     onSuccess: (response) => {
       enqueueSnackbar("Cancel successfull", { variant: "success" });
-      getFriendSents.mutate();
+      // getFriendSents.mutate('1'); // fix - tran
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Cancel!! - ${error}`, {
@@ -31,29 +35,29 @@ const FriendSent: FC<FriendSentProps> = (props) => {
     },
   });
 
-  const getFriendSents = useMutation(friendAPI.friendSent, {
-    onSuccess: (response) => {
-      if (response.data.length > 0) {
-        const responseSentList = [];
-        response.data.forEach((e) => {
-          responseSentList.push({
-            id: e.id,
-            fullname: e.to_user_profile.profile[0].fullname,
-            avatar: e.to_user_profile.profile[0].avatar,
-          });
-        });
-        friendRequestContext.setFriendSentList(responseSentList);
-      } else {
+  // const getFriendSents = useMutation(friendAPI.friendSent, {
+  //   onSuccess: (response) => {
+  //     if (response.data.length > 0) {
+  //       const responseSentList = [];
+  //       response.data.forEach((e) => {
+  //         responseSentList.push({
+  //           id: e.id,
+  //           fullname: e.to_user_profile.profile[0].fullname,
+  //           avatar: e.to_user_profile.profile[0].avatar,
+  //         });
+  //       });
+  //       friendRequestContext.setFriendSentList(responseSentList);
+  //     } else {
 
-        friendRequestContext.setFriendSentList([
-          { id: "", fullname: "", avatar: "" },
-        ]);
-      }
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error, { variant: "error" });
-    },
-  });
+  //       friendRequestContext.setFriendSentList([
+  //         { id: "", fullname: "", avatar: "" },
+  //       ]);
+  //     }
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error, { variant: "error" });
+  //   },
+  // });
 
   return (
     <Box key={props.id}>

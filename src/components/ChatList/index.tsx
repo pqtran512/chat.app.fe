@@ -29,11 +29,12 @@ import { LanguageContext } from "src/language/LanguageProvider";
 
 import moment from "moment";
 import "moment/locale/vi";
+import { ChatBox, Group } from "src/types/entities";
 moment.locale("vi");
 
 interface ChatListProps {
   onSelectChat: (chatboxId: string) => void;
-  onSuccess?: (data: ListChatBoxByUserResult) => void;
+  onSuccess?: (data: Group[]) => void;
 }
 
 const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
@@ -61,12 +62,15 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
       if (onSuccess) {
         onSuccess(rs.data);
       }
-      if (rs.data.count > 0 && !toUserId && !toGroupId) {
-        const firstChatBox = rs.data.data[0];
-        // setChatboxId(firstChatBox.id);
-        if (firstChatBox.to_group_profile) {
-          const { avatar, name, id, group_members } =
-            firstChatBox.to_group_profile;
+      
+      if (rs.data.length > 0 && !toUserId && !toGroupId) {
+        // const firstChatBox = rs.data.data[0];
+        const firstChatBox = rs.data[0];
+        // setChatboxId(firstChatBox.id);  // fix - tran
+        // if (firstChatBox.to_group_profile) {
+          // const { avatar, name, id, group_members } =
+          //   firstChatBox.to_group_profile;
+          const { avatar, name, id, group_members } = firstChatBox;
           setToGroupId(id);
           setChatProfile({
             id,
@@ -74,23 +78,25 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
             name,
             avatar,
             memberCount: group_members.length,
-            newMessage: firstChatBox.new_message,
-            groupOwnerId: firstChatBox.to_group_profile.owner_id,
+            // newMessage: firstChatBox.new_message,
+            // groupOwnerId: firstChatBox.to_group_profile.owner_id,
           });
-        } else {
-          const uid = firstChatBox.to_user_profile.id;
-          const { avatar, fullname } = firstChatBox.to_user_profile.profile[0];
-          setToUserId(uid);
-          setChatProfile({
-            id: uid,
-            isGroupChat: false,
-            name: fullname,
-            avatar,
-            newMessage: firstChatBox.new_message,
-            groupOwnerId: '',
-          });
-        }
+
+        // } else {
+        //   const uid = firstChatBox.to_user_profile.id;
+        //   const { avatar, fullname } = firstChatBox.to_user_profile.profile[0];
+        //   setToUserId(uid);
+        //   setChatProfile({
+        //     id: uid,
+        //     isGroupChat: false,
+        //     name: fullname,
+        //     avatar,
+        //     newMessage: firstChatBox.new_message,
+        //     groupOwnerId: '',
+        //   });
+        // }
       }
+
       return rs.data;
     },
   });
@@ -173,41 +179,45 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
           direction="column"
         >
           {data &&
-            data.data.map((chatbox, index) => {
+            data.map((chatbox, index) => {
               const time = moment(chatbox.latest_updated_date).fromNow();
-              const lastChatLogContent = chatbox?.chatbox_chatlogs[0]?.chat_log.content;
-              const isNewMessage = chatbox.new_message;
+              // const lastChatLogContent = chatbox?.chatbox_chatlogs[0]?.chat_log.content; // fix - tran
+              const lastChatLogContent = "Hello" // fix - tran
+              // const isNewMessage = chatbox.new_message; // fix - tran
+              const isNewMessage = "How are you ?"; // fix - tran
               const chatboxId = chatbox.id;
 
-              if (chatbox.to_user_profile) {
-                const { fullname, avatar } = chatbox.to_user_profile.profile[0];
-                return (
-                  <SingleChat
-                    key={index}
-                    id={chatbox.to_user_profile.id}
-                    chatboxId={chatboxId}
-                    name={fullname}
-                    img={avatar}
-                    time={time}
-                    msg={lastChatLogContent}
-                    newMessage={isNewMessage}
-                    onClick={() => onSelectChat(chatboxId)}
-                  />
-                );
-              }
-              const { name, avatar, id, group_members, owner_id } =
-                chatbox.to_group_profile;
+              // if (chatbox.to_user_profile) { // fix - tran
+              //   const { fullname, avatar } = chatbox.to_user_profile.profile[0];
+              //   return (
+              //     <SingleChat
+              //       key={index}
+              //       id={chatbox.to_user_profile.id}
+              //       chatboxId={chatboxId}
+              //       name={fullname}
+              //       img={avatar}
+              //       time={time}
+              //       msg={lastChatLogContent}
+              //       newMessage={isNewMessage}
+              //       onClick={() => onSelectChat(chatboxId)}
+              //     />
+              //   );
+              // }
+              // const { name, avatar, id, group_members, owner_id } =
+              //   chatbox.to_group_profile; // fix - tran
+                const { name, avatar, id, group_members, owner_id } =
+                chatbox;
               return (
                 <GroupChat
                   key={index}
                   id={id}
                   chatboxId={chatboxId}
                   name={name}
-                  img={avatar}
+                  img={avatar ? avatar : ""}
                   time={time}
-                  memberCount={group_members.length}
+                  memberCount={group_members ? group_members.length : 0}
                   msg={lastChatLogContent}
-                  newMessage={isNewMessage}
+                  // newMessage={isNewMessage}
                   ownerId={owner_id}
                   onClick={() => onSelectChat(chatboxId)}
                 />

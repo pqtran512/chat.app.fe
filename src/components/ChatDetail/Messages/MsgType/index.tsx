@@ -86,7 +86,7 @@ const ImgMSg: FC<ImgMsgProps> = (props) => {
       >
         <Stack>
           <img
-            src={`data:image/png;base64, ${props.img}`}
+            src={props.img && `data:image/png;base64, ${props.img}`}
             alt={props.message}
             style={{ maxHeight: 210, borderRadius: 1 }}
           ></img>

@@ -137,7 +137,7 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
               <Button component="label" role={undefined} tabIndex={-1}>
                 <Avatar
                   sx={{ width: 60, height: 60 }}
-                  src={`data:image/jpeg;base64,${updateProfileInfo?.avatar}`}
+                  src={updateProfileInfo?.avatar && `data:image/jpeg;base64,${updateProfileInfo?.avatar}`}
                 />
 
                 <VisuallyHiddenInput
@@ -198,7 +198,7 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
             <Stack spacing={2} alignItems={"center"}>
               <Avatar
                 sx={{ width: 60, height: 60 }}
-                src={`data:image/jpeg;base64,${props.profile?.avatar}`}
+                src={props.profile?.avatar && `data:image/jpeg;base64,${props.profile?.avatar}`}
               />
               <Typography variant="h4">{props.profile?.fullname || 'Trân'}</Typography>
               <Stack direction={"row"}></Stack>

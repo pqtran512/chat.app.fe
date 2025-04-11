@@ -1,34 +1,31 @@
 import { STORAGE_KEY } from "src/utils/constants";
-import { SocketClient } from "..";
+import { WebSocketClient } from "..";
 import { WsEvent } from "src/utils/enums";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 
-export const chatSocketClient = new SocketClient({
+export const chatSocketClient = new WebSocketClient({
   uri: `${STORAGE_KEY.CHAT_SOCKET_BASE_URL}`,
-  transports: ['websocket'],
-  auth: {
-    token: localStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)
-  }
 });
 
-export async function connectChatSocket() {
+export function connectChatSocket() {
+  console.log("Connecting to chat WebSocket...");
   chatSocketClient.connect();
 }
 
-export async function disconnectChatSocket() {
+export function disconnectChatSocket() {
   chatSocketClient.disconnect();
 }
 
-export async function reconnectChatSocket() {
+export function reconnectChatSocket() {
   chatSocketClient.reconnect();
 }
 
 export function onReceiveChat(callback?: (data: ReceiveMessageDto) => void) {
-  chatSocketClient.socket.on(WsEvent.RECEIVE_MESSAGE, (data: ReceiveMessageDto) => {
+  chatSocketClient.on(WsEvent.RECEIVE_MESSAGE, (data: ReceiveMessageDto) => {
     callback?.(data);
   });
 }
 
 export function offReceiveChat() {
-  chatSocketClient.socket.off(WsEvent.RECEIVE_MESSAGE);
+  chatSocketClient.off(WsEvent.RECEIVE_MESSAGE);
 }
