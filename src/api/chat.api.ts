@@ -6,7 +6,7 @@ import { Platform } from "src/utils/enums";
 import http from "src/utils/http";
 
 export const CHAT_URL = {
-  LIST_CHAT_BOX: "/ws/getRooms",
+  LIST_CHAT_BOX: "/ws/getConversations",
   CHAT_DETAIL: "chat/detail",
   INSERT_CHAT_LOG: "/chat-log",
   SET_CHATBOX_SEEN: "/chat-box/set-seen",

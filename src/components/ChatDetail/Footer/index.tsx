@@ -81,6 +81,16 @@ const Footer: FC<FooterProps> = () => {
     });
   };
 
+  const handleSendLike = () => {
+    insertChatLog.mutate({
+      content: "👍",
+      content_type_code: ChatLogContentTypeCode.TEXT,
+      created_date: new Date(),
+      is_group_chat: chatProfile.isGroupChat ? true : false,
+      to_id: chatProfile.isGroupChat ? toGroupId : toUserId,
+    });
+  };
+
   const keyPress = (e) => {
     if (e.keyCode == 13) {
       handleSendMessage();
@@ -154,9 +164,11 @@ const Footer: FC<FooterProps> = () => {
                         >
                           <InsertEmoticonIcon />
                         </IconButton>
-                        <IconButton title="Send like icon">
+                        
+                        <IconButton title="Send like icon" onClick={handleSendLike}>
                           <ThumbUpIcon />
                         </IconButton>
+
                         <IconButton
                           onClick={handleSendMessage}
                           title="Send Message"

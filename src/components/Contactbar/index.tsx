@@ -115,30 +115,35 @@ const ContactBar: FC<ContactBarProps> = (props) => {
     showChatDetailActions();
     props.setChosen(2);
     props.onSelectContact?.();
-    // getFriendSents.mutate('1'); 
-    getFriendRequests.mutate('1'); // fix - tran
+    getFriendSent.mutate('1'); // fix - tran 
+    getFriendReceived.mutate('1'); // fix - tran
   };
 
-  // const getFriendSents = useMutation(friendAPI.friendRequests, {
-  //   onSuccess: (response) => {
-  //     if (response.data.length > 0) {
-  //       const responeSentList = [];
-  //       response.data.forEach((e) => {
-  //         responeSentList.push({
-  //           id: e.id,
-  //           fullname: e.to_user_profile.profile[0].fullname,
-  //           avatar: e.to_user_profile.profile[0].avatar,
-  //         });
-  //       });
-  //       friendRequestContext.setFriendSentList(responeSentList);
-  //     }
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error, { variant: "error" });
-  //   },
-  // });
+  const getFriendSent = useMutation(friendAPI.friendSent, {
+    onSuccess: (response) => {
 
-  const getFriendRequests = useMutation(friendAPI.friendRequests, {
+      if (response.data && response.data.length > 0) {
+        const responeSentList = [];
+
+        response.data.forEach((e) => {
+          responeSentList.push({
+            id: e.id,
+            // fullname: e.to_user_profile.profile[0].fullname,
+            // avatar: e.to_user_profile.profile[0].avatar,
+            fullname: "Quỳnh Trân", // fix - tran
+            avatar: "Trân"
+          });
+        });
+
+        friendRequestContext.setFriendSentList(responeSentList);
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error, { variant: "error" });
+    },
+  });
+
+  const getFriendReceived = useMutation(friendAPI.friendRecieved, {
     onSuccess: (response) => {
 
       if (response.data && response.data.length > 0) {

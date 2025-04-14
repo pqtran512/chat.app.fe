@@ -32,6 +32,7 @@ import { STORAGE_KEY } from "src/utils/constants";
 import { disconnectChatSocket } from "src/utils/ws/clients/chat.";
 import { userAPI } from "src/api/user.api";
 import { LanguageContext } from "src/language/LanguageProvider";
+import { useNavigate } from "react-router-dom";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -210,6 +211,7 @@ function Sidebar() {
 function SettingButton({ setOpenProfile, setOpenSetting }) {
   const { t } = useContext(LanguageContext);
   const theme = useTheme();
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -236,13 +238,16 @@ function SettingButton({ setOpenProfile, setOpenSetting }) {
 
   const handleLogout = async () => {
     const userId: string | null = localStorage.getItem(STORAGE_KEY.ID);
-    const refresh_token: string | null = localStorage.getItem(
-      STORAGE_KEY.REFRESH_TOKEN
+    const access_token: string | null = localStorage.getItem(
+      STORAGE_KEY.ACCESS_TOKEN
     );
-    if (userId && refresh_token) {
-      logout.mutate({ userId, refresh_token } as unknown as LogOutDto);
+    if (userId && access_token) {
+      logout.mutate({ userId, access_token } as unknown as LogOutDto);
+      localStorage.clear();
+      navigate("/login");
     }
   };
+
   return (
     <>
       <IconButton

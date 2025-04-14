@@ -4,6 +4,7 @@ export const translations = {
     all: "All",
     un_read: "UnRead",
     back: "Back",
+    cancel: "Cancel",
 
     enter_msg: "Enter message ...",
     profile: "Profile",
@@ -44,6 +45,7 @@ export const translations = {
     all: "Tất cả",
     un_read: "Chưa đọc",
     back: "Quay lại",
+    cancel: "Hủy",
 
     enter_msg: "Nhập tin nhắn ...",
     profile: "Hồ sơ",

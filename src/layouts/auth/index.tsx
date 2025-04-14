@@ -18,13 +18,13 @@ const Auth: FC<AuthProps> = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
 
-  // useEffect(() => {
-  //   window.addEventListener("storage", (e) => {
-  //     if (e.key === STORAGE_KEY.ACCESS_TOKEN && !e.newValue) {
-  //       navigate("/login", { replace: true });
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    window.addEventListener("storage", (e) => {
+      if (e.key === STORAGE_KEY.ACCESS_TOKEN && !e.newValue) {
+        navigate("/login", { replace: true });
+      }
+    });
+  }, []);
 
   // useEffect(() => {
   //   window.addEventListener("storage", (e) => {
@@ -34,9 +34,9 @@ const Auth: FC<AuthProps> = () => {
   //   });
   // }, []);
 
-  // if (!localStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  if (!localStorage.getItem(STORAGE_KEY.ACCESS_TOKEN)) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <>

@@ -4,11 +4,11 @@ import { FriendResponse } from "src/types/api/response/friend";
 import http from "src/utils/http";
 
 export const FRIEND_URL = {
-  FRIEND_LIST: '/getFriends',
+  FRIEND_LIST: '/friends',
   ADD_FRIEND: '/addFriend',
-  // FRIEND_SENT: '/friend-request/list-sent',
-  FRIEND_REQUESTS: '/getFriendRequests',
-  // FREIND_RECEIVED: '/friend-request/list-received',
+  FRIEND_SENT: '/sentFriendRequests',
+  // FRIEND_REQUESTS: '/getFriendRequests',
+  FREIND_RECEIVED: '/receivedFriendRequests',
   ACCEPT: '/acceptFriend',
   REJECT: '/rejectFriend',
   UNFRIEND: '/friend/delete',
@@ -25,13 +25,13 @@ export const friendAPI = {
     return http.post<any>(`${FRIEND_URL.ADD_FRIEND}/${addFriendDto.userId}/${addFriendDto.friendId}`)
   },
 
-  friendRequests(userId: string) {
-    return http.get<any>(`${FRIEND_URL.FRIEND_REQUESTS}/${userId}`)
+  friendSent(userId: string) {
+    return http.get<any>(`${FRIEND_URL.FRIEND_SENT}/${userId}`)
   },
 
-  // friendRecieved() {
-  //   return http.get<any>(FRIEND_URL.FREIND_RECEIVED)
-  // },
+  friendRecieved(userId: string) {
+    return http.get<any>(`${FRIEND_URL.FREIND_RECEIVED}/${userId}`)
+  },
 
   accept(addFriendDto: AddFriendDto) {
     return http.put<any>(`${FRIEND_URL.ACCEPT}/${addFriendDto.userId}/${addFriendDto.friendId}`)

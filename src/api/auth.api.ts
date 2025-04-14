@@ -27,7 +27,7 @@ export const authAPI = {
   logout(logOutDto: LogOutDto) {
     return http.post<boolean>(AUTH_URL.LOGOUT, logOutDto, {
       headers: {
-        refresh_token: logOutDto.refresh_token,
+        token: logOutDto.access_token,
       },
     });
   },

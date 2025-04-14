@@ -34,7 +34,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
   const accept = useMutation(friendAPI.accept, {
     onSuccess: (response) => {
       enqueueSnackbar("Accept successfully", { variant: "success" });
-      getFriendRequests.mutate('1'); // fix - tran
+      getFriendReceived.mutate('1'); // fix - tran
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Accept!! - ${error}`, {
@@ -45,7 +45,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
   const reject = useMutation(friendAPI.reject, {
     onSuccess: (response) => {
       enqueueSnackbar("Decline successfully", { variant: "success" });
-      getFriendRequests.mutate('1'); // fix - tran
+      getFriendReceived.mutate('1'); // fix - tran
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Decline!! - ${error}`, {
@@ -54,13 +54,12 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
     },
   });
 
-  const getFriendRequests = useMutation(friendAPI.friendRequests, {
+  const getFriendReceived = useMutation(friendAPI.friendRecieved, {
     onSuccess: (response) => {
       if (response.data && response.data.length > 0) {
-
         const responseReceivedList = [];
-        response.data.forEach((e) => {
 
+        response.data.forEach((e) => {
           responseReceivedList.push({
             id: e.friend_id,
             fullname: e.from_user_profile.profile[0].fullname,

@@ -84,6 +84,9 @@ const Login: FC<LoginProps> = ({ }) => {
       if (error?.error === 'record not found') {
         err_msg = 'Tài khoản không tồn tại.'
       }
+      else if (error?.error.includes('crypto/bcrypt')) {
+        err_msg = 'Mật khẩu không chính xác.'
+      }
       else {
         err_msg = 'Đăng nhập thất bại. Vui lòng thử lại !'
       }
