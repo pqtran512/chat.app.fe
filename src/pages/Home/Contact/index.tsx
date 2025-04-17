@@ -24,17 +24,19 @@ const Contact: FC<ContactProps> = (props) => {
   const getFriendList = useMutation(friendAPI.friendList, {
     onSuccess: (response) => {
       const friendList = [];
+
       if (response.data) {
         response.data.forEach((e) => {
           friendList.push({
-            id: e.to_user_profile.profile[0].id,
-            fullname: e.to_user_profile.profile[0].fullname,
-            avatar: e.to_user_profile.profile[0].avatar,
+            id: e.id,
+            username: e.username,
+            avatar: e.avatar,
           });
         });
         friendListContext.setFriendList(friendList);
+
       } else {
-        friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+        friendListContext.setFriendList([{ id: "", username: "", avatar: "" }]);
       }
     },
     onError: (error: any) => {

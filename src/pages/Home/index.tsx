@@ -5,15 +5,17 @@ import ChatDetail from "src/components/ChatDetail";
 import ContactBar from "src/components/Contactbar";
 import { useTabs } from "src/contexts/TabsContext";
 import ContactInfo from "src/components/ContactInfo";
-import { connectChatSocket, onReceiveChat } from "src/utils/ws/clients/chat.";
+import { connectChatSocket, onReceiveChat } from "src/utils/ws/clients/chat";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 import { useQuery, useQueryClient } from "react-query";
 import { friendAPI } from "src/api";
+import { useChat } from "src/contexts/ChatContext";
 
 interface HomePageProps { }
 
 const HomePage: FC<HomePageProps> = (props) => {
   const { showChatBoxList, showChatDetail, showContactInfo, showContactList } = useTabs();
+  const { setChatboxId } = useChat();
   const [chosen, setChosen] = useState(0);
   const [openChatInfo, setOpenChatInfo] = useState(false);
   const queryClient = useQueryClient();
@@ -31,6 +33,12 @@ const HomePage: FC<HomePageProps> = (props) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (selectedChat) {
+      setChatboxId(selectedChat);
+    }
+  }, [selectedChat]);
 
   return (
     <Box>

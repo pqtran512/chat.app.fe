@@ -36,6 +36,7 @@ interface ContactBarProps {
 const ContactBar: FC<ContactBarProps> = (props) => {
   const theme = useTheme();
   const { t } = useContext(LanguageContext);
+  const userId = Number(localStorage.getItem("id"));
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openSearchFriend, setOpenSearchFriend] = useState(false);
   const { setShowContactInfo, setShowChatDetail } = useTabs();
@@ -73,13 +74,13 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   //       response.data.forEach((e) => {
   //         friendList.push({
   //           id: e.to_user_profile.id,
-  //           fullname: e.to_user_profile.profile[0].fullname,
+  //           username: e.to_user_profile.profile[0].username,
   //           avatar: e.to_user_profile.profile[0].avatar,
   //         });
   //       });
   //       friendListContext.setFriendList(friendList);
   //     } else {
-  //       friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+  //       friendListContext.setFriendList([{ id: "", username: "", avatar: "" }]);
   //     }
   //   },
   //   onError: (error: any) => {
@@ -89,21 +90,25 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   const { refetch } = useQuery({
     queryKey: ["FriendList"],
-    queryFn: () => friendAPI.searchFriend({ text: "" }),
+    queryFn: () => friendAPI.friendList(userId),
     enabled: false,
     onSuccess: (response) => {
       if (response.data.length > 0) {
         const friendList = [];
         response.data.forEach((e) => {
           friendList.push({
-            id: e.to_user_profile.id,
-            fullname: e.to_user_profile.profile[0].fullname,
-            avatar: e.to_user_profile.profile[0].avatar,
+            // id: e.to_user_profile.id,
+            // username: e.to_user_profile.profile[0].username,
+            // avatar: e.to_user_profile.profile[0].avatar,
+            
+            id: e.id,
+            username: e.username,
+            avatar: e.avatar,
           });
         });
         friendListContext.setFriendList(friendList);
       } else {
-        friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+        friendListContext.setFriendList([{ id: "", username: "", avatar: "" }]);
       }
     },
     onError: (error: any) => {
@@ -115,8 +120,8 @@ const ContactBar: FC<ContactBarProps> = (props) => {
     showChatDetailActions();
     props.setChosen(2);
     props.onSelectContact?.();
-    getFriendSent.mutate('1'); // fix - tran 
-    getFriendReceived.mutate('1'); // fix - tran
+    getFriendSent.mutate(1); // fix - tran 
+    getFriendReceived.mutate(1); // fix - tran
   };
 
   const getFriendSent = useMutation(friendAPI.friendSent, {
@@ -128,9 +133,9 @@ const ContactBar: FC<ContactBarProps> = (props) => {
         response.data.forEach((e) => {
           responeSentList.push({
             id: e.id,
-            // fullname: e.to_user_profile.profile[0].fullname,
+            // username: e.to_user_profile.profile[0].username,
             // avatar: e.to_user_profile.profile[0].avatar,
-            fullname: "Quỳnh Trân", // fix - tran
+            username: "Quỳnh Trân", // fix - tran
             avatar: "Trân"
           });
         });
@@ -153,9 +158,9 @@ const ContactBar: FC<ContactBarProps> = (props) => {
           if (e.status === 'pending') {
             responseReceivedList.push({
               id: e.friend_id,
-              // fullname: e.from_user_profile.profile[0].fullname,
+              // username: e.from_user_profile.profile[0].username,
               // avatar: e.from_user_profile.profile[0].avatar,
-              fullname: "Quỳnh Trân", // fix - tran
+              username: "Quỳnh Trân", // fix - tran
               avatar: "Trân"
             });
           }

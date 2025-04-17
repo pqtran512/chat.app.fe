@@ -1,4 +1,4 @@
-import { FC, useState, useContext } from "react";
+import { FC, useState, useContext, useEffect } from "react";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
@@ -26,6 +26,7 @@ import { chatAPI } from "src/api/chat.api";
 import { enqueueSnackbar } from "notistack";
 import { ChatLogContentTypeCode } from "src/utils/enums";
 import { LanguageContext } from "src/language/LanguageProvider";
+import { chatSocketClient, offJoinChat, onJoinChat } from "src/utils/ws/clients/chat";
 
 const StyleInput = styled(TextField)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -43,6 +44,19 @@ const Footer: FC<FooterProps> = () => {
   const { toUserId, toGroupId, chatboxId, chatProfile } = useChat();
   const [text, setText] = useState("");
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    onJoinChat((data) => {
+      console.log("Join chat response:", data);
+      setText('aa');
+      queryClient.invalidateQueries(["GetChatBoxListByUser"]);
+      queryClient.invalidateQueries(["ChatDetail", chatboxId, toGroupId, toUserId]);
+    });
+  
+    return () => {
+      offJoinChat();
+    };
+  }, [chatboxId, toGroupId, toUserId]);
 
   const insertChatLog = useMutation(chatAPI.insertChatlog, {
     onSuccess: (response) => {
@@ -67,6 +81,15 @@ const Footer: FC<FooterProps> = () => {
     },
   });
 
+
+  chatSocketClient.on("joinChatResponse", (data) => {
+    console.log("Server responded to joinChat:", data);
+
+    setText('');
+    queryClient.invalidateQueries(["GetChatBoxListByUser"]);
+    queryClient.invalidateQueries(["ChatDetail", chatboxId, toGroupId, toUserId]);
+  });
+
   const handleSendMessage = () => {
     // if (!toUserId && !toGroupId) {
     //   return;
@@ -82,13 +105,14 @@ const Footer: FC<FooterProps> = () => {
   };
 
   const handleSendLike = () => {
-    insertChatLog.mutate({
-      content: "👍",
-      content_type_code: ChatLogContentTypeCode.TEXT,
-      created_date: new Date(),
-      is_group_chat: chatProfile.isGroupChat ? true : false,
-      to_id: chatProfile.isGroupChat ? toGroupId : toUserId,
-    });
+    // insertChatLog.mutate({
+    //   content: "👍",
+    //   content_type_code: ChatLogContentTypeCode.TEXT,
+    //   created_date: new Date(),
+    //   is_group_chat: chatProfile.isGroupChat ? true : false,
+    //   to_id: chatProfile.isGroupChat ? toGroupId : toUserId,
+    // });
+    chatSocketClient.send("joinChat", { chatBoxId: chatboxId });
   };
 
   const keyPress = (e) => {
@@ -164,7 +188,7 @@ const Footer: FC<FooterProps> = () => {
                         >
                           <InsertEmoticonIcon />
                         </IconButton>
-                        
+
                         <IconButton title="Send like icon" onClick={handleSendLike}>
                           <ThumbUpIcon />
                         </IconButton>

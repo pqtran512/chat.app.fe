@@ -9,7 +9,7 @@ import { LanguageContext } from "src/language/LanguageProvider";
 
 interface FriendSentProps {
   id: string;
-  fullname: string;
+  username: string;
   avatar: string;
 }
 
@@ -20,15 +20,15 @@ const FriendSent: FC<FriendSentProps> = (props) => {
   const handleCancel = () => {
     // cancel.mutate(props.id);
     cancel.mutate({
-      userId: '1',
-      friendId: '2'
+      userId: 1,
+      friendId: 2
     }); // fix - tran
   };
 
   const cancel = useMutation(friendAPI.reject, {
     onSuccess: (response) => {
       enqueueSnackbar("Cancel successfull", { variant: "success" });
-      getFriendSent.mutate('1'); // fix - tran
+      getFriendSent.mutate(1); // fix - tran
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Cancel!! - ${error}`, {
@@ -45,7 +45,7 @@ const FriendSent: FC<FriendSentProps> = (props) => {
         response.data.forEach((e) => {
           responseSentList.push({
             id: e.id,
-            fullname: e.to_user_profile.profile[0].fullname,
+            username: e.to_user_profile.profile[0].username,
             avatar: e.to_user_profile.profile[0].avatar,
           });
         });
@@ -53,7 +53,7 @@ const FriendSent: FC<FriendSentProps> = (props) => {
       } else {
 
         friendRequestContext.setFriendSentList([
-          { id: "", fullname: "", avatar: "" },
+          { id: "", username: "", avatar: "" },
         ]);
       }
     },
@@ -72,7 +72,7 @@ const FriendSent: FC<FriendSentProps> = (props) => {
       >
         <Stack direction={"row"} alignItems={"center"}>
           <Avatar sx={{ marginRight: 3 }} src={props.avatar} />
-          <Typography variant="h4">{props.fullname}</Typography>
+          <Typography variant="h4">{props.username}</Typography>
         </Stack>
 
         <Button onClick={handleCancel}>{t.cancel}</Button>

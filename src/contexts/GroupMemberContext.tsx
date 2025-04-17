@@ -3,7 +3,7 @@ import { createContext, FC, ReactNode, useContext, useState } from "react";
 interface Member {
   user_id: string;
   profile_id: string;
-  fullname: string;
+  username: string;
   avatar: string;
   active: boolean;
 }
@@ -23,7 +23,7 @@ interface Props {
 
 export const GroupMemberProvider: FC<Props> = ({ children }) => {
   const [members, setMembers] = useState([
-    { user_id: "", profile_id: "", fullname: "", avatar: "", active: true },
+    { user_id: "", profile_id: "", username: "", avatar: "", active: true },
   ] as Member[]);
 
   return (

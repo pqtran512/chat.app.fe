@@ -101,7 +101,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
         <Stack
           direction={"row"}
           spacing={2}
-          alignItems="center"
+          alignItems="start"
           justifyContent={"space-between"}
           p={0.6}
           width={"100%"}
@@ -126,11 +126,24 @@ const SingleChat: FC<SingleChatProps> = (props) => {
             </Stack>
           </Stack>
 
-          <Stack spacing={2} alignItems="center">
+          <Stack spacing={1} alignItems="center">
             <Typography sx={{ fontWeight: 300 }}>{props.time}</Typography>
             {props.newMessage && (
-              <Badge color="primary" badgeContent=""></Badge>
+              <Badge
+                color="primary"
+                variant="dot" 
+                sx={{
+                  "& .MuiBadge-badge": {
+                    minWidth: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    top: 6,
+                    right: 6,
+                  },
+                }}
+              />
             )}
+
           </Stack>
         </Stack>
       </Stack>

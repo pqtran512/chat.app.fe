@@ -43,7 +43,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
     refetch: refetchGetFriendList,
   } = useQuery({
     queryKey: ["getFriends"],
-    queryFn: () => friendAPI.friendList('1'), // fix - tran
+    queryFn: () => friendAPI.friendList(1), // fix - tran
     select: (rs) => {
       return rs.data;
     },
@@ -67,15 +67,22 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
       const addableMembers = friendList.filter(
         (o) =>
           groupMembers.users.findIndex(
-            (u) => u.user_id === o.to_user_profile.id
+            // (u) => u.user_id === o.to_user_profile.id 
+            (u) => u.user_id === o.id  // fix -tran
           ) === -1
       );
 
       const friendsOption = addableMembers.map((option) => {
-        const firstLetter =
-          option.to_user_profile.profile[0].fullname !== ""
-            ? option.to_user_profile.profile[0].fullname[0].toUpperCase()
+        // const firstLetter =
+        //   option.to_user_profile.profile[0].username !== ""
+        //     ? option.to_user_profile.profile[0].username[0].toUpperCase()
+        //     : "";
+
+        const firstLetter =  // fix -tran
+          option.username !== ""
+            ? option.username[0].toUpperCase()
             : "";
+
         return {
           firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
           ...option,
@@ -94,8 +101,8 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
       );
       const friendsOption = filterdGroupMembers.map((option) => {
         const firstLetter =
-          option.user.profile[0].fullname !== ""
-            ? option.user.profile[0].fullname[0].toUpperCase()
+          option.user.profile[0].username !== "" 
+            ? option.user.profile[0].username[0].toUpperCase()
             : "";
         return {
           firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
@@ -195,7 +202,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
           }
           groupBy={(option) => option.firstLetter}
           getOptionLabel={(option) =>
-            option.to_user_profile.profile[0].fullname
+            option.to_user_profile.profile[0].username
           }
           filterSelectedOptions
           renderInput={(params) => (
@@ -230,7 +237,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
                 )
               }
               groupBy={(option: any) => option.firstLetter}
-              getOptionLabel={(option: any) => option.user.profile[0].fullname}
+              getOptionLabel={(option: any) => option.user.profile[0].username}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -251,12 +258,12 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
             >{`Danh sách thành viên (${groupMembers.count})`}</Typography>
             <Stack spacing={2}>
               {groupMembers.users.map((m) => {
-                const { fullname, avatar } = m.user.profile[0];
+                const { username, avatar } = m.user.profile[0];
                 return (
                   <Member
                     key={m.user_id}
                     id={m.user_id}
-                    fullname={fullname}
+                    username={username}
                     avatar={avatar}
                     isOwner={props.ownerId === m.user_id}
                   />

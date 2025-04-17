@@ -4,7 +4,7 @@ import { WsEvent } from "src/utils/enums";
 import { ReceiveMessageDto } from "src/types/ws/dto/chat";
 
 export const chatSocketClient = new WebSocketClient({
-  uri: `${STORAGE_KEY.CHAT_SOCKET_BASE_URL}`,
+  uri: `${STORAGE_KEY.CHAT_SOCKET_BASE_URL}`
 });
 
 export function connectChatSocket() {
@@ -28,4 +28,12 @@ export function onReceiveChat(callback?: (data: ReceiveMessageDto) => void) {
 
 export function offReceiveChat() {
   chatSocketClient.off(WsEvent.RECEIVE_MESSAGE);
+}
+
+export function onJoinChat(callback: (data: any) => void) {
+  chatSocketClient.on("joinChatResponse", callback);
+}
+
+export function offJoinChat() {
+  chatSocketClient.off("joinChatResponse");
 }

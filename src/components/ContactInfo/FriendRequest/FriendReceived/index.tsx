@@ -2,39 +2,46 @@ import { Avatar, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { FC, useContext } from "react";
 import { useMutation } from "react-query";
+import { chatAPI } from "src/api/chat.api";
 import { friendAPI } from "src/api/friend.api";
 import { useFriendRequest } from "src/contexts/FriendContext";
 import { LanguageContext } from "src/language/LanguageProvider";
 
 interface FriendReceivedProps {
   id: string;
-  fullname: string;
+  username: string;
   avatar: string;
 }
 
 const FriendReceived: FC<FriendReceivedProps> = (props) => {
+  const userId = Number(localStorage.getItem('id'));
   const friendRequestContext = useFriendRequest();
-    const { t } = useContext(LanguageContext);
+  const { t } = useContext(LanguageContext);
 
   const handleAccept = () => {
     // accept.mutate(props.id);
-    accept.mutate({ 
-      userId: '1',
-      friendId: '2'
-    }); // fix - tran
+    accept.mutate({
+      userId: userId,
+      friendId: Number(props.id)
+    });
   };
   const handleReject = () => {
     // reject.mutate(props.id);
-    reject.mutate({ 
-      userId: '1',
-      friendId: '2'
-    }); // fix - tran
+    reject.mutate({
+      userId: userId,
+      friendId: Number(props.id)
+    });
   };
 
   const accept = useMutation(friendAPI.accept, {
     onSuccess: (response) => {
       enqueueSnackbar("Accept successfully", { variant: "success" });
-      getFriendReceived.mutate('1'); // fix - tran
+      getFriendReceived.mutate(userId);
+      createChat.mutate({
+        type: "private",
+        creator_id: userId,
+        participants: [userId, Number(props.id)],
+      });
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Accept!! - ${error}`, {
@@ -45,7 +52,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
   const reject = useMutation(friendAPI.reject, {
     onSuccess: (response) => {
       enqueueSnackbar("Decline successfully", { variant: "success" });
-      getFriendReceived.mutate('1'); // fix - tran
+      getFriendReceived.mutate(userId);
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Decline!! - ${error}`, {
@@ -62,7 +69,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
         response.data.forEach((e) => {
           responseReceivedList.push({
             id: e.friend_id,
-            fullname: e.from_user_profile.profile[0].fullname,
+            username: e.from_user_profile.profile[0].username,
             avatar: e.from_user_profile.profile[0].avatar,
           });
         });
@@ -71,10 +78,16 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
 
       } else {
         friendRequestContext.setFriendReceivedList([
-          { id: "", fullname: "", avatar: "" },
+          { id: "", username: "", avatar: "" },
         ]);
       }
     },
+    onError: (error: any) => {
+      enqueueSnackbar(error, { variant: "error" });
+    },
+  });
+
+  const createChat = useMutation(chatAPI.createChat, {
     onError: (error: any) => {
       enqueueSnackbar(error, { variant: "error" });
     },
@@ -90,10 +103,10 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
       >
         <Stack direction={"row"} alignItems={"center"}>
           <Avatar sx={{ marginRight: 3 }} src={props.avatar} />
-          <Typography variant="h4">{props.fullname}</Typography>
+          <Typography variant="h4">{props.username}</Typography>
         </Stack>
         <Stack direction={"row"}>
-        <Button onClick={handleAccept}>{t.accept}</Button>
+          <Button onClick={handleAccept}>{t.accept}</Button>
           <Button onClick={handleReject}>{t.reject}</Button>
         </Stack>
       </Stack>

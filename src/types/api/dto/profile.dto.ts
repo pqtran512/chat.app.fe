@@ -1,6 +1,6 @@
 export class UpdateProfileDto {
-    profileId: string;
-    fullname: string;
+    id: string;
+    username: string;
     avatar: string;
 }
 

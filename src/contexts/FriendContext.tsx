@@ -8,7 +8,7 @@ import React, {
 
 interface FriendSentRespone {
   id: string;
-  fullname: string;
+  username: string;
   avatar: string;
 }
 
@@ -31,10 +31,10 @@ interface Props {
 
 export const FriendSentProvider: FC<Props> = ({ children }) => {
   const [friendSentList, setFriendSentList] = useState([
-    { id: "", fullname: "", avatar: "" },
+    { id: "", username: "", avatar: "" },
   ] as FriendSentRespone[]);
   const [friendReceivedList, setFriendReceivedList] = useState([
-    { id: "", fullname: "", avatar: "" },
+    { id: "", username: "", avatar: "" },
   ] as FriendSentRespone[]);
 
   return (
@@ -60,7 +60,7 @@ export const useFriendRequest = () => {
 
 interface FriendListRespone {
   id: string;
-  fullname: string;
+  username: string;
   avatar: string;
 }
 
@@ -75,7 +75,7 @@ export const FriendListContext = createContext<FriendListContext>(
 
 export const FriendListProvider: FC<Props> = ({ children }) => {
   const [friendList, setFriendList] = useState([
-    { id: "", fullname: "", avatar: "" },
+    { id: "", username: "", avatar: "" },
   ] as FriendListRespone[]);
 
   return (

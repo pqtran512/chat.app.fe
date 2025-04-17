@@ -27,12 +27,12 @@ interface ProfileProps {
 
 const ProfileComponent: FC<ProfileProps> = (props) => {
   const [openUpdate, setOpenUpdate] = useState(false);
+  const queryClient = useQueryClient();
   const [updateProfileInfo, setUpdateProfileInfo] = useState({
-    profileId: props.profile?.id,
-    fullname: props.profile?.fullname,
+    id: props.profile?.id,
+    username: props.profile?.username,
     avatar: props.profile?.avatar,
   } as UpdateProfileDto);
-  const queryClient = useQueryClient();
 
   const handleUpdate = (e) => {
     updateProfile.mutate(updateProfileInfo);
@@ -51,7 +51,7 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
   });
 
   const handleInputChange = (e) => {
-    setUpdateProfileInfo((prev) => ({ ...prev, fullname: e.target.value }));
+    setUpdateProfileInfo((prev) => ({ ...prev, username: e.target.value }));
   };
 
   const handleSelectedAvatar = async (e) => {
@@ -137,6 +137,7 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
               <Button component="label" role={undefined} tabIndex={-1}>
                 <Avatar
                   sx={{ width: 60, height: 60 }}
+                  alt={updateProfileInfo?.username || "Avatar"}
                   src={updateProfileInfo?.avatar && `data:image/jpeg;base64,${updateProfileInfo?.avatar}`}
                 />
 
@@ -152,7 +153,7 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
               <Typography>Change name</Typography>
               <TextField
                 label="your name"
-                value={updateProfileInfo?.fullname || 'Trân'}
+                value={updateProfileInfo?.username}
                 onChange={handleInputChange}
               />
             </Stack>
@@ -200,7 +201,7 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
                 sx={{ width: 60, height: 60 }}
                 src={props.profile?.avatar && `data:image/jpeg;base64,${props.profile?.avatar}`}
               />
-              <Typography variant="h4">{props.profile?.fullname || 'Trân'}</Typography>
+              <Typography variant="h4">{props.profile?.username || 'Trân'}</Typography>
               <Stack direction={"row"}></Stack>
             </Stack>
 

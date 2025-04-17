@@ -1,3 +1,5 @@
+import { STORAGE_KEY } from "src/utils/constants";
+
 export class WebSocketClient {
   private socket: WebSocket | null = null;
   private uri: string;
@@ -7,7 +9,7 @@ export class WebSocketClient {
 
   constructor({ uri }: { uri: string }) {
     this.uri = uri;
-    this.token = localStorage.getItem("ACCESS_TOKEN");
+    this.token = localStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
   }
 
   connect() {
@@ -15,8 +17,8 @@ export class WebSocketClient {
       console.warn("WebSocket is already connected.");
       return;
     }
-
-    const url = `${this.uri}?token=${this.token}`;
+    // const url = `${this.uri}?token=${this.token}`;
+    const url = `${this.uri}joinConversation/1`;
     this.socket = new WebSocket(url);
 
     this.socket.onopen = () => {

@@ -1,6 +1,7 @@
 import { AddFriendDto, SearchFriendDto } from "src/types/api/dto";
 import { AddFriendResponse } from "src/types/api/response";
 import { FriendResponse } from "src/types/api/response/friend";
+import { User } from "src/types/entities";
 import http from "src/utils/http";
 
 export const FRIEND_URL = {
@@ -16,8 +17,8 @@ export const FRIEND_URL = {
 };
 
 export const friendAPI = {
-  friendList(userId: string) {
-    return http.get<FriendResponse[]>(`FRIEND_URL.FRIEND_LIST/${userId}`)
+  friendList(userId: number) {
+    return http.get<User[]>(`${FRIEND_URL.FRIEND_LIST}/${userId}`)
   },
 
   addFriend(addFriendDto: AddFriendDto) {
@@ -25,11 +26,11 @@ export const friendAPI = {
     return http.post<any>(`${FRIEND_URL.ADD_FRIEND}/${addFriendDto.userId}/${addFriendDto.friendId}`)
   },
 
-  friendSent(userId: string) {
+  friendSent(userId: number) {
     return http.get<any>(`${FRIEND_URL.FRIEND_SENT}/${userId}`)
   },
 
-  friendRecieved(userId: string) {
+  friendRecieved(userId: number) {
     return http.get<any>(`${FRIEND_URL.FREIND_RECEIVED}/${userId}`)
   },
 

@@ -1,7 +1,7 @@
 export class AddFriendDto {
   // to_user_phone: string;
-  userId: string;
-  friendId: string;
+  userId: number;
+  friendId: number;
 }
 
 export class SearchFriendDto {

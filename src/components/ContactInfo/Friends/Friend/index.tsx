@@ -18,7 +18,7 @@ import { useChat } from "src/contexts/ChatContext";
 
 interface FriendProps {
   id: string;
-  fullname: string;
+  username: string;
   avatar: string;
 }
 
@@ -44,8 +44,8 @@ const Friend: FC<FriendProps> = (props) => {
 
   const unfriend = useMutation(friendAPI.unfriend, {
     onSuccess: (response) => {
-      enqueueSnackbar(`Bỏ kết bạn thành công`, { variant: "success" });
-      getFriendList.mutate('1'); // fix -tran
+      enqueueSnackbar(`Hủy kết bạn thành công`, { variant: "success" });
+      getFriendList.mutate(1); // fix -tran
     },
     onError: (error: any) => {
       enqueueSnackbar(error, { variant: "error" });
@@ -59,16 +59,20 @@ const Friend: FC<FriendProps> = (props) => {
 
         response.data.forEach((e) => {
           friendList.push({
-            id: e.to_user_profile.id,
-            fullname: e.to_user_profile.profile[0].fullname,
-            avatar: e.to_user_profile.profile[0].avatar,
+            // id: e.to_user_profile.id,
+            // username: e.to_user_profile.profile[0].username,
+            // avatar: e.to_user_profile.profile[0].avatar,
+
+            id: e.id,
+            username: e.username,
+            avatar: e.avatar,
           });
         });
 
         FriendListContext.setFriendList(friendList);
         
       } else {
-        FriendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+        FriendListContext.setFriendList([{ id: "", username: "", avatar: "" }]);
       }
     },
     onError: (error: any) => {
@@ -83,7 +87,7 @@ const Friend: FC<FriendProps> = (props) => {
     setToGroupId('');
     setChatProfile({
       id: props.id,
-      name: props.fullname,
+      name: props.username,
       isGroupChat: false,
       avatar: props.avatar,
       groupOwnerId: '',
@@ -102,7 +106,7 @@ const Friend: FC<FriendProps> = (props) => {
           sx={{ marginRight: 3 }}
           src={props.avatar && `data:image/png;base64, ${props.avatar}`}
         />
-        <Typography variant="h4">{props.fullname}</Typography>
+        <Typography variant="h4">{props.username}</Typography>
       </Button>
       <Button
         id="basic-button"
@@ -123,7 +127,7 @@ const Friend: FC<FriendProps> = (props) => {
         }}
       >
         <MenuItem sx={{ padding: 0 }} onClick={handleUnfriend}>
-          <Button>Bỏ kết bạn</Button>
+          <Button>Hủy kết bạn</Button>
         </MenuItem>
       </Menu>
       <Divider />

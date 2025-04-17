@@ -39,7 +39,7 @@ const SearchFriendForm = ({ handleClose }) => {
   const { t } = useContext(LanguageContext);
   const [phoneInput, setPhoneInput] = useState("");
   const [user, setUser] = useState({
-    fullname: "",
+    username: "",
     phone: "",
     avatar: "",
   });
@@ -54,16 +54,18 @@ const SearchFriendForm = ({ handleClose }) => {
     searchFriend.mutate(phoneInput);
   };
 
-  const searchFriend = useMutation(userAPI.findByPhone, {
+  const searchFriend = useMutation(userAPI.findUser, {
     onSuccess: (response) => {
-      const { id, phone, profile } = response.data;
-      if (id) {
+      const user = response.data[0];
+
+      if (user?.id) {
         setUser((prev) => ({
           ...prev,
-          phone: phone,
-          fullname: profile[0].fullname,
-          avatar: profile[0].avatar,
+          phone: user.phone,
+          username: user.username,
+          avatar: user.avatar,
         }));
+
       } else {
         enqueueSnackbar("Không tìm thấy tài khoản", { variant: "error" });
       }
@@ -74,10 +76,10 @@ const SearchFriendForm = ({ handleClose }) => {
   });
 
   const handleAddFriend = () => {
-    addFriend.mutate({ 
+    addFriend.mutate({
       // to_user_phone: phoneInput 
-      userId: '1',
-      friendId: '2'
+      userId: 1,
+      friendId: 2
     }); // fix - tran
 
     handleClose();
@@ -102,14 +104,14 @@ const SearchFriendForm = ({ handleClose }) => {
   //       response.data.forEach((e) => {
   //         responeSentList.push({
   //           id: e.id,
-  //           fullname: e.to_user_profile.profile[0].fullname,
+  //           username: e.to_user_profile.profile[0].username,
   //           avatar: e.to_user_profile.profile[0].avatar,
   //         });
   //       });
   //       friendRequestContext.setFriendSentList(responeSentList);
   //     } else {
   //       friendRequestContext.setFriendReceivedList([
-  //         { id: "", fullname: "", avatar: "" },
+  //         { id: "", username: "", avatar: "" },
   //       ]);
   //     }
   //   },
@@ -137,7 +139,7 @@ const SearchFriendForm = ({ handleClose }) => {
                 alt={user.phone}
                 src={user.avatar && `data:image/jpeg;base64, ${user.avatar}`}
               />
-              <Typography>{user.fullname}</Typography>
+              <Typography>{user.username}</Typography>
             </Stack>
             <Button variant="contained" size="small" onClick={handleAddFriend}>
               Kết bạn

@@ -25,6 +25,7 @@ import { useAuth } from "src/contexts/AuthContext";
 import { enqueueSnackbar } from "notistack";
 import { useProfile } from "src/contexts/ProfileContext";
 import Copyright from "../../../utils/functions/generateCopyright";
+import { userAPI } from "src/api/user.api";
 
 interface LoginProps { }
 
@@ -70,7 +71,7 @@ const Login: FC<LoginProps> = ({ }) => {
         localStorage.setItem(STORAGE_KEY.ID, id);
         localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, AccessToken);
         // localStorage.setItem(STORAGE_KEY.REFRESH_TOKEN, refresh_token);
-        getProfile.mutate()
+        getProfile.mutate(id)
         // connectChatSocket();
 
         setUserId(id);
@@ -97,16 +98,16 @@ const Login: FC<LoginProps> = ({ }) => {
     },
   });
 
-  const getProfile = useMutation(profileAPI.getprofile, {
+  const getProfile = useMutation(userAPI.getDetail, {
     onSuccess: (response) => {
       if (response.status === 200) {
-        const { fullname, avatar, id } = response.data[0];
-        localStorage.setItem("fullname", fullname)
+        const { username, avatar, id } = response.data;
+        localStorage.setItem("username", username)
         localStorage.setItem("avatar", avatar)
         localStorage.setItem("profileId", id)
 
         profileContext.setProfileId(id);
-        profileContext.setFulname(fullname);
+        profileContext.setFulname(username);
         profileContext.setAvatar(avatar);
       }
     },

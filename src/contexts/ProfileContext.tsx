@@ -3,7 +3,7 @@ import { createContext, FC, ReactNode, useContext, useEffect, useState } from "r
 type ProfileContext = {
   // userId: string;
   profileId: string;
-  fullname: string;
+  username: string;
   avatar: string;
 //   setUserId: React.Dispatch<React.SetStateAction<string>>;
   setProfileId: React.Dispatch<React.SetStateAction<string>>;
@@ -22,7 +22,7 @@ interface Props {
 export const ProfileProvider: FC<Props> = ({ children }) => {
   // const [userId, setUserId] = useState('');
   const [profileId, setProfileId] = useState("");
-  const [fullname, setFulname] = useState("");
+  const [username, setFulname] = useState("");
   const [avatar, setAvatar] = useState("");
 
   useEffect(() => {
@@ -31,9 +31,9 @@ export const ProfileProvider: FC<Props> = ({ children }) => {
       setProfileId(profileId);
     }
 
-    const fullname = localStorage.getItem("fullname");
-    if (fullname) {
-      setFulname(fullname);
+    const username = localStorage.getItem("username");
+    if (username) {
+      setFulname(username);
     }
 
     const avatar = localStorage.getItem("avatar");
@@ -47,7 +47,7 @@ export const ProfileProvider: FC<Props> = ({ children }) => {
       value={{
         profileId,
         setProfileId,
-        fullname,
+        username,
         setFulname,
         avatar,
         setAvatar,

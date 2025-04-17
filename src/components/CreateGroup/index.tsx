@@ -18,13 +18,15 @@ import { useGroupList } from "src/contexts/GroupContext";
 import { CreateGroupDto } from "src/types/api/dto";
 import { FriendResponse } from "src/types/api/response/friend";
 import { LanguageContext } from "src/language/LanguageProvider";
+import { User } from "src/types/entities";
 
 const CreateGroupForm = ({
   handleClose,
   data,
 }: {
   handleClose: any;
-  data: FriendResponse[];
+  // data: FriendResponse[]; fix - tran
+  data: User[]
 }) => {
   const { t } = useContext(LanguageContext);
   const [selectedFriend, setSelectedFriend] = useState([]);
@@ -40,7 +42,7 @@ const CreateGroupForm = ({
 
   // const options = friendList.map((option) => {
   //   const firstLetter =
-  //     option.fullname !== "" ? option.fullname[0].toUpperCase() : "";
+  //     option.username !== "" ? option.username[0].toUpperCase() : "";
   //   return {
   //     firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
   //     ...option,
@@ -50,10 +52,16 @@ const CreateGroupForm = ({
   const options = useMemo(() => {
     if (data && data.length > 0) {
       const mappedOptions = data.map((option) => {
+        // const firstLetter =
+        //   option.to_user_profile.profile[0].username !== ""
+        //     ? option.to_user_profile.profile[0].username[0].toUpperCase()
+        //     : "";
+
         const firstLetter =
-          option.to_user_profile.profile[0].fullname !== ""
-            ? option.to_user_profile.profile[0].fullname[0].toUpperCase()
+          option.username !== ""
+            ? option.username[0].toUpperCase()
             : "";
+
         return {
           firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
           ...option,
@@ -140,7 +148,8 @@ const CreateGroupForm = ({
           options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))
         }
         groupBy={(option) => option.firstLetter}
-        getOptionLabel={(option) => option.to_user_profile.profile[0].fullname}
+        // getOptionLabel={(option) => option.to_user_profile.profile[0].username}
+        getOptionLabel={(option) => option.username}
         filterSelectedOptions
         renderInput={(params) => (
           <TextField
@@ -175,7 +184,7 @@ const CreateGroup: FC<CreateGroupProps> = (props) => {
   // });
   const { isLoading, data, refetch } = useQuery({ // fix - tran
     queryKey: ["GetFriendList", '1'],
-    queryFn: () => friendAPI.friendList('1'),
+    queryFn: () => friendAPI.friendList(1),
     select: (res) => res.data,
     // enabled: !!userId, // chỉ chạy nếu có userId
   });

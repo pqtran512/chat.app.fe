@@ -39,15 +39,17 @@ const Header: FC<HeaderProps> = (props) => {
     onSuccess: (response) => {
       if (response.status === 200) {
         const groupMembers = [];
+
         response.data.users.forEach((u) => {
           groupMembers.push({
             user_id: u.user.id,
             profile_id: u.user.profile[0].id,
-            fullname: u.user.profile[0].fullname,
+            username: u.user.profile[0].username,
             avatar: u.user.profile[0].avatar,
             active: "inactive",
           });
         });
+        
         setMembers(groupMembers);
       }
     },
@@ -78,7 +80,7 @@ const Header: FC<HeaderProps> = (props) => {
       >
         <Box>
           <Button onClick={handleShowProfileFriendOrGroup}>
-            {/* {chatProfile.id && ( fix - no comment */}
+            {chatProfile.id && (
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
               {false ? (
                 <StyledBadge
@@ -95,14 +97,14 @@ const Header: FC<HeaderProps> = (props) => {
               ) : (
                 <Avatar
                   sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid #157FCA' }}
-                  alt="Avatar" // fix - profile name
+                  alt= {chatProfile.name || "Avatar"} // fix - profile name
                   src={chatProfile.avatar && `data:image/png;base64, ${chatProfile.avatar}`}
                 />
               )}
 
               <Stack direction={"column"}>
                 <Typography textAlign={"left"} variant="h4" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>
-                  {chatProfile.name || "Anna"}
+                  {chatProfile.name || ('Nhóm trò chuyện ' + chatProfile.id) }
                 </Typography>
                 {chatProfile.isGroupChat && (
                   <Typography textAlign={"left"} variant="h6" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>
@@ -111,7 +113,7 @@ const Header: FC<HeaderProps> = (props) => {
                 )}
               </Stack>
             </Stack>
-            {/* )} */}
+            )}
           </Button>
         </Box>
         <Box>

@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from "react";
 import { Box, IconButton, Stack, useMediaQuery } from "@mui/material";
 import Header from "./Header";
 import Footer from "./Footer";

@@ -29,7 +29,7 @@ import {
   interface ProfileProps {
     open: boolean;
     handleClose: React.Dispatch<React.SetStateAction<boolean>>;
-    fullname: string;
+    username: string;
     avatar: string;
   }
   const Profile: FC<ProfileProps> = (props) => {
@@ -56,7 +56,7 @@ import {
                 sx={{ width: 60, height: 60 }}
                 src={props.avatar}
               ></Avatar>
-              <Typography variant="h4">{props.fullname}</Typography>
+              <Typography variant="h4">{props.username}</Typography>
               <Stack direction={"row"}></Stack>
             </Stack>
   

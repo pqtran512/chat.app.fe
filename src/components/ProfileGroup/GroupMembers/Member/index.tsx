@@ -4,7 +4,7 @@ import KeyIcon from "@mui/icons-material/Key";
 
 interface MemberProps {
   id: string;
-  fullname: string;
+  username: string;
   avatar: string;
   isOwner?: boolean;
 }
@@ -19,7 +19,7 @@ const Member: FC<MemberProps> = (props) => {
     >
       <Stack direction={"row"} alignItems={"center"} spacing={2} style={{}}>
         <Avatar src={props.avatar && `data:image/jpeg;base64, ${props.avatar}`} />
-        <Typography variant="h4">{props.fullname}</Typography>
+        <Typography variant="h4">{props.username}</Typography>
       </Stack>
       <Stack>{props.isOwner && <KeyIcon />}</Stack>
     </Stack>

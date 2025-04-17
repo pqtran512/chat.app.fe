@@ -121,7 +121,7 @@ const Register: FC<RegisterProps> = (props) => {
             <AccessibilityNewIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Tạo tài khoản
+            Đăng ký tài khoản
           </Typography>
           <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
             <TextField

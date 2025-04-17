@@ -106,13 +106,13 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
         response.data.forEach((e) => {
           friendList.push({
             id: e.to_user_profile.id,
-            fullname: e.to_user_profile.profile[0].fullname,
+            username: e.to_user_profile.profile[0].username,
             avatar: e.to_user_profile.profile[0].avatar,
           });
         });
         friendListContext.setFriendList(friendList);
       } else {
-        friendListContext.setFriendList([{ id: "", fullname: "", avatar: "" }]);
+        friendListContext.setFriendList([{ id: "", username: "", avatar: "" }]);
       }
     },
     onError: (error: any) => {
@@ -328,7 +328,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                   {members.map((m) => (
                     <Avatar
                       key={m.user_id}
-                      alt={m.fullname}
+                      alt={m.username}
                       src={m.avatar && `data:image/jpeg;base64, ${m.avatar}`}
                     />
                   ))}

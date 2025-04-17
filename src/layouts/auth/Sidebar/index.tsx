@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Scrollbar from "src/components/Scrollbar";
 import { SidebarContext } from "src/contexts/SidebarContext";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -29,24 +29,25 @@ import { authAPI } from "src/api";
 import { enqueueSnackbar } from "notistack";
 import { LogOutDto } from "src/types/api/dto/auth";
 import { STORAGE_KEY } from "src/utils/constants";
-import { disconnectChatSocket } from "src/utils/ws/clients/chat.";
+import { disconnectChatSocket } from "src/utils/ws/clients/chat";
 import { userAPI } from "src/api/user.api";
 import { LanguageContext } from "src/language/LanguageProvider";
 import { useNavigate } from "react-router-dom";
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
-        width: ${theme.sidebar.width};
-        min-width: ${theme.sidebar.width};
-        color: ${theme.colors.alpha.trueWhite[70]};
-        position: relative;
-        z-index: 7;
-        height: 100%;
-        padding-bottom: 68px;
-`
+    width: ${theme.sidebar.width};
+    min-width: ${theme.sidebar.width};
+    color: ${theme.colors.alpha.trueWhite[70]};
+    position: relative;
+    z-index: 7;
+    height: 100%;
+    padding-bottom: 68px;
+  `
 );
 
 function Sidebar() {
+  const userId = localStorage.getItem("id");
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
@@ -59,15 +60,17 @@ function Sidebar() {
   };
 
   const {
-    data: personalProfile,
-    isLoading: loadingGetPersonalProfile,
-    refetch: refetchGetPersonalProfile,
+    data: userDetail,
+    isLoading: loadingGetUserDetail,
+    refetch: refetchGetUserDetail,
+
   } = useQuery({
-    queryKey: ["GetPersonalProfile"],
-    queryFn: () => userAPI.getPersonalProfile(),
+    queryKey: ["GetUserDetail", userId],
+    queryFn: () => userAPI.getDetail(userId),
     select: (rs) => {
-      return rs.data[0];
+      return rs.data;
     },
+    enabled: !!userId,
   });
 
   return (
@@ -92,7 +95,7 @@ function Sidebar() {
         }}
       >
         <Box height={'85vh'}>
-          {/* {!loadingGetPersonalProfile && ( // fix - no comment */}
+          {!loadingGetUserDetail && ( // fix - no comment
           <Box mt={3}>
             <Box>
               <Button
@@ -105,14 +108,14 @@ function Sidebar() {
                 sx={{ mx: 'auto' }}
               >
                 <Avatar
-                  sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid white' }}
-                  alt="Avatar" // fix - profile name
-                  src={personalProfile?.avatar && `data:image/jpeg;base64,${personalProfile?.avatar}`}
+                  sx={{ width: 55, height: 55, bgcolor: '#AAAAAA', fontSize: '18px', border: '2px solid white' }}
+                  alt={userDetail?.username || "Avatar"}
+                  src={userDetail?.avatar && `data:image/jpeg;base64,${userDetail?.avatar}`}
                 />
               </Button>
             </Box>
           </Box>
-          {/* )} */}
+          )}
 
           <Divider
             sx={{
@@ -192,18 +195,18 @@ function Sidebar() {
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>
-      {/* fix - no comment */}
-      {/* {!loadingGetPersonalProfile && ( */}
+
+      {!loadingGetUserDetail && (
       <>
         {" "}
         <ProfileComponent
-          profile={personalProfile}
+          profile={userDetail}
           open={openMyProfile}
           handleClose={setOpenMyProfile}
         />
         <Setting open={openSetting} handleClose={setOpenSetting} />
       </>
-      {/* )} */}
+      )}
     </>
   );
 }

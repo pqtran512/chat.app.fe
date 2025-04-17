@@ -2,10 +2,10 @@ import { Profile } from "./profile.entity";
 
 export class User {
   id: string;
-  password: string;
+  username: string;
+  email: string;
   phone: string;
-  created_date: Date;
-  refresh_token_list: string[];
-  active: boolean;
-  profile: Profile[];
+  first_name: string;
+  last_name: string;
+  avatar: string
 }

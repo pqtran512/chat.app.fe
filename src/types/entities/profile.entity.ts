@@ -1,6 +1,6 @@
 export class Profile {
   id: string;
-  fullname: string;
+  username: string;
   avatar: string;
   user_id: string;
 }

@@ -22,20 +22,24 @@ const Messages: FC<MessagesProps> = () => {
   const { userId } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
 
+
+  useEffect(() => {
+    console.log("chatboxId 99", chatboxId);
+  }
+  , [chatboxId]);
+
   const { isLoading, data } = useQuery({
-    queryKey: ["ChatDetail", chatboxId, toGroupId, toUserId],
+    // queryKey: ["ChatDetail", chatboxId, toGroupId, toUserId],
+    queryKey: ["ChatDetail", chatboxId],
     queryFn: () =>
-      chatAPI.chatDetail({
-        chat_box_id: chatboxId,
-        to_group: toGroupId,
-        to_user: toUserId,
-      }),
+      chatAPI.chatDetail(chatboxId),
     select: (rs) => {
       return rs.data;
     },
   });
 
   useEffect(() => {
+
     if (data?.length) {
       ref.current?.scrollIntoView({
         block: "end",
@@ -45,7 +49,7 @@ const Messages: FC<MessagesProps> = () => {
 
   return (
     <Box height={"100%"} overflow={"auto"} px={1} mb={4}>
-      <Stack p={1} height={"100%"} spacing={1}>
+      <Stack p={1} height={"100%"} spacing={1}>  
         {/* fix - comment history */}
         {/* {Chat_History.map((el, index) => {
           switch (el.type) {
