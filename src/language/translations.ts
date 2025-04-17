@@ -5,6 +5,7 @@ export const translations = {
     un_read: "UnRead",
     back: "Back",
     cancel: "Cancel",
+    result: "Result",
 
     enter_msg: "Enter message ...",
     profile: "Profile",
@@ -12,6 +13,7 @@ export const translations = {
     signout: "Sign out",
 
     friend: "Friends",
+    friend_add: "Add Friend",
     friend_list: "Friend List",
     friend_request: "Friend Requests",
     friend_request_sent: "Sent Requests",
@@ -53,6 +55,7 @@ export const translations = {
     signout: "Đăng xuất",
 
     friend: "Bạn bè",
+    friend_add: "Kết bạn",
     friend_list: "Danh sách bạn bè",
     friend_request: "Lời mời kết bạn",
     friend_request_sent: "Lời mời đã gửi",

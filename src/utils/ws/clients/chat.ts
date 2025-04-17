@@ -7,17 +7,17 @@ export const chatSocketClient = new WebSocketClient({
   uri: `${STORAGE_KEY.CHAT_SOCKET_BASE_URL}`
 });
 
-export function connectChatSocket() {
+export function connectChatSocket(chat_box_id: string) {
   console.log("Connecting to chat WebSocket...");
-  chatSocketClient.connect();
+  chatSocketClient.connect(chat_box_id);
 }
 
 export function disconnectChatSocket() {
   chatSocketClient.disconnect();
 }
 
-export function reconnectChatSocket() {
-  chatSocketClient.reconnect();
+export function reconnectChatSocket(chat_box_id: string) {
+  chatSocketClient.reconnect(chat_box_id);
 }
 
 export function onReceiveChat(callback?: (data: ReceiveMessageDto) => void) {

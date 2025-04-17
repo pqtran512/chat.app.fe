@@ -207,12 +207,12 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
               >
                 {t.all}
               </Button>
-              <Button
+              {/* <Button
                 variant="text"
                 sx={{ padding: "0 0 0 0", color: theme.palette.mode === 'light' ? 'black' : 'white' }}
               >
                 {t.un_read}
-              </Button>
+              </Button> */}
             </Stack>
             <Stack direction="row" alignItems="center" spacing={1}></Stack>
           </Stack>
@@ -281,12 +281,15 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
           {data?.length > 0 && // fix - tran - cop code chatgpt
             data.map((conversation, index) => {
               const isGroupChat = conversation.participants.length > 2;
-              const time = moment().fromNow(); // placeholder
-              const lastChatLogContent = "Hello"; // placeholder
-              const isNewMessage = true; // fix - tran
+              const time =
+                conversation.latest_message_created_at ?
+                  moment(conversation.latest_message_created_at).fromNow()
+                  : moment().fromNow();
+              const lastChatLogContent = "Hello"; // fix - tran
+              const seen = conversation.seen;
               const chatboxId = conversation.id.toString();
               const fakeAvatar = "";
-              const fakeName = "Trân";
+              const fakeName = "User " + conversation.id; // fix - tran
 
               if (isGroupChat) {
                 return (
@@ -299,23 +302,23 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                     time={time}
                     memberCount={conversation.participants.length}
                     msg={lastChatLogContent}
-                    ownerId=""
+                    ownerId={conversation.creator_id.toString()}
                     onClick={() => onSelectChat(chatboxId)}
                   />
                 );
               } else {
                 const otherUserId = conversation.participants.find((p: number) => p !== Number(userId));
-                
+
                 return (
                   <SingleChat
                     key={index}
-                    id={otherUserId.toString()}
+                    id={chatboxId}
                     chatboxId={chatboxId}
                     name={fakeName}
                     img={fakeAvatar}
                     time={time}
                     msg={lastChatLogContent}
-                    newMessage={isNewMessage} 
+                    seen={seen}
                     onClick={() => onSelectChat(chatboxId)}
                   />
                 );

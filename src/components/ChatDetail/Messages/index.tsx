@@ -36,6 +36,7 @@ const Messages: FC<MessagesProps> = () => {
     select: (rs) => {
       return rs.data;
     },
+    enabled: !!chatboxId,
   });
 
   useEffect(() => {
@@ -74,7 +75,7 @@ const Messages: FC<MessagesProps> = () => {
           }
         })} */}
         
-        {data &&
+        {data && data.length > 0 &&
           data.map((el, index) => {
             switch (el.chat_log.content_type.code) {
               case ChatLogContentTypeCode.TEXT:

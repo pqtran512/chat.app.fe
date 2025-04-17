@@ -3,7 +3,7 @@ import http from "src/utils/http";
 
 export const PROFILE_URL = {
   // GET_PROFILE: "/user/me/profiles",
-  UPDATE_PROFILE: "/profile",
+  UPDATE_PROFILE: `/user/${localStorage.getItem('id')}/uploadAvatar`,
 };
 
 export const profileAPI = {
@@ -12,6 +12,6 @@ export const profileAPI = {
   // },
 
   updateProfile(updateProfileDto: UpdateProfileDto) {
-    return http.put<any>(PROFILE_URL.UPDATE_PROFILE, updateProfileDto)
+    return http.post<any>(PROFILE_URL.UPDATE_PROFILE, updateProfileDto)
   }
 };

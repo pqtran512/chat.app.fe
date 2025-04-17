@@ -4,6 +4,7 @@ import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { enqueueSnackbar } from "notistack";
+import { connectChatSocket, disconnectChatSocket } from "src/utils/ws/clients/chat";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
@@ -44,6 +45,9 @@ const GroupChat: FC<GroupChatProps> = (props) => {
   });
 
   const handleClick = () => {
+    disconnectChatSocket()
+    connectChatSocket(props.chatboxId);
+
     setToUserId("");
     setToGroupId(props.id);
     // setChatboxId(props.chatboxId);

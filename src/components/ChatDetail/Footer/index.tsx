@@ -48,7 +48,7 @@ const Footer: FC<FooterProps> = () => {
   useEffect(() => {
     onJoinChat((data) => {
       console.log("Join chat response:", data);
-      setText('aa');
+      setText('');
       queryClient.invalidateQueries(["GetChatBoxListByUser"]);
       queryClient.invalidateQueries(["ChatDetail", chatboxId, toGroupId, toUserId]);
     });
@@ -81,7 +81,6 @@ const Footer: FC<FooterProps> = () => {
     },
   });
 
-
   chatSocketClient.on("joinChatResponse", (data) => {
     console.log("Server responded to joinChat:", data);
 
@@ -91,20 +90,26 @@ const Footer: FC<FooterProps> = () => {
   });
 
   const handleSendMessage = () => {
+    chatSocketClient.send(text);
+    setText('');
+
     // if (!toUserId && !toGroupId) {
     //   return;
     // }
-    const newDate = new Date();
-    insertChatLog.mutate({
-      content: text,
-      content_type_code: ChatLogContentTypeCode.TEXT,
-      created_date: newDate,
-      is_group_chat: chatProfile.isGroupChat ? true : false,
-      to_id: chatProfile.isGroupChat ? toGroupId : toUserId,
-    });
+    // const newDate = new Date();
+    // insertChatLog.mutate({
+    //   content: text,
+    //   content_type_code: ChatLogContentTypeCode.TEXT,
+    //   created_date: newDate,
+    //   is_group_chat: chatProfile.isGroupChat ? true : false,
+    //   to_id: chatProfile.isGroupChat ? toGroupId : toUserId,
+    // });
   };
 
   const handleSendLike = () => {
+    chatSocketClient.send("👍");
+    setText('');
+
     // insertChatLog.mutate({
     //   content: "👍",
     //   content_type_code: ChatLogContentTypeCode.TEXT,
@@ -112,14 +117,27 @@ const Footer: FC<FooterProps> = () => {
     //   is_group_chat: chatProfile.isGroupChat ? true : false,
     //   to_id: chatProfile.isGroupChat ? toGroupId : toUserId,
     // });
-    chatSocketClient.send("joinChat", { chatBoxId: chatboxId });
+    
+    // const message = {
+    //   content: "👍",
+    //   sender_id: localStorage.getItem("id"),
+    //   created_at: new Date().toISOString(),
+    //   content_type: 'text',
+    // };
+
+    // chatSocketClient.send("joinChat", {
+    //   chatBoxId: chatboxId,
+    //   message,
+    // });
+    
   };
 
   const keyPress = (e) => {
-    if (e.keyCode == 13) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       handleSendMessage();
     }
-  }
+  };
 
   return (
     <Box

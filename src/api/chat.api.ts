@@ -13,7 +13,7 @@ export const CHAT_URL = {
   INSERT_CHAT_LOG: "/chat-log",
   JOIN_CHAT: "/ws/joinConversation",
   CREATE_CHAT: "/ws/createConversation",
-  SET_CHATBOX_SEEN: "/chat-box/set-seen",
+  SET_CHATBOX_SEEN: "/seenMessages",
 };
 
 export const chatAPI = {
@@ -27,7 +27,7 @@ export const chatAPI = {
   //   );
   // },
   chatDetail(chat_box_id: string) {
-    return http.post<ChatBoxChatLog[]>(`${CHAT_URL.CHAT_DETAIL}/${chat_box_id}`);
+    return http.get<ChatBoxChatLog[]>(`${CHAT_URL.CHAT_DETAIL}/${chat_box_id}`);
   },
   insertChatlog(insertChatlogDto: InsertChatLogDto) {
     return http.post<ChatLog>(CHAT_URL.INSERT_CHAT_LOG, {
@@ -44,6 +44,8 @@ export const chatAPI = {
     });
   },
   setChatboxSeen(chatboxId: string) {
-    return http.get<boolean>(`${CHAT_URL.SET_CHATBOX_SEEN}/${chatboxId}`);
+    return http.post<any>(`${CHAT_URL.SET_CHATBOX_SEEN}/${chatboxId}`, {
+      user_id: Number(localStorage.getItem("id")),
+    });
   },
 };

@@ -24,9 +24,11 @@ interface SearchFriendProps {
 }
 
 const SearchFriend: FC<SearchFriendProps> = (props) => {
+  const { t } = useContext(LanguageContext);
+
   return (
     <Dialog fullWidth maxWidth="xs" open={props.open} transitionDuration={0}>
-      <DialogTitle>Kết bạn</DialogTitle>
+      <DialogTitle>{t.search}</DialogTitle>
       <Divider />
       <DialogContent>
         <SearchFriendForm handleClose={props.handleClose} />
@@ -56,7 +58,8 @@ const SearchFriendForm = ({ handleClose }) => {
 
   const searchFriend = useMutation(userAPI.findUser, {
     onSuccess: (response) => {
-      const user = response.data[0];
+      console.log(response.data);
+      const user = response.data.users[0];
 
       if (user?.id) {
         setUser((prev) => ({
@@ -130,7 +133,7 @@ const SearchFriendForm = ({ handleClose }) => {
         variant="standard"
       />
       <Button onClick={onSearch}>{t.search}</Button>
-      <Typography variant="h6">Kết quả</Typography>
+      <Typography variant="h6">{t.result}</Typography>
       {user.phone ? (
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
@@ -142,7 +145,7 @@ const SearchFriendForm = ({ handleClose }) => {
               <Typography>{user.username}</Typography>
             </Stack>
             <Button variant="contained" size="small" onClick={handleAddFriend}>
-              Kết bạn
+              {t.friend_add}
             </Button>
           </Stack>
         </Box>

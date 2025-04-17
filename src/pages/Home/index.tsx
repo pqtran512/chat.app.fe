@@ -24,15 +24,15 @@ const HomePage: FC<HomePageProps> = (props) => {
   const [selectedContact, setSelectedContact] = useState<boolean>(false);
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
 
-  useEffect(() => {
-    connectChatSocket();
-    onReceiveChat((data: ReceiveMessageDto) => {
-      if (data.payloadId) {
-        queryClient.invalidateQueries(["GetChatBoxListByUser"]);
-        queryClient.invalidateQueries(["ChatDetail"]);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   connectChatSocket();
+  //   onReceiveChat((data: ReceiveMessageDto) => {
+  //     if (data.payloadId) {
+  //       queryClient.invalidateQueries(["GetChatBoxListByUser"]);
+  //       queryClient.invalidateQueries(["ChatDetail"]);
+  //     }
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (selectedChat) {

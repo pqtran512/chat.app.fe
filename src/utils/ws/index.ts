@@ -12,13 +12,13 @@ export class WebSocketClient {
     this.token = localStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
   }
 
-  connect() {
+  connect(chat_box_id: string) {
     if (this.socket) {
       console.warn("WebSocket is already connected.");
       return;
     }
     // const url = `${this.uri}?token=${this.token}`;
-    const url = `${this.uri}joinConversation/1`;
+    const url = `${this.uri}ws/joinConversation/${chat_box_id}`;
     this.socket = new WebSocket(url);
 
     this.socket.onopen = () => {
@@ -52,7 +52,7 @@ export class WebSocketClient {
     this.socket = null;
   }
 
-  async reconnect() {
+  async reconnect(chat_box_id: string) {
     const refreshToken = localStorage.getItem("REFRESH_TOKEN");
     const id = localStorage.getItem("ID");
 
@@ -66,7 +66,7 @@ export class WebSocketClient {
       if (result?.data?.access_token) {
         this.token = result.data.access_token;
         localStorage.setItem("ACCESS_TOKEN", this.token);
-        this.connect();
+        this.connect(chat_box_id);
       }
     }
   }
@@ -79,7 +79,11 @@ export class WebSocketClient {
     delete this.eventHandlers[event];
   }
 
-  send(event: string, data: any) {
-    this.socket?.send(JSON.stringify({ event, data }));
+  send(data: any) {
+    if (typeof data === "string") {
+      this.socket?.send(data);
+    } else {
+      this.socket?.send(JSON.stringify(data));
+    }
   }
 }

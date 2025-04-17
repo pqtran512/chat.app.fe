@@ -4,6 +4,7 @@ import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { enqueueSnackbar } from "notistack";
+import { connectChatSocket, disconnectChatSocket } from "src/utils/ws/clients/chat";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -44,7 +45,7 @@ interface SingleChatProps {
   time?: string;
   unread?: number;
   online?: boolean;
-  newMessage?: boolean;
+  seen?: boolean;
   onSetSeen?: (chatboxId: string, seen: boolean) => void;
   onClick?: () => void;
 }
@@ -66,6 +67,9 @@ const SingleChat: FC<SingleChatProps> = (props) => {
   });
 
   const handleClick = () => {
+    disconnectChatSocket()
+    connectChatSocket(props.chatboxId);
+
     setToUserId(props.id);
     setToGroupId("");
     // setChatboxId(props.chatboxId);
@@ -77,7 +81,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
       groupOwnerId: "",
     });
 
-    if (props.newMessage) {
+    if (!props.seen) {
       setSeen.mutate(props.chatboxId);
     }
 
@@ -128,7 +132,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
 
           <Stack spacing={1} alignItems="center">
             <Typography sx={{ fontWeight: 300 }}>{props.time}</Typography>
-            {props.newMessage && (
+            {!props.seen && (
               <Badge
                 color="primary"
                 variant="dot" 

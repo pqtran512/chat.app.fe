@@ -12,6 +12,7 @@ export const FRIEND_URL = {
   FREIND_RECEIVED: '/receivedFriendRequests',
   ACCEPT: '/acceptFriend',
   REJECT: '/rejectFriend',
+  CANCEL: '/cancelFriendRequest',
   UNFRIEND: '/friend/delete',
   SEARCH_FRIEND: '/friend/find-by-text',
 };
@@ -40,6 +41,10 @@ export const friendAPI = {
 
   reject(addFriendDto: AddFriendDto) {
     return http.put<any>(`${FRIEND_URL.REJECT}/${addFriendDto.userId}/${addFriendDto.friendId}`)
+  },
+
+  cancel(addFriendDto: AddFriendDto) {
+    return http.delete<any>(`${FRIEND_URL.CANCEL}/${addFriendDto.userId}/${addFriendDto.friendId}`)
   },
   
   unfriend(id: string) {

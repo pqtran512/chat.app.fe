@@ -20,12 +20,12 @@ const FriendSent: FC<FriendSentProps> = (props) => {
   const handleCancel = () => {
     // cancel.mutate(props.id);
     cancel.mutate({
-      userId: 1,
-      friendId: 2
-    }); // fix - tran
+      userId: Number(localStorage.getItem("id")),
+      friendId: Number(props.id)
+    });
   };
 
-  const cancel = useMutation(friendAPI.reject, {
+  const cancel = useMutation(friendAPI.cancel, {
     onSuccess: (response) => {
       enqueueSnackbar("Cancel successfull", { variant: "success" });
       getFriendSent.mutate(1); // fix - tran

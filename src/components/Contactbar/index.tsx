@@ -160,7 +160,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
               id: e.friend_id,
               // username: e.from_user_profile.profile[0].username,
               // avatar: e.from_user_profile.profile[0].avatar,
-              username: "Quỳnh Trân", // fix - tran
+              username: "Gia Linh", // fix - tran
               avatar: "Trân"
             });
           }
