@@ -4,6 +4,7 @@ import { FC, useContext } from "react";
 import { useMutation } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { friendAPI } from "src/api/friend.api";
+import { useAuth } from "src/contexts/AuthContext";
 import { useFriendRequest } from "src/contexts/FriendContext";
 import { LanguageContext } from "src/language/LanguageProvider";
 
@@ -14,21 +15,21 @@ interface FriendReceivedProps {
 }
 
 const FriendReceived: FC<FriendReceivedProps> = (props) => {
-  const userId = Number(localStorage.getItem('id'));
+  const {userId} = useAuth()
   const friendRequestContext = useFriendRequest();
   const { t } = useContext(LanguageContext);
 
   const handleAccept = () => {
     // accept.mutate(props.id);
     accept.mutate({
-      userId: userId,
+      userId: Number(userId),
       friendId: Number(props.id)
     });
   };
   const handleReject = () => {
     // reject.mutate(props.id);
     reject.mutate({
-      userId: userId,
+      userId: Number(userId),
       friendId: Number(props.id)
     });
   };
@@ -36,13 +37,16 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
   const accept = useMutation(friendAPI.accept, {
     onSuccess: (response) => {
       enqueueSnackbar("Accept successfully", { variant: "success" });
-      getFriendReceived.mutate(userId);
+
+      getFriendReceived.mutate(Number(userId));
+
       createChat.mutate({
         type: "private",
-        creator_id: userId,
-        participants: [userId, Number(props.id)],
+        creator_id: Number(userId),
+        participants: [Number(userId), Number(props.id)],
       });
     },
+    
     onError: (error: any) => {
       enqueueSnackbar(`Fail Accept!! - ${error}`, {
         variant: "error",
@@ -52,7 +56,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
   const reject = useMutation(friendAPI.reject, {
     onSuccess: (response) => {
       enqueueSnackbar("Decline successfully", { variant: "success" });
-      getFriendReceived.mutate(userId);
+      getFriendReceived.mutate(Number(userId));
     },
     onError: (error: any) => {
       enqueueSnackbar(`Fail Decline!! - ${error}`, {
@@ -68,9 +72,13 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
 
         response.data.forEach((e) => {
           responseReceivedList.push({
-            id: e.friend_id,
-            username: e.from_user_profile.profile[0].username,
-            avatar: e.from_user_profile.profile[0].avatar,
+            // id: e.friend_id,
+            // username: e.from_user_profile.profile[0].username,
+            // avatar: e.from_user_profile.profile[0].avatar,
+
+            id: e.id,
+            username: "Lisa", // fix - tran
+            avatar: "Lisa"
           });
         });
 

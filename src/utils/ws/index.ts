@@ -18,7 +18,7 @@ export class WebSocketClient {
       return;
     }
     // const url = `${this.uri}?token=${this.token}`;
-    const url = `${this.uri}ws/joinConversation/${chat_box_id}`;
+    const url = `${this.uri}ws/joinConversation/${chat_box_id}?userId=${localStorage.getItem('id')}&username=${localStorage.getItem('username')}`;
     this.socket = new WebSocket(url);
 
     this.socket.onopen = () => {
@@ -26,11 +26,31 @@ export class WebSocketClient {
       this.refreshCount = 5;
     };
 
+    // this.socket.onmessage = (event) => {
+    //   try {
+    //     const { event: eventName, data } = JSON.parse(event.data);
+    //     if (this.eventHandlers[eventName]) {
+    //       this.eventHandlers[eventName](data);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error parsing WebSocket message:", error);
+    //   }
+    // };
     this.socket.onmessage = (event) => {
+      console.log("Raw message from server:", event.data); // Log để debug
+    
       try {
-        const { event: eventName, data } = JSON.parse(event.data);
-        if (this.eventHandlers[eventName]) {
+        const parsedData = JSON.parse(event.data);
+        
+        const eventName = parsedData.event;
+        const data = parsedData.data ?? parsedData; // Nếu không có field `data`, thì dùng nguyên `parsedData`
+    
+        if (eventName && this.eventHandlers[eventName]) {
           this.eventHandlers[eventName](data);
+        } else if (this.eventHandlers["default"]) {
+          this.eventHandlers["default"](data); // 👈 fallback cho message không có `event`
+        } else {
+          console.warn("Unhandled WebSocket message:", parsedData);
         }
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);

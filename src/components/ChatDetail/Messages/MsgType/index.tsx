@@ -8,7 +8,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
@@ -42,6 +42,9 @@ interface TextMsgProps {
 
 const TextMsg: FC<TextMsgProps> = (props) => {
   const theme = useTheme();
+  useEffect(() => {
+    // console.log("TextMsg props", props);
+  }, [props]);
   return (
     <Stack direction={"row"} justifyContent={props.incoming ? "start" : "end"}>
       <Box

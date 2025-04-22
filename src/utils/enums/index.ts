@@ -10,7 +10,7 @@ export enum ChatLogContentTypeCode {
 }
 
 export enum WsEvent {
-  RECEIVE_MESSAGE = 'receive_message',
+  RECEIVE_MESSAGE = 'message',
   CONNECT = 'connect',
   DISCONNECT = 'disconnect',
   UNAUTHORIZED = 'unauthorized',

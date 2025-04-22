@@ -21,7 +21,12 @@ export function reconnectChatSocket(chat_box_id: string) {
 }
 
 export function onReceiveChat(callback?: (data: ReceiveMessageDto) => void) {
-  chatSocketClient.on(WsEvent.RECEIVE_MESSAGE, (data: ReceiveMessageDto) => {
+  // chatSocketClient.on(WsEvent.RECEIVE_MESSAGE, (data: ReceiveMessageDto) => {
+  //   callback?.(data);
+  //   console.log("Received chat message:", data);
+  // });
+  chatSocketClient.on("default", (data) => {
+    console.log("Received message (no event field):", data);
     callback?.(data);
   });
 }

@@ -1,7 +1,10 @@
 export class UpdateProfileDto {
-    id: string;
-    username: string;
-    avatar: string;
+    // id: string;
+    // username: string;
+    // avatar: string;
+    id?: string;
+    username?: string;
+    avatar?: File | null;
 }
 
 export class UpdateProfileGroupDto {

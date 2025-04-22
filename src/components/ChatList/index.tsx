@@ -109,7 +109,7 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["GetChatBoxListByUser"],
-    queryFn: () => chatAPI.listChatBox(1),
+    queryFn: () => chatAPI.listChatBox(Number(userId)),
     enabled: true,
     select: (rs) => {
       if (onSuccess) onSuccess(rs.data);
@@ -285,7 +285,10 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                 conversation.latest_message_created_at ?
                   moment(conversation.latest_message_created_at).fromNow()
                   : moment().fromNow();
-              const lastChatLogContent = "Hello"; // fix - tran
+              let lastChatLogContent = "Hello"; // fix - tran
+              if (conversation.id === 2) {
+                lastChatLogContent = "How are you ?"; 
+              }
               const seen = conversation.seen;
               const chatboxId = conversation.id.toString();
               const fakeAvatar = "";

@@ -14,19 +14,14 @@ import { useAuth } from "src/contexts/AuthContext";
 import { useQuery } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { ChatLogContentTypeCode } from "src/utils/enums";
+import { da } from "@faker-js/faker/.";
 
-interface MessagesProps {}
+interface MessagesProps { }
 
 const Messages: FC<MessagesProps> = () => {
   const { chatboxId, toGroupId, toUserId } = useChat();
   const { userId } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
-
-
-  useEffect(() => {
-    console.log("chatboxId 99", chatboxId);
-  }
-  , [chatboxId]);
 
   const { isLoading, data } = useQuery({
     // queryKey: ["ChatDetail", chatboxId, toGroupId, toUserId],
@@ -41,41 +36,48 @@ const Messages: FC<MessagesProps> = () => {
 
   useEffect(() => {
 
-    if (data?.length) {
+    if (data?.messages?.length) {
       ref.current?.scrollIntoView({
         block: "end",
       });
     }
-  }, [data?.length]);
+  }, [data?.messages?.length]);
 
   return (
     <Box height={"100%"} overflow={"auto"} px={1} mb={4}>
-      <Stack p={1} height={"100%"} spacing={1}>  
+      <Stack
+        p={1}
+        height="100%"
+        spacing={1}
+        display="flex"
+        justifyContent="flex-end"
+      >
         {/* fix - comment history */}
         {/* {Chat_History.map((el, index) => {
           switch (el.type) {
             case "divider":
               return <TimeLineBreak key={index} {...el} />;
             case "msg":
-              switch (el.subtype) {
-                case "img":
-                  return <ImgMSg key={index} {...el} />;
-                case "doc":
-                  return <DocMsg key={index} {...el}/>
-                case "link":
-                  return <LinkMsg key={index} {...el}/>
-                case "reply":
-                  return <ReplyMsg key={index} {...el}/>
+              // fix - tran
+              // switch (el.subtype) {
+              //   case "img":
+              //     return <ImgMSg key={index} {...el} />;
+              //   case "doc":
+              //     return <DocMsg key={index} {...el}/>
+              //   case "link":
+              //     return <LinkMsg key={index} {...el}/>
+              //   case "reply":
+              //     return <ReplyMsg key={index} {...el}/>
 
-                default:
-                  return <TextMsg key={index} {...el} />;
-              }
+              //   default:
+              return <TextMsg key={index} {...el} />;
+            // }
             default:
               return <></>;
           }
         })} */}
-        
-        {data && data.length > 0 &&
+
+        {/* {data && data.length > 0 &&
           data.map((el, index) => {
             switch (el.chat_log.content_type.code) {
               case ChatLogContentTypeCode.TEXT:
@@ -109,6 +111,16 @@ const Messages: FC<MessagesProps> = () => {
               default:
                 return <></>;
             }
+          })} */}
+        {data && data.messages?.length > 0 &&
+          data.messages.map((el, index) => {
+            return (
+              <TextMsg
+                key={index}
+                incoming={el.senderId !== Number(userId)}
+                message={el.content}
+              />
+            );
           })}
         <div ref={ref} />
       </Stack>

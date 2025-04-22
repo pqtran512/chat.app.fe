@@ -27,7 +27,7 @@ export const chatAPI = {
   //   );
   // },
   chatDetail(chat_box_id: string) {
-    return http.get<ChatBoxChatLog[]>(`${CHAT_URL.CHAT_DETAIL}/${chat_box_id}`);
+    return http.get<{messages: ChatBoxChatLog[]}>(`${CHAT_URL.CHAT_DETAIL}/${chat_box_id}`);
   },
   insertChatlog(insertChatlogDto: InsertChatLogDto) {
     return http.post<ChatLog>(CHAT_URL.INSERT_CHAT_LOG, {

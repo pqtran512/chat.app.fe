@@ -28,15 +28,27 @@ interface ProfileProps {
 const ProfileComponent: FC<ProfileProps> = (props) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const queryClient = useQueryClient();
-  const [updateProfileInfo, setUpdateProfileInfo] = useState({
+  const [updateProfileInfo, setUpdateProfileInfo] = useState<{
+    id?: string;
+    username?: string;
+    avatar?: File | null;
+  }>({
     id: props.profile?.id,
     username: props.profile?.username,
-    avatar: props.profile?.avatar,
-  } as UpdateProfileDto);
+    avatar: null,
+  });
 
-  const handleUpdate = (e) => {
-    updateProfile.mutate(updateProfileInfo);
+  const handleUpdate = () => {
+    const formData = new FormData();
+    formData.append("id", updateProfileInfo.id?.toString() || "");
+    formData.append("username", updateProfileInfo.username || "");
+    if (updateProfileInfo.avatar) {
+      formData.append("avatar", updateProfileInfo.avatar);
+    }
+  
+    updateProfile.mutate(formData);
   };
+  
 
   const updateProfile = useMutation(profileAPI.updateProfile, {
     onSuccess: (response) => {
@@ -54,55 +66,10 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
     setUpdateProfileInfo((prev) => ({ ...prev, username: e.target.value }));
   };
 
-  const handleSelectedAvatar = async (e) => {
-    function resizeImage(file, width) {
-      return new Promise((resolve, reject) => {
-        const fileName = file.target.files[0].name;
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file.target.files[0]);
-
-        reader.onload = (event) => {
-          const img = new Image();
-          img.src = event.target.result.toString();
-
-          img.onload = () => {
-            const elem = document.createElement("canvas");
-            const scaleFactor = width / img.width;
-            elem.width = width;
-            elem.height = img.height * scaleFactor;
-
-            const ctx = elem.getContext("2d");
-            ctx.drawImage(img, 0, 0, width, img.height * scaleFactor);
-
-            ctx.canvas.toBlob(
-              (blob) => {
-                resolve(
-                  new File([blob], fileName, {
-                    type: "image/jpeg",
-                    lastModified: Date.now(),
-                  })
-                );
-              },
-              "image/jpeg",
-              1
-            );
-          };
-        };
-      });
-    }
-    if (e.target.files[0]) {
-      const resizedImg = await resizeImage(e, 100);
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(resizedImg as Blob);
-      fileReader.addEventListener(
-        "load",
-        () => {
-          const avatar = String(fileReader.result).split(",")[1];
-          setUpdateProfileInfo((prev) => ({ ...prev, avatar: avatar }));
-        },
-        false
-      );
+  const handleSelectedAvatar = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setUpdateProfileInfo((prev) => ({ ...prev, avatar: file }));
     }
   };
 
@@ -138,7 +105,13 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
                 <Avatar
                   sx={{ width: 60, height: 60 }}
                   alt={updateProfileInfo?.username || "Avatar"}
-                  src={updateProfileInfo?.avatar && `data:image/jpeg;base64,${updateProfileInfo?.avatar}`}
+                  // src={updateProfileInfo?.avatar && `data:image/jpeg;base64,${updateProfileInfo?.avatar}`}
+                  src={
+                    updateProfileInfo.avatar
+                      ? URL.createObjectURL(updateProfileInfo.avatar)
+                      : undefined
+                  }
+                  
                 />
 
                 <VisuallyHiddenInput
@@ -149,14 +122,14 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
               </Button>
             </Stack>
 
-            <Stack spacing={1}>
+            {/* <Stack spacing={1}>
               <Typography>Change name</Typography>
               <TextField
                 label="your name"
                 value={updateProfileInfo?.username}
                 onChange={handleInputChange}
               />
-            </Stack>
+            </Stack> */}
             {/* <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
               <RadioGroup
