@@ -63,7 +63,6 @@ function Sidebar() {
     data: userDetail,
     isLoading: loadingGetUserDetail,
     refetch: refetchGetUserDetail,
-
   } = useQuery({
     queryKey: ["GetUserDetail", userId],
     queryFn: () => userAPI.getDetail(userId),
@@ -110,7 +109,7 @@ function Sidebar() {
                 <Avatar
                   sx={{ width: 55, height: 55, bgcolor: '#AAAAAA', fontSize: '18px', border: '2px solid white' }}
                   alt={userDetail?.username || "Avatar"}
-                  src={userDetail?.avatar && `data:image/jpeg;base64,${userDetail?.avatar}`}
+                  src={userDetail?.avatar}
                 />
               </Button>
             </Box>

@@ -90,15 +90,15 @@ const Header: FC<HeaderProps> = (props) => {
                 >
                   <Avatar
                     sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid #157FCA' }}
-                    alt="Avatar" // fix - profile name
-                    src={chatProfile.avatar && `data:image/png;base64, ${chatProfile.avatar}`}
+                  alt= {chatProfile.name || "Avatar"}
+                    src={chatProfile?.avatar}
                   />
                 </StyledBadge>
               ) : (
                 <Avatar
                   sx={{ width: 55, height: 55, fontSize: '18px' }}
-                  alt= {chatProfile.name || "Avatar"} // fix - profile name
-                  src={chatProfile.avatar && `data:image/png;base64, ${chatProfile.avatar}`}
+                  alt= {chatProfile.name || "Avatar"}
+                  src={chatProfile?.avatar}
                 />
               )}
 

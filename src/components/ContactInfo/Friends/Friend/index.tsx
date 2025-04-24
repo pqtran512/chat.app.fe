@@ -100,7 +100,7 @@ const Friend: FC<FriendProps> = (props) => {
       >
         <Avatar
           sx={{ marginRight: 3 }}
-          src={props.avatar && `data:image/png;base64, ${props.avatar}`}
+          src={props?.avatar}
         />
         <Typography variant="h4">{props.username}</Typography>
       </Button>

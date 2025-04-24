@@ -14,6 +14,7 @@ export const userAPI = {
   // getPersonalProfile() {
   //   return http.get<Profile[]>(USER_URL.PERSONAL_PROFILE);
   // }
+  
   findUser(search: string) {
     return http.get<{users: User[]}>(`user/${localStorage.getItem('id')}/${USER_URL.FIND}`, {
       params: { search }

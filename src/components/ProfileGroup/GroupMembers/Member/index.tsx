@@ -18,7 +18,7 @@ const Member: FC<MemberProps> = (props) => {
       spacing={2}
     >
       <Stack direction={"row"} alignItems={"center"} spacing={2} style={{}}>
-        <Avatar src={props.avatar && `data:image/jpeg;base64, ${props.avatar}`} />
+        <Avatar src={props.avatar} />
         <Typography variant="h4">{props.username}</Typography>
       </Stack>
       <Stack>{props.isOwner && <KeyIcon />}</Stack>

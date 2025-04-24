@@ -239,7 +239,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                 <Button component="label" role={undefined} tabIndex={-1}>
                   <Avatar
                     sx={{ width: 60, height: 60 }}
-                    src={updateProfileGroupInfo.avatar && `data:image/jpeg;base64,${updateProfileGroupInfo.avatar}`}
+                    src={null}
                   />
 
                   <VisuallyHiddenInput
@@ -312,7 +312,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                 >
                   <Avatar
                     sx={{ width: 60, height: 60 }}
-                    src={props.profile.avatar && `data:image/jpeg;base64,${props.profile.avatar}`}
+                    src={props.profile?.avatar}
                   />
                   <Stack>
                     <Typography variant="h4">{props.profile.name}</Typography>
@@ -331,7 +331,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                     <Avatar
                       key={m.user_id}
                       alt={m.username}
-                      src={m.avatar && `data:image/jpeg;base64, ${m.avatar}`}
+                      src={m.avatar}
                     />
                   ))}
                 </AvatarGroup>

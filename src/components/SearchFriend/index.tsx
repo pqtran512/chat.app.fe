@@ -144,7 +144,7 @@ const SearchFriendForm = ({ handleClose }) => {
             <Stack direction={"row"} spacing={2} alignItems={"center"}>
               <Avatar
                 alt={user.phone}
-                src={user.avatar && `data:image/jpeg;base64, ${user.avatar}`}
+                src={user.avatar}
               />
               <Typography>{user.username}</Typography>
             </Stack>

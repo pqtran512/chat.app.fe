@@ -145,7 +145,7 @@ const Group: FC<GroupProps> = (props) => {
         </Badge> */}
         <Avatar
           alt={props.name}
-          src={props.avatar && `data:image/png;base64, ${props.avatar}`}
+          src={props?.avatar}
         />
 
         <Typography variant="h4" sx={{ marginLeft: 3 }}>

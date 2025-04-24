@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import styled from "@emotion/styled";
 import { UpdateProfileDto } from "src/types/api/dto";
@@ -45,10 +45,10 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
     if (updateProfileInfo.avatar) {
       formData.append("avatar", updateProfileInfo.avatar);
     }
-  
+
     updateProfile.mutate(formData);
   };
-  
+
 
   const updateProfile = useMutation(profileAPI.updateProfile, {
     onSuccess: (response) => {
@@ -111,7 +111,6 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
                       ? URL.createObjectURL(updateProfileInfo.avatar)
                       : undefined
                   }
-                  
                 />
 
                 <VisuallyHiddenInput
@@ -172,9 +171,9 @@ const ProfileComponent: FC<ProfileProps> = (props) => {
             <Stack spacing={2} alignItems={"center"}>
               <Avatar
                 sx={{ width: 60, height: 60 }}
-                src={props.profile?.avatar && `data:image/jpeg;base64,${props.profile?.avatar}`}
+                src={props?.profile.avatar}
               />
-              <Typography variant="h4">{props.profile?.username || 'Trân'}</Typography>
+              <Typography variant="h4">{props.profile.username || 'User'}</Typography>
               <Stack direction={"row"}></Stack>
             </Stack>
 
