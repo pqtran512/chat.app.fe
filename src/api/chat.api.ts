@@ -44,8 +44,6 @@ export const chatAPI = {
     });
   },
   setChatboxSeen(chatboxId: string) {
-    return http.post<any>(`${CHAT_URL.SET_CHATBOX_SEEN}/${chatboxId}`, {
-      user_id: Number(localStorage.getItem("id")),
-    });
+    return http.post<any>(`/user/${localStorage.getItem("id")}/converstations/${chatboxId}/seenMessages`);
   },
 };
