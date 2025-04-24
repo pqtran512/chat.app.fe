@@ -43,7 +43,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
     refetch: refetchGetFriendList,
   } = useQuery({
     queryKey: ["getFriends"],
-    queryFn: () => friendAPI.friendList(1), // fix - tran
+    queryFn: () => friendAPI.searchFriend(""), // fix - tran
     select: (rs) => {
       return rs.data;
     },

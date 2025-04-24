@@ -33,7 +33,7 @@ const FriendSent: FC<FriendSentProps> = (props) => {
       getFriendSent.mutate(Number(userId));
     },
     onError: (error: any) => {
-      enqueueSnackbar(`Fail Cancel!! - ${error}`, {
+      enqueueSnackbar(`Fail Cancel ! - ${error}`, {
         variant: "error",
       });
     },
@@ -46,11 +46,10 @@ const FriendSent: FC<FriendSentProps> = (props) => {
 
         response.data.forEach((e) => {
           responseSentList.push({
-            id: e.id,
-            // username: e.to_user_profile.profile[0].username,
-            // avatar: e.to_user_profile.profile[0].avatar,
-            username: "Jennie", // fix - tran
-            avatar: "Jennie"
+            id: e.friend_id,
+            // username: e.username,
+            // avatar: e.avatar
+            username: "Gia Linh", // fix - tran
           });
         });
         friendRequestContext.setFriendSentList(responseSentList);

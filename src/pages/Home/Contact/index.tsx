@@ -21,7 +21,7 @@ const Contact: FC<ContactProps> = (props) => {
 
   const friendListContext = useFriendList();
 
-  const getFriendList = useMutation(friendAPI.friendList, {
+  const getFriendList = useMutation(friendAPI.searchFriend, {
     onSuccess: (response) => {
       const friendList = [];
 

@@ -48,7 +48,7 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
     },
     
     onError: (error: any) => {
-      enqueueSnackbar(`Fail Accept!! - ${error}`, {
+      enqueueSnackbar(`Fail Accept ! - ${error}`, {
         variant: "error",
       });
     },
@@ -72,13 +72,9 @@ const FriendReceived: FC<FriendReceivedProps> = (props) => {
 
         response.data.forEach((e) => {
           responseReceivedList.push({
-            // id: e.friend_id,
-            // username: e.from_user_profile.profile[0].username,
-            // avatar: e.from_user_profile.profile[0].avatar,
-
             id: e.id,
-            username: "Lisa", // fix - tran
-            avatar: "Lisa"
+            username: e.username,
+            avatar: e.avatar
           });
         });
 

@@ -46,6 +46,7 @@ interface SingleChatProps {
   unread?: number;
   online?: boolean;
   seen?: boolean;
+  latest_message_sender_name?: string;
   onSetSeen?: (chatboxId: string, seen: boolean) => void;
   onClick?: () => void;
 }
@@ -110,7 +111,8 @@ const SingleChat: FC<SingleChatProps> = (props) => {
           p={0.6}
           width={"100%"}
         >
-          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+          <Stack direction={"row"} spacing={1} alignItems={"flex-start"}>
+
             {/* {props.online ? (
               <StyledBadge
                 overlap="circular"
@@ -124,9 +126,14 @@ const SingleChat: FC<SingleChatProps> = (props) => {
             )} */}
             <Avatar src={props.img && `data:image/png;base64, ${props.img}`} />
 
-            <Stack direction={"column"}>
+            <Stack direction={"column"} alignItems="flex-start" justifyContent="center">
               <Typography variant="subtitle2">{props.name}</Typography>
-              <Typography variant="subtitle1">{props.msg}</Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontStyle: props.msg ? "normal" : "italic" }}
+              >{props.msg ? props.latest_message_sender_name + ": " + props.msg : "Chưa có tin nhắn"}
+              </Typography>
+
             </Stack>
           </Stack>
 
@@ -135,7 +142,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
             {!props.seen && (
               <Badge
                 color="primary"
-                variant="dot" 
+                variant="dot"
                 sx={{
                   "& .MuiBadge-badge": {
                     minWidth: 8,

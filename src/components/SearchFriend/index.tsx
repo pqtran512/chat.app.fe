@@ -15,6 +15,7 @@ import React, { FC, useState, useContext } from "react";
 import { useMutation } from "react-query";
 import { friendAPI } from "src/api/friend.api";
 import { userAPI } from "src/api/user.api";
+import { useAuth } from "src/contexts/AuthContext";
 import { useFriendRequest } from "src/contexts/FriendContext";
 import { LanguageContext } from "src/language/LanguageProvider";
 
@@ -40,7 +41,9 @@ const SearchFriend: FC<SearchFriendProps> = (props) => {
 const SearchFriendForm = ({ handleClose }) => {
   const { t } = useContext(LanguageContext);
   const [phoneInput, setPhoneInput] = useState("");
+  const { userId } = useAuth();
   const [user, setUser] = useState({
+    id: "",
     username: "",
     phone: "",
     avatar: "",
@@ -58,12 +61,13 @@ const SearchFriendForm = ({ handleClose }) => {
 
   const searchFriend = useMutation(userAPI.findUser, {
     onSuccess: (response) => {
-      console.log(response.data);
-      const user = response.data.users[0];
+      const data = response.data?.users;
+      const user = data ? data[0] : null;
 
       if (user?.id) {
         setUser((prev) => ({
           ...prev,
+          id: user.id,
           phone: user.phone,
           username: user.username,
           avatar: user.avatar,
@@ -78,19 +82,18 @@ const SearchFriendForm = ({ handleClose }) => {
     },
   });
 
-  const handleAddFriend = () => {
+  const handleAddFriend = (friend_id: string) => {
     addFriend.mutate({
-      // to_user_phone: phoneInput 
-      userId: 1,
-      friendId: 2
-    }); // fix - tran
+      userId: Number(userId),
+      friendId: Number(friend_id)
+    });
 
     handleClose();
   };
 
   const addFriend = useMutation(friendAPI.addFriend, {
     onSuccess: (responese) => {
-      // getFriendSents.mutate('1'); // fix - tran
+      getFriendSents.mutate(Number(userId));
       enqueueSnackbar(`Gửi lời mời kết bạn tới ${phoneInput}`, {
         variant: "success",
       });
@@ -100,28 +103,29 @@ const SearchFriendForm = ({ handleClose }) => {
     },
   });
 
-  // const getFriendSents = useMutation(friendAPI.friendSent, {
-  //   onSuccess: (response) => {
-  //     if (response.data.length > 0) {
-  //       const responeSentList = [];
-  //       response.data.forEach((e) => {
-  //         responeSentList.push({
-  //           id: e.id,
-  //           username: e.to_user_profile.profile[0].username,
-  //           avatar: e.to_user_profile.profile[0].avatar,
-  //         });
-  //       });
-  //       friendRequestContext.setFriendSentList(responeSentList);
-  //     } else {
-  //       friendRequestContext.setFriendReceivedList([
-  //         { id: "", username: "", avatar: "" },
-  //       ]);
-  //     }
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error, { variant: "error" });
-  //   },
-  // });
+  const getFriendSents = useMutation(friendAPI.friendSent, {
+    onSuccess: (response) => {
+      if (response.data.length > 0) {
+        const responeSentList = [];
+        response.data.forEach((e) => {
+          responeSentList.push({
+            id: e.friend_id,
+            // username: e.username,
+            avatar: e.avatar,
+            username: 'Gia Linh',
+          });
+        });
+        friendRequestContext.setFriendSentList(responeSentList);
+      } else {
+        friendRequestContext.setFriendReceivedList([
+          { id: "", username: "", avatar: "" },
+        ]);
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error, { variant: "error" });
+    },
+  });
 
   return (
     <Stack spacing={3}>
@@ -144,7 +148,7 @@ const SearchFriendForm = ({ handleClose }) => {
               />
               <Typography>{user.username}</Typography>
             </Stack>
-            <Button variant="contained" size="small" onClick={handleAddFriend}>
+            <Button variant="contained" size="small" onClick={() => handleAddFriend(user.id)}>
               {t.friend_add}
             </Button>
           </Stack>

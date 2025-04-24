@@ -18,7 +18,7 @@ export const CHAT_URL = {
 
 export const chatAPI = {
   listChatBox(userId: number) {
-    return http.get<{ conversations: Conversation[] }>(`${CHAT_URL.LIST_CHAT_BOX}/${userId}`)
+    return http.get<{ conversations: Conversation[] }>(`/user/${userId}/conversations`)
   },
   // chatDetail(getChatBoxDetailDto: GetChatBoxDetailDto) {
   //   return http.post<ChatBoxChatLog[]>(

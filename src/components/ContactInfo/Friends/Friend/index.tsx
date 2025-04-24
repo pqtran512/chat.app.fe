@@ -45,24 +45,20 @@ const Friend: FC<FriendProps> = (props) => {
   const unfriend = useMutation(friendAPI.unfriend, {
     onSuccess: (response) => {
       enqueueSnackbar(`Hủy kết bạn thành công`, { variant: "success" });
-      getFriendList.mutate(1); // fix -tran
+      getFriendList.mutate(""); // fix -tran
     },
     onError: (error: any) => {
       enqueueSnackbar(error, { variant: "error" });
     },
   });
   
-  const getFriendList = useMutation(friendAPI.friendList, {
+  const getFriendList = useMutation(friendAPI.searchFriend, {
     onSuccess: (response) => {
       if (response.data.length > 0) {
         const friendList = [];
 
         response.data.forEach((e) => {
           friendList.push({
-            // id: e.to_user_profile.id,
-            // username: e.to_user_profile.profile[0].username,
-            // avatar: e.to_user_profile.profile[0].avatar,
-
             id: e.id,
             username: e.username,
             avatar: e.avatar,

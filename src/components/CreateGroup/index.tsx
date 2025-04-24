@@ -19,6 +19,8 @@ import { CreateGroupDto } from "src/types/api/dto";
 import { FriendResponse } from "src/types/api/response/friend";
 import { LanguageContext } from "src/language/LanguageProvider";
 import { User } from "src/types/entities";
+import { useAuth } from "src/contexts/AuthContext";
+import { chatAPI } from "src/api/chat.api";
 
 const CreateGroupForm = ({
   handleClose,
@@ -28,13 +30,15 @@ const CreateGroupForm = ({
   // data: FriendResponse[]; fix - tran
   data: User[]
 }) => {
+  const { userId } = useAuth();
   const { t } = useContext(LanguageContext);
   const [selectedFriend, setSelectedFriend] = useState([]);
   const groupListContext = useGroupList();
   const [groupInfo, setGroupInfo] = useState({
+    type: "group",
     name: "",
     description: "",
-    user_ids: [],
+    participants: [],
   } as CreateGroupDto);
   const queryClient = useQueryClient();
 
@@ -82,16 +86,33 @@ const CreateGroupForm = ({
 
   useEffect(() => {
     const selectedFriendID = [];
-    selectedFriend.map((i) => selectedFriendID.push(i.to_user_profile.id));
-    setGroupInfo((prev) => ({ ...prev, user_ids: selectedFriendID }));
+    selectedFriend.map((i) => selectedFriendID.push(Number(i.id)));
+    setGroupInfo((prev) => ({ ...prev, participants: selectedFriendID }));
   }, [selectedFriend]);
 
   const handleCreateGroup = () => {
-    createGroup.mutate(groupInfo);
+    const updatedParticipants = groupInfo.participants.includes(Number(userId))
+      ? groupInfo.participants
+      : [...groupInfo.participants, Number(userId)];
+
+    const group_info = {
+      ...groupInfo,
+      participants: updatedParticipants,
+      creator_id: Number(userId),
+    };
+
+    if (updatedParticipants.length <= 2) {
+      enqueueSnackbar("Nhóm phải có ít nhất 3 thành viên", {
+        variant: "warning",
+      });
+      return;
+    }
+
+    createGroup.mutate(group_info);
     handleClose();
   };
 
-  const createGroup = useMutation(groupAPI.createGroup, {
+  const createGroup = useMutation(chatAPI.createChat, {
     onSuccess: (response) => {
       queryClient.invalidateQueries(["GetListGroupByUser"]);
       enqueueSnackbar(`Tạo nhóm ${groupInfo.name} thành công`, {
@@ -144,8 +165,9 @@ const CreateGroupForm = ({
         id="group-members"
         disableCloseOnSelect
         options={
-          options &&
-          options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))
+          Array.isArray(options)
+            ? options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))
+            : []
         }
         groupBy={(option) => option.firstLetter}
         // getOptionLabel={(option) => option.to_user_profile.profile[0].username}
@@ -163,7 +185,7 @@ const CreateGroupForm = ({
       <Stack direction={"row"} justifyContent={"space-between"}>
         <Button onClick={handleClose}>{t.back}</Button>
         <Button type="submit" variant="contained" onClick={handleCreateGroup}>
-          Tạo nhóm
+          {t.create_group}
         </Button>
       </Stack>
     </Stack>
@@ -184,12 +206,12 @@ const CreateGroup: FC<CreateGroupProps> = (props) => {
   // });
   const { isLoading, data, refetch } = useQuery({ // fix - tran
     queryKey: ["GetFriendList", '1'],
-    queryFn: () => friendAPI.friendList(1),
+    queryFn: () => friendAPI.searchFriend(""),
     select: (res) => res.data,
     // enabled: !!userId, // chỉ chạy nếu có userId
   });
-  
-  
+
+
   useEffect(() => {
     console.log(props.open)
     if (props.open) {

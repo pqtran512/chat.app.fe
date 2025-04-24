@@ -91,17 +91,13 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
   const { refetch } = useQuery({
     queryKey: ["FriendList"],
-    queryFn: () => friendAPI.friendList(Number(userId)),
+    queryFn: () => friendAPI.searchFriend(""),
     enabled: false,
     onSuccess: (response) => {
       if (response.data?.length > 0) {
         const friendList = [];
         response.data.forEach((e) => {
           friendList.push({
-            // id: e.to_user_profile.id,
-            // username: e.to_user_profile.profile[0].username,
-            // avatar: e.to_user_profile.profile[0].avatar,
-
             id: e.id,
             username: e.username,
             avatar: e.avatar,
@@ -128,16 +124,14 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const getFriendSent = useMutation(friendAPI.friendSent, {
     onSuccess: (response) => {
 
-      if (response.data && response.data.length > 0) {
+      if (response.data && response.data.requests?.length > 0) {
         const responeSentList = [];
 
-        response.data.forEach((e) => {
+        response.data.requests.forEach((e) => {
           responeSentList.push({
             id: e.friend_id,
-            // username: e.to_user_profile.profile[0].username,
-            // avatar: e.to_user_profile.profile[0].avatar,
-            username: "Quỳnh Trân", // fix - tran
-            avatar: "Trân"
+            username: e.username,
+            avatar: e.avatar
           });
         });
 
@@ -152,17 +146,15 @@ const ContactBar: FC<ContactBarProps> = (props) => {
   const getFriendReceived = useMutation(friendAPI.friendRecieved, {
     onSuccess: (response) => {
 
-      if (response.data && response.data.length > 0) {
+      if (response.data && response.data.requests?.length > 0) {
         const responseReceivedList = [];
 
-        response.data.forEach((e) => {
+        response.data.requests.forEach((e) => {
           if (e.status === 'pending') {
             responseReceivedList.push({
               id: e.user_id,
-              // username: e.from_user_profile.profile[0].username,
-              // avatar: e.from_user_profile.profile[0].avatar,
-              username: "Gia Linh", // fix - tran
-              avatar: "Linh"
+              username: e.username,
+              avatar: e.avatar
             });
           }
         });

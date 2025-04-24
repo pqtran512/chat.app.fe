@@ -98,16 +98,18 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
 
   const { refetch } = useQuery({
     queryKey: ["FriendList"],
-    queryFn: () => friendAPI.searchFriend({ text: "" }),
+    queryFn: () => friendAPI.searchFriend(""),
     enabled: false,
+
     onSuccess: (response) => {
       if (response.data.length > 0) {
         const friendList = [];
+
         response.data.forEach((e) => {
           friendList.push({
-            id: e.to_user_profile.id,
-            username: e.to_user_profile.profile[0].username,
-            avatar: e.to_user_profile.profile[0].avatar,
+            id: e.id,
+            username: e.username,
+            avatar: e.avatar,
           });
         });
         friendListContext.setFriendList(friendList);

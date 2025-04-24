@@ -1,7 +1,9 @@
 export class CreateGroupDto {
-  name: string;
-  description: string;
-  user_ids: string[];
+  type: string;
+  name?: string;
+  description?: string;
+  creator_id: number;
+  participants: number[];
 }
 
 export class GroupListDto {

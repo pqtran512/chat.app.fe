@@ -120,29 +120,27 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
       //   const firstConversation = conversations[0];
       //   const isGroupChat = firstConversation.participants.length > 2;
 
-      //   const fakeName = "Trân"; // placeholder
-      //   const fakeAvatar = "";
-      //   const fakeGroupMembers = isGroupChat ? firstConversation.participants : [];
-
-      //   setChatboxId(firstConversation.id.toString());
-
       //   if (isGroupChat) {
+      //     const { name, id, participants } = firstConversation
+
       //     setToGroupId(firstConversation.id.toString());
+
       //     setChatProfile({
-      //       id: firstConversation.id.toString(),
+      //       id: id.toString(),
       //       isGroupChat: true,
-      //       name: fakeName,
-      //       avatar: fakeAvatar,
-      //       memberCount: fakeGroupMembers.length,
+      //       name: name,
+      //       avatar: "",
+      //       memberCount: participants.length,
       //     });
-      //   } else {
-      //     const otherUserId = firstConversation.participants.find((p: number) => p !== Number(userId));
-      //     setToUserId(otherUserId.toString());
+      //   }
+      //   else {
+      //     const otherParticipant = firstConversation.participants.find(p => p.id.toString() !== userId)
+      //     setToUserId(otherParticipant.id.toString());
       //     setChatProfile({
-      //       id: otherUserId.toString(),
+      //       id: otherParticipant.id.toString(),
       //       isGroupChat: false,
-      //       name: fakeName,
-      //       avatar: fakeAvatar,
+      //       name: otherParticipant.username,
+      //       avatar: otherParticipant.avatar,
       //     });
       //   }
       // }
@@ -278,21 +276,30 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                     />
                   );
                 })} */}
-          {data?.length > 0 && // fix - tran - cop code chatgpt
+          {data?.length > 0 && // fix - tran
             data.map((conversation, index) => {
               const isGroupChat = conversation.participants.length > 2;
+
               const time =
-                conversation.latest_message_created_at ?
-                  moment(conversation.latest_message_created_at).fromNow()
+                conversation.latest_message_created_at
+                  && conversation.latest_message_created_at !== '0001-01-01T00:00:00Z'
+                  ? moment(conversation.latest_message_created_at).fromNow()
                   : moment().fromNow();
-              let lastChatLogContent = "Hello"; // fix - tran
-              if (conversation.id === 2) {
-                lastChatLogContent = "How are you ?"; 
-              }
+
+              let lastChatLogContent = conversation.latest_message_content;
+
               const seen = conversation.seen;
               const chatboxId = conversation.id.toString();
-              const fakeAvatar = "";
-              const fakeName = "User " + conversation.id; // fix - tran
+
+              const otherParticipant = !isGroupChat
+                ? conversation.participants.find(p => p.id.toString() !== userId)
+                : null;
+
+              const avatar = isGroupChat
+                ? '' // fix - tran
+                : otherParticipant?.avatar || '';
+
+              const group_name = isGroupChat ? conversation.name : otherParticipant?.username || '';
 
               if (isGroupChat) {
                 return (
@@ -300,28 +307,29 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                     key={index}
                     id={chatboxId}
                     chatboxId={chatboxId}
-                    name={fakeName}
-                    img={fakeAvatar}
+                    name={group_name}
+                    img={avatar}
                     time={time}
                     memberCount={conversation.participants.length}
+                    seen={seen}
+                    latest_message_sender_name={conversation.latest_message_sender_name}
                     msg={lastChatLogContent}
                     ownerId={conversation.creator_id.toString()}
                     onClick={() => onSelectChat(chatboxId)}
                   />
                 );
               } else {
-                const otherUserId = conversation.participants.find((p: number) => p !== Number(userId));
-
                 return (
                   <SingleChat
                     key={index}
                     id={chatboxId}
                     chatboxId={chatboxId}
-                    name={fakeName}
-                    img={fakeAvatar}
+                    name={group_name}
+                    img={avatar}
                     time={time}
                     msg={lastChatLogContent}
                     seen={seen}
+                    latest_message_sender_name={conversation.latest_message_sender_name}
                     onClick={() => onSelectChat(chatboxId)}
                   />
                 );

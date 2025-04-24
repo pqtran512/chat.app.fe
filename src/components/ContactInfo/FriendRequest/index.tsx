@@ -40,7 +40,7 @@ const FriendRequests: FC<FriendRequestsProps> = (props) => {
           backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
         }}>
           {friendSentList[0].id !== '' && friendSentList.map((f) => (
-            <FriendSent {...f} />
+            <FriendSent key={f.id} {...f} />
           ))}
         </Stack>
         <Box sx={{ padding: 3 }}>
@@ -50,7 +50,7 @@ const FriendRequests: FC<FriendRequestsProps> = (props) => {
           backgroundColor: theme.palette.mode === 'light' ? "#fff" : '#303030',
         }}>
           {friendReceivedList[0].id !== '' && friendReceivedList.map((f) => (
-            <FriendReceived {...f} />
+            <FriendReceived key={f.id} {...f} />
           ))}
         </Stack>
       </Box>

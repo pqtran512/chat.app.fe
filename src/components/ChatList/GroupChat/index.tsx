@@ -25,6 +25,8 @@ interface GroupChatProps {
   memberCount?: number;
   newMessage?: boolean;
   ownerId?: string;
+  seen?: boolean;
+  latest_message_sender_name?: string;
   onClick?: () => void;
 }
 
@@ -84,31 +86,35 @@ const GroupChat: FC<GroupChatProps> = (props) => {
         <Stack
           direction={"row"}
           spacing={2}
-          alignItems="center"
+          alignItems="start"
           justifyContent={"space-between"}
           p={0.6}
           width={"100%"}
         >
-          <Stack direction={"row"} spacing={2} alignItems={"center"}>
+          <Stack direction={"row"} spacing={1} alignItems={"flex-start"}>
             <Badge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               badgeContent={
                 <SmallAvatar
                   alt="Remy Sharp"
-                  src={props.img && `data:image/png;base64, ${props.img}`}
+                  src={props.img && `${props.img}`}
                 />
               }
             >
               <Avatar
                 alt="Travis Howard"
-                src={props.img && `data:image/png;base64, ${props.img}`}
-              />
+                src={props.img}
+              >{props.name && props.name[0]}</Avatar>
             </Badge>
 
-            <Stack direction={"column"}>
+            <Stack direction={"column"} alignItems="flex-start" justifyContent="center">
               <Typography variant="subtitle2">{props.name}</Typography>
-              <Typography variant="subtitle1">{props.msg}</Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontStyle: props.msg ? "normal" : "italic" }}
+              >{props.msg ? props.latest_message_sender_name + ": " + props.msg : "Chưa có tin nhắn"}
+              </Typography>
             </Stack>
           </Stack>
 

@@ -15,12 +15,13 @@ interface FriendsProps { }
 const Friends: FC<FriendsProps> = (props) => {
   const theme = useTheme();
   const { t } = useContext(LanguageContext);
-  const [input, setInput] = useState({ text: "" } as SearchFriendDto);
+  const [input, setInput] = useState("");
   const { friendList, setFriendList } = useFriendList();
 
   const handleChangeInput = (e) => {
-    setInput((p) => ({ ...p, text: e.target.value }));
+    setInput(e.target.value);
   };
+
   const handleSearchFriend = (e) => {
     e.preventDefault();
     searchFriend.mutate(input);
@@ -30,14 +31,19 @@ const Friends: FC<FriendsProps> = (props) => {
     onSuccess: (response) => {
       if (response.data.length > 0) {
         const searchFriendResults = [];
+
         response.data.map((e) => {
-          searchFriendResults.push({
-            id: e.to_user_profile.id,
-            username: e.to_user_profile.profile[0].username,
-            avatar: e.to_user_profile.profile[0].avatar,
+          searchFriendResults.push({ // fix - tran
+            // id: e.to_user_profile.id,
+            // username: e.to_user_profile.profile[0].username,
+            // avatar: e.to_user_profile.profile[0].avatar,
+            id: e.id,
+            username: e.username,
+            avatar: e.avatar,
           });
         });
         setFriendList(searchFriendResults);
+
       } else {
         enqueueSnackbar("Không tìm thấy", {
           variant: "info",
@@ -78,7 +84,7 @@ const Friends: FC<FriendsProps> = (props) => {
             <TextField
               size="small"
               label={t.friend_search}
-              value={input.text}
+              value={input}
               onChange={handleChangeInput}
             />
             <Button
