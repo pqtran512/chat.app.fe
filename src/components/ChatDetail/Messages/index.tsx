@@ -44,16 +44,30 @@ const Messages: FC<MessagesProps> = () => {
   }, [data?.messages?.length]);
 
   return (
-    <Box height={"100%"} overflow={"auto"} px={1} mb={4}>
+    <Box height="100%"
+      overflow="auto"
+      px={1}
+      mb={4}
+      display="flex"
+      flexDirection="column">
+      <Box
+        flex="1" // 👈 Chiếm toàn bộ chiều cao còn lại để có thể đẩy nội dung xuống
+        display="flex"
+        flexDirection="column"
+        justifyContent="flex-end" // 👈 Đẩy nội dung xuống đáy nếu chưa đủ chiều cao
+      >
+        <Stack p={1} spacing={1}>
+
+          {/* <Box height={"100%"} overflow={"auto"} px={1} mb={4}>
       <Stack
         p={1}
         height="100%"
         spacing={1}
         display="flex"
         justifyContent="flex-end"
-      >
-        {/* fix - comment history */}
-        {/* {Chat_History.map((el, index) => {
+      > */}
+          {/* fix - comment history */}
+          {/* {Chat_History.map((el, index) => {
           switch (el.type) {
             case "divider":
               return <TimeLineBreak key={index} {...el} />;
@@ -77,7 +91,7 @@ const Messages: FC<MessagesProps> = () => {
           }
         })} */}
 
-        {/* {data && data.length > 0 &&
+          {/* {data && data.length > 0 &&
           data.map((el, index) => {
             switch (el.chat_log.content_type.code) {
               case ChatLogContentTypeCode.TEXT:
@@ -112,22 +126,23 @@ const Messages: FC<MessagesProps> = () => {
                 return <></>;
             }
           })} */}
-        {data && data.messages?.length > 0 &&
-          data.messages.map((el, index) => {
-            const sender = chatProfile.participants.find(p => Number(p.id) === el.senderId);
-            const username = sender ? sender.username : '';
-            return (
-              <div key={index} style={{  }}>
-                <span>{el.senderId !== Number(userId) && username} </span>
-                <TextMsg
-                  incoming={el.senderId !== Number(userId)}
-                  message={el.content}
-                />
-              </div>
-            );
-          })}
-        <div ref={ref} />
-      </Stack>
+          {data && data.messages?.length > 0 &&
+            data.messages.map((el, index) => {
+              const sender = chatProfile.participants.find(p => Number(p.id) === el.senderId);
+              const username = sender ? sender.username : '';
+              return (
+                <div key={index} style={{}}>
+                  <span>{el.senderId !== Number(userId) && username} </span>
+                  <TextMsg
+                    incoming={el.senderId !== Number(userId)}
+                    message={el.content}
+                  />
+                </div>
+              );
+            })}
+          <div ref={ref} />
+        </Stack>
+      </Box>
     </Box>
   );
 };
