@@ -68,7 +68,7 @@ const Group: FC<GroupProps> = (props) => {
       name: props.name,
       isGroupChat: true,
       memberCount: props.memberCount,
-      groupOwnerId: props.owner_id,
+      groupOwnerId: props.owner_id
     });
   };
 

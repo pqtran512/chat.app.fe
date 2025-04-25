@@ -107,47 +107,96 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
   //       },
   //     });
 
-  const { data, isLoading } = useQuery({
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ["GetChatBoxListByUser"],
+  //   queryFn: () => chatAPI.listChatBox(Number(userId)),
+  //   enabled: true,
+  //   select: (rs) => {
+  //     if (onSuccess) onSuccess(rs.data);
+
+  //     const conversations = rs.data.conversations;
+
+  //     if (conversations && conversations.length > 0 && !toUserId && !toGroupId) {
+  //       const firstConversation = conversations[0];
+  //       const isGroupChat = firstConversation.participants.length > 2;
+
+  //       if (isGroupChat) {
+  //         const { name, id, participants } = firstConversation
+
+  //         setToGroupId(firstConversation.id.toString());
+
+  //         setChatProfile({
+  //           id: id.toString(),
+  //           isGroupChat: true,
+  //           name: name,
+  //           avatar: "",
+  //           memberCount: participants.length,
+  //           participants: participants
+  //         });
+  //       }
+  //       else {
+  //         const otherParticipant = firstConversation.participants.find(p => p.id.toString() !== userId)
+  //         setToUserId(otherParticipant.id.toString());
+  //         setChatProfile({
+  //           id: otherParticipant.id.toString(),
+  //           isGroupChat: false,
+  //           name: otherParticipant.username,
+  //           avatar: otherParticipant.avatar,
+  //           participants: firstConversation.participants
+  //         });
+  //       }
+  //     }
+
+  //     return conversations;
+  //   },
+  // });
+
+  const { data: conversations = [], isLoading } = useQuery({
     queryKey: ["GetChatBoxListByUser"],
     queryFn: () => chatAPI.listChatBox(Number(userId)),
     enabled: true,
     select: (rs) => {
       if (onSuccess) onSuccess(rs.data);
-
-      const conversations = rs.data.conversations;
-
-      // if (conversations && conversations.length > 0) {
-      //   const firstConversation = conversations[0];
-      //   const isGroupChat = firstConversation.participants.length > 2;
-
-      //   if (isGroupChat) {
-      //     const { name, id, participants } = firstConversation
-
-      //     setToGroupId(firstConversation.id.toString());
-
-      //     setChatProfile({
-      //       id: id.toString(),
-      //       isGroupChat: true,
-      //       name: name,
-      //       avatar: "",
-      //       memberCount: participants.length,
-      //     });
-      //   }
-      //   else {
-      //     const otherParticipant = firstConversation.participants.find(p => p.id.toString() !== userId)
-      //     setToUserId(otherParticipant.id.toString());
-      //     setChatProfile({
-      //       id: otherParticipant.id.toString(),
-      //       isGroupChat: false,
-      //       name: otherParticipant.username,
-      //       avatar: otherParticipant.avatar,
-      //     });
-      //   }
-      // }
-
-      return conversations;
-    },
+      return rs.data.conversations;
+    }
   });
+
+  useEffect(() => {
+
+    if (!toUserId && !toGroupId && conversations.length > 0) {
+      const firstConversation = conversations[0];
+      const isGroupChat = firstConversation.participants.length > 2;
+
+      if (isGroupChat) {
+        const { name, id, participants } = firstConversation;
+
+        setToGroupId(id.toString());
+
+        setChatProfile({
+          id: id.toString(),
+          isGroupChat: true,
+          name: name,
+          avatar: "",
+          memberCount: participants.length,
+          participants: participants
+        });
+        
+      } else {
+        const otherParticipant = firstConversation.participants.find(p => p.id.toString() !== userId);
+        if (otherParticipant) {
+          setToUserId(otherParticipant.id.toString());
+
+          setChatProfile({
+            id: otherParticipant.id.toString(),
+            isGroupChat: false,
+            name: otherParticipant.username,
+            avatar: otherParticipant.avatar,
+            participants: firstConversation.participants
+          });
+        }
+      }
+    }
+  }, [conversations, toUserId, toGroupId]);
 
   const handleClose = () => {
     setOpenCreateGroup(false);
@@ -276,8 +325,8 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                     />
                   );
                 })} */}
-          {data?.length > 0 && // fix - tran
-            data.map((conversation, index) => {
+          {conversations?.length > 0 && // fix - tran
+            conversations.map((conversation, index) => {
               const isGroupChat = conversation.participants.length > 2;
 
               const time =
@@ -310,6 +359,7 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                     name={group_name}
                     img={avatar}
                     time={time}
+                    participants={conversation.participants}
                     memberCount={conversation.participants.length}
                     seen={seen}
                     latest_message_sender_name={conversation.latest_message_sender_name}
@@ -329,6 +379,7 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                     time={time}
                     msg={lastChatLogContent}
                     seen={seen}
+                    participants={conversation.participants}
                     latest_message_sender_name={conversation.latest_message_sender_name}
                     onClick={() => onSelectChat(chatboxId)}
                   />

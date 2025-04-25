@@ -1,10 +1,11 @@
 import { FC } from "react";
-import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
+import { Box, Avatar, styled, Badge, Stack, Typography, useTheme } from "@mui/material";
 import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { enqueueSnackbar } from "notistack";
 import { connectChatSocket, disconnectChatSocket } from "src/utils/ws/clients/chat";
+import { User } from "src/types/entities";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -46,14 +47,15 @@ interface SingleChatProps {
   unread?: number;
   online?: boolean;
   seen?: boolean;
+  participants?: User[];
   latest_message_sender_name?: string;
   onSetSeen?: (chatboxId: string, seen: boolean) => void;
   onClick?: () => void;
 }
 
 const SingleChat: FC<SingleChatProps> = (props) => {
-  const { toUserId, setToUserId, setToGroupId, setChatProfile } =
-    useChat();
+  const theme = useTheme();
+  const { toUserId, setToUserId, setToGroupId, setChatProfile } = useChat();
   const queryClient = useQueryClient();
 
   const setSeen = useMutation(chatAPI.setChatboxSeen, {
@@ -80,6 +82,7 @@ const SingleChat: FC<SingleChatProps> = (props) => {
       isGroupChat: false,
       avatar: props.img,
       groupOwnerId: "",
+      participants: props?.participants,
     });
 
     if (!props.seen) {
@@ -95,9 +98,17 @@ const SingleChat: FC<SingleChatProps> = (props) => {
     <Box
       sx={{
         width: "100%",
-        backgroundColor: toUserId === props?.id ? "#e5efff" : "#fff",
+        backgroundColor: theme.palette.mode === 'light'
+          ? toUserId === props?.id ? "#e5efff" : "#fff"
+          : toUserId === props?.id ? "#003181" : "#303030",
         cursor: "pointer",
-        ":hover": { backgroundColor: "#f0f0f5" },
+        borderTop: "1px solid #dddddd",
+        ":hover": {
+          backgroundColor: theme.palette.mode === 'light'
+            ? "#f0f0f5"
+            : "#666698",
+          opacity: 0.9
+        },
       }}
       p={1}
       onClick={handleClick}
@@ -124,13 +135,18 @@ const SingleChat: FC<SingleChatProps> = (props) => {
             ) : (
               <Avatar src={props.img} />
             )} */}
-            <Avatar src={props?.img} />
+            <Avatar
+              src={props?.img}
+              sx={{ backgroundColor: theme.palette.mode === 'dark' && "#bbbbbb" }}
+            />
 
-            <Stack direction={"column"} alignItems="flex-start" justifyContent="center">
-              <Typography variant="subtitle2">{props.name}</Typography>
+            <Stack direction={"column"} alignItems="flex-start" justifyContent="center"
+            >
+
+              <Typography variant="subtitle2" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>{props.name}</Typography>
               <Typography
                 variant="subtitle1"
-                sx={{ fontStyle: props.msg ? "normal" : "italic" }}
+                sx={{ fontStyle: props.msg ? "normal" : "italic", color: theme.palette.mode === 'light' ? 'black' : '#fff' }}
               >{props.msg ? props.latest_message_sender_name + ": " + props.msg : "Chưa có tin nhắn"}
               </Typography>
 

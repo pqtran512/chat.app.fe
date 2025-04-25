@@ -51,6 +51,10 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
   } as UpdateProfileGroupDto);
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    console.log("ProfileGroup", props.profile);
+  }, [props]);
+
   const { members } = useGroupMembers();
   const friendListContext = useFriendList();
 
@@ -79,6 +83,7 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
     leaveGroup.mutate(props.profile.id);
     handleClose();
   };
+  
   const leaveGroup = useMutation(groupAPI.leaveGroup, {
     onSuccess: (response) => {
       enqueueSnackbar(`Bạn vừa rời khỏi nhóm ${props.profile.name}`, {
@@ -321,15 +326,15 @@ const ProfileGroup: FC<ProfileGroupProps> = (props) => {
                     </Typography>
                   </Stack>
                 </Stack>
-                <Button onClick={handleClose}>Nhắn tin</Button>
+                {/* <Button onClick={handleClose}>Nhắn tin</Button> */}
               </Stack>
               <Divider />
-              <Typography variant="h5">{`Thành viên (${members.length})`}</Typography>
+              <Typography variant="h5">{`Thành viên (${props.profile.participants?.length})`}</Typography>
               <Stack direction={"row"}>
                 <AvatarGroup max={3}>
-                  {members.map((m) => (
+                  {props.profile.participants?.map((m) => (
                     <Avatar
-                      key={m.user_id}
+                      key={m.id}
                       alt={m.username}
                       src={m.avatar}
                     />

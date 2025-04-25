@@ -1,10 +1,11 @@
 import { FC } from "react";
-import { Box, Avatar, styled, Badge, Stack, Typography } from "@mui/material";
+import { Box, Avatar, styled, Badge, Stack, Typography, useTheme } from "@mui/material";
 import { useChat } from "src/contexts/ChatContext";
 import { useMutation, useQueryClient } from "react-query";
 import { chatAPI } from "src/api/chat.api";
 import { enqueueSnackbar } from "notistack";
 import { connectChatSocket, disconnectChatSocket } from "src/utils/ws/clients/chat";
+import { User } from "src/types/entities";
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 30,
@@ -26,13 +27,14 @@ interface GroupChatProps {
   newMessage?: boolean;
   ownerId?: string;
   seen?: boolean;
+  participants?: User[];
   latest_message_sender_name?: string;
   onClick?: () => void;
 }
 
 const GroupChat: FC<GroupChatProps> = (props) => {
-  const { toGroupId, setToUserId, setToGroupId, setChatProfile } =
-    useChat();
+  const theme = useTheme();
+  const { toGroupId, setToUserId, setToGroupId, setChatProfile } = useChat();
   const queryClient = useQueryClient();
 
   const setSeen = useMutation(chatAPI.setChatboxSeen, {
@@ -60,6 +62,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
       avatar: props.img,
       memberCount: props.memberCount,
       groupOwnerId: props.ownerId,
+      participants: props?.participants
     });
 
     if (props.newMessage) {
@@ -75,9 +78,17 @@ const GroupChat: FC<GroupChatProps> = (props) => {
     <Box
       sx={{
         width: "100%",
-        backgroundColor: toGroupId === props?.id ? "#e5efff" : "#fff",
+        backgroundColor: theme.palette.mode === 'light'
+          ? toGroupId === props?.id ? "#e5efff" : "#fff"
+          : toGroupId === props?.id ? "#003181" : "#303030",
         cursor: "pointer",
-        ":hover": { backgroundColor: "#f0f0f5" },
+        borderTop: "1px solid #dddddd",
+        ":hover": {
+          backgroundColor: theme.palette.mode === 'light'
+            ? "#f0f0f5"
+            : "#666698",
+          opacity: 0.9
+        },
       }}
       p={1}
       onClick={handleClick}
@@ -98,6 +109,7 @@ const GroupChat: FC<GroupChatProps> = (props) => {
               badgeContent={
                 <SmallAvatar
                   alt="Remy Sharp"
+                  sx={{ backgroundColor: theme.palette.mode === 'dark' && "#bbbbbb" }}
                   src={props.img && `${props.img}`}
                 />
               }
@@ -105,14 +117,15 @@ const GroupChat: FC<GroupChatProps> = (props) => {
               <Avatar
                 alt="Travis Howard"
                 src={props.img}
+                sx={{ backgroundColor: theme.palette.mode === 'dark' && "#bbbbbb" }}
               >{props.name && props.name[0]}</Avatar>
             </Badge>
 
             <Stack direction={"column"} alignItems="flex-start" justifyContent="center">
-              <Typography variant="subtitle2">{props.name}</Typography>
+              <Typography variant="subtitle2" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>{props.name}</Typography>
               <Typography
                 variant="subtitle1"
-                sx={{ fontStyle: props.msg ? "normal" : "italic" }}
+                sx={{ fontStyle: props.msg ? "normal" : "italic", color: theme.palette.mode === 'light' ? 'black' : '#fff' }}
               >{props.msg ? props.latest_message_sender_name + ": " + props.msg : "Chưa có tin nhắn"}
               </Typography>
             </Stack>
