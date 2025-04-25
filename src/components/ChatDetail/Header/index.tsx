@@ -6,7 +6,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import StyledBadge from "../StyledBadge";
 
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
@@ -30,8 +30,7 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = (props) => {
   const theme = useTheme();
-  const [openProfileFriendOrGroup, setOpenProfileFriendOrGroup] =
-    useState(false);
+  const [openProfileFriendOrGroup, setOpenProfileFriendOrGroup] = useState(false);
   const { chatProfile } = useChat();
   const { members, setMembers } = useGroupMembers();
 
@@ -49,7 +48,7 @@ const Header: FC<HeaderProps> = (props) => {
             active: "inactive",
           });
         });
-        
+
         setMembers(groupMembers);
       }
     },
@@ -59,8 +58,20 @@ const Header: FC<HeaderProps> = (props) => {
   });
 
   const handleShowProfileFriendOrGroup = () => {
-    setOpenProfileFriendOrGroup(true);
-    getGroupMembers.mutate(chatProfile.id);
+    chatProfile.isGroupChat && setOpenProfileFriendOrGroup(true);
+    
+    const groupMembers = [];
+
+    chatProfile.participants.forEach((u) => {
+      groupMembers.push({
+        user_id: u.id,
+        username: u.username,
+        avatar: u.avatar,
+        active: "inactive",
+      });
+    });
+
+    setMembers(groupMembers);
   };
 
   return (
@@ -81,38 +92,38 @@ const Header: FC<HeaderProps> = (props) => {
         <Box>
           <Button onClick={handleShowProfileFriendOrGroup}>
             {chatProfile.id && (
-            <Stack direction={"row"} spacing={2} alignItems={"center"}>
-              {false ? (
-                <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  variant="dot"
-                >
+              <Stack direction={"row"} spacing={2} alignItems={"center"}>
+                {false ? (
+                  <StyledBadge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    variant="dot"
+                  >
+                    <Avatar
+                      sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid #157FCA' }}
+                      alt={chatProfile.name || "Avatar"}
+                      src={chatProfile?.avatar}
+                    />
+                  </StyledBadge>
+                ) : (
                   <Avatar
-                    sx={{ width: 55, height: 55, bgcolor: '#E48E0D', fontSize: '18px', border: '2px solid #157FCA' }}
-                  alt= {chatProfile.name || "Avatar"}
+                    sx={{ width: 55, height: 55, fontSize: '18px', backgroundColor: theme.palette.mode === 'dark' && "#bbbbbb" }}
+                    alt={chatProfile.name || "Avatar"}
                     src={chatProfile?.avatar}
                   />
-                </StyledBadge>
-              ) : (
-                <Avatar
-                  sx={{ width: 55, height: 55, fontSize: '18px' }}
-                  alt= {chatProfile.name || "Avatar"}
-                  src={chatProfile?.avatar}
-                />
-              )}
-
-              <Stack direction={"column"}>
-                <Typography textAlign={"left"} variant="h4" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>
-                  {chatProfile.name || ('Nhóm trò chuyện ' + chatProfile.id) }
-                </Typography>
-                {chatProfile.isGroupChat && (
-                  <Typography textAlign={"left"} variant="h6" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>
-                    {chatProfile.memberCount} thành viên
-                  </Typography>
                 )}
+
+                <Stack direction={"column"}>
+                  <Typography textAlign={"left"} variant="h4" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>
+                    {chatProfile.name || ('Nhóm trò chuyện ' + chatProfile.id)}
+                  </Typography>
+                  {chatProfile.isGroupChat && (
+                    <Typography textAlign={"left"} variant="h6" sx={{ color: theme.palette.mode === 'light' ? 'black' : '#fff' }}>
+                      {chatProfile.memberCount} thành viên
+                    </Typography>
+                  )}
+                </Stack>
               </Stack>
-            </Stack>
             )}
           </Button>
         </Box>

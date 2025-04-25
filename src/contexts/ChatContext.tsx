@@ -1,4 +1,5 @@
 import { FC, useState, createContext, useContext, ReactNode } from "react";
+import { User } from "src/types/entities";
 
 export type ChatProfile = {
   id: string;
@@ -8,6 +9,7 @@ export type ChatProfile = {
   memberCount?: number;
   newMessage?: boolean;
   groupOwnerId?: string;
+  participants?: User[];
 };
 
 type ChatContext = {

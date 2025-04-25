@@ -35,7 +35,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
   const [selectedRemovingMember, setSelectedRemovingMember] = useState([]);
   const queryClient = useQueryClient();
   const { userId } = useAuth();
-  const { setChatProfile } = useChat();
+  const { chatProfile, setChatProfile } = useChat();
 
   const {
     isLoading,
@@ -62,14 +62,13 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
   });
 
   const addableMembers = useMemo(() => {
-    if (friendList && groupMembers) {
-      setChatProfile((prev) => ({ ...prev, memberCount: groupMembers.count }));
-      const addableMembers = friendList.filter(
-        (o) =>
-          groupMembers.users.findIndex(
-            // (u) => u.user_id === o.to_user_profile.id 
-            (u) => u.user_id === o.id  // fix -tran
-          ) === -1
+    console.log("friendList", friendList);
+    if (friendList && chatProfile.participants) {
+      const addableMembers = friendList.filter((o) =>
+        chatProfile.participants.findIndex(
+          // (u) => u.user_id === o.to_user_profile.id 
+          (u) => u.id === o.id 
+        ) === -1
       );
 
       const friendsOption = addableMembers.map((option) => {
@@ -78,7 +77,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
         //     ? option.to_user_profile.profile[0].username[0].toUpperCase()
         //     : "";
 
-        const firstLetter =  // fix -tran
+        const firstLetter = 
           option.username !== ""
             ? option.username[0].toUpperCase()
             : "";
@@ -101,7 +100,7 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
       );
       const friendsOption = filterdGroupMembers.map((option) => {
         const firstLetter =
-          option.user.profile[0].username !== "" 
+          option.user.profile[0].username !== ""
             ? option.user.profile[0].username[0].toUpperCase()
             : "";
         return {
@@ -250,28 +249,28 @@ const GroupMembers: FC<GroupMembersProps> = (props) => {
             ></Autocomplete>
           </>
         )}
-        {!loadingGetGroupMembers && (
-          <>
-            <Typography
-              variant="h5"
-              padding={2}
-            >{`Danh sách thành viên (${groupMembers.count})`}</Typography>
-            <Stack spacing={2}>
-              {groupMembers.users.map((m) => {
-                const { username, avatar } = m.user.profile[0];
-                return (
-                  <Member
-                    key={m.user_id}
-                    id={m.user_id}
-                    username={username}
-                    avatar={avatar}
-                    isOwner={props.ownerId === m.user_id}
-                  />
-                );
-              })}
-            </Stack>
-          </>
-        )}
+        {/* {!loadingGetGroupMembers && ( */}
+        <>
+          <Typography
+            variant="h5"
+            padding={2}
+          >{`Danh sách thành viên (${chatProfile.memberCount})`}</Typography>
+          <Stack spacing={2}>
+            {chatProfile.participants.map((m) => {
+              const { username, avatar } = m;
+              return (
+                <Member
+                  key={m.id}
+                  id={m.id}
+                  username={username}
+                  avatar={avatar}
+                  isOwner={props.ownerId === m.id}
+                />
+              );
+            })}
+          </Stack>
+        </>
+        {/* )} */}
       </DialogContent>
     </Dialog>
   );

@@ -20,6 +20,7 @@ interface MessagesProps { }
 
 const Messages: FC<MessagesProps> = () => {
   const { chatboxId, toGroupId, toUserId } = useChat();
+  const { chatProfile } = useChat()
   const { userId } = useAuth();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,6 @@ const Messages: FC<MessagesProps> = () => {
   });
 
   useEffect(() => {
-
     if (data?.messages?.length) {
       ref.current?.scrollIntoView({
         block: "end",
@@ -114,12 +114,16 @@ const Messages: FC<MessagesProps> = () => {
           })} */}
         {data && data.messages?.length > 0 &&
           data.messages.map((el, index) => {
+            const sender = chatProfile.participants.find(p => Number(p.id) === el.senderId);
+            const username = sender ? sender.username : '';
             return (
-              <TextMsg
-                key={index}
-                incoming={el.senderId !== Number(userId)}
-                message={el.content}
-              />
+              <div key={index} style={{  }}>
+                <span>{el.senderId !== Number(userId) && username} </span>
+                <TextMsg
+                  incoming={el.senderId !== Number(userId)}
+                  message={el.content}
+                />
+              </div>
             );
           })}
         <div ref={ref} />
