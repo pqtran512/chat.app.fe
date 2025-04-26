@@ -129,7 +129,7 @@ const ContactBar: FC<ContactBarProps> = (props) => {
 
         response.data.requests.forEach((e) => {
           responeSentList.push({
-            id: e.friend_id,
+            id: e.user_id,
             username: e.username,
             avatar: e.avatar
           });

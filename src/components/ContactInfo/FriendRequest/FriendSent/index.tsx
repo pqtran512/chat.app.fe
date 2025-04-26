@@ -47,9 +47,8 @@ const FriendSent: FC<FriendSentProps> = (props) => {
         response.data.forEach((e) => {
           responseSentList.push({
             id: e.friend_id,
-            // username: e.username,
-            // avatar: e.avatar
-            username: "Gia Linh", // fix - tran
+            username: e.username,
+            avatar: e.avatar
           });
         });
         friendRequestContext.setFriendSentList(responseSentList);
