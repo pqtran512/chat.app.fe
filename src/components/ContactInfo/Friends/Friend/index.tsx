@@ -45,7 +45,7 @@ const Friend: FC<FriendProps> = (props) => {
   const unfriend = useMutation(friendAPI.unfriend, {
     onSuccess: (response) => {
       enqueueSnackbar(`Hủy kết bạn thành công`, { variant: "success" });
-      getFriendList.mutate(""); // fix -tran
+      getFriendList.mutate(""); 
     },
     onError: (error: any) => {
       enqueueSnackbar(error, { variant: "error" });

@@ -33,10 +33,7 @@ const Friends: FC<FriendsProps> = (props) => {
         const searchFriendResults = [];
 
         response.data.map((e) => {
-          searchFriendResults.push({ // fix - tran
-            // id: e.to_user_profile.id,
-            // username: e.to_user_profile.profile[0].username,
-            // avatar: e.to_user_profile.profile[0].avatar,
+          searchFriendResults.push({
             id: e.id,
             username: e.username,
             avatar: e.avatar,
