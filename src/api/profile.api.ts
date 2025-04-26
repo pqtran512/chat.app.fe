@@ -4,7 +4,7 @@ import http from "src/utils/http";
 
 export const PROFILE_URL = {
   // GET_PROFILE: "/user/me/profiles",
-  UPDATE_PROFILE: `http://localhost:5050/user/${localStorage.getItem('id')}/uploadAvatar`,
+  UPDATE_PROFILE: `http://13.56.16.22:5050/user/${localStorage.getItem('id')}/uploadAvatar`,
 };
 
 export const profileAPI = {
