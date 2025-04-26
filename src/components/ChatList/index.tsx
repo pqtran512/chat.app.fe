@@ -161,42 +161,42 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
     }
   });
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (!toUserId && !toGroupId && conversations.length > 0) {
-      const firstConversation = conversations[0];
-      const isGroupChat = firstConversation.participants.length > 2;
+  //   if (!toUserId && !toGroupId && conversations.length > 0) {
+  //     const firstConversation = conversations[0];
+  //     const isGroupChat = firstConversation.participants.length > 2;
 
-      if (isGroupChat) {
-        const { name, id, participants } = firstConversation;
+  //     if (isGroupChat) {
+  //       const { name, id, participants } = firstConversation;
 
-        setToGroupId(id.toString());
+  //       setToGroupId(id.toString());
 
-        setChatProfile({
-          id: id.toString(),
-          isGroupChat: true,
-          name: name,
-          avatar: "",
-          memberCount: participants.length,
-          participants: participants
-        });
-        
-      } else {
-        const otherParticipant = firstConversation.participants.find(p => p.id.toString() !== userId);
-        if (otherParticipant) {
-          setToUserId(otherParticipant.id.toString());
+  //       setChatProfile({
+  //         id: id.toString(),
+  //         isGroupChat: true,
+  //         name: name,
+  //         avatar: "",
+  //         memberCount: participants.length,
+  //         participants: participants
+  //       });
 
-          setChatProfile({
-            id: otherParticipant.id.toString(),
-            isGroupChat: false,
-            name: otherParticipant.username,
-            avatar: otherParticipant.avatar,
-            participants: firstConversation.participants
-          });
-        }
-      }
-    }
-  }, [conversations, toUserId, toGroupId]);
+  //     } else {
+  //       const otherParticipant = firstConversation.participants.find(p => p.id.toString() !== userId);
+  //       if (otherParticipant) {
+  //         setToUserId(otherParticipant.id.toString());
+
+  //         setChatProfile({
+  //           id: otherParticipant.id.toString(),
+  //           isGroupChat: false,
+  //           name: otherParticipant.username,
+  //           avatar: otherParticipant.avatar,
+  //           participants: firstConversation.participants
+  //         });
+  //       }
+  //     }
+  //   }
+  // }, [conversations, toUserId, toGroupId]);
 
   const handleClose = () => {
     setOpenCreateGroup(false);
@@ -278,14 +278,14 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
           {/* {data?.length &&
                 data.map((chatbox, index) => {
                   // const time = moment(chatbox.latest_updated_date).fromNow();
-                  const time = moment().fromNow(); // fix - tran
-                  // const lastChatLogContent = chatbox?.chatbox_chatlogs[0]?.chat_log.content; // fix - tran
-                  const lastChatLogContent = "Hello" // fix - tran
-                  // const isNewMessage = chatbox.new_message; // fix - tran
-                  const isNewMessage = "How are you ?"; // fix - tran
+                  const time = moment().fromNow();
+                  // const lastChatLogContent = chatbox?.chatbox_chatlogs[0]?.chat_log.content;
+                  const lastChatLogContent = "Hello"
+                  // const isNewMessage = chatbox.new_message;
+                  const isNewMessage = "How are you ?";
                   // const chatboxId = chatbox.id;
-                  const chatboxId = '1'; // fix - tran
-                  // if (chatbox.to_user_profile) { // fix - tran
+                  const chatboxId = '1';
+                  // if (chatbox.to_user_profile) {
                   //   const { username, avatar } = chatbox.to_user_profile.profile[0];
                   //   return (
                   //     <SingleChat
@@ -302,13 +302,13 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                   //   );
                   // }
                   // const { name, avatar, id, group_members, owner_id } =
-                  //   chatbox.to_group_profile; // fix - tran
+                  //   chatbox.to_group_profile;
                   // const { name, avatar, id, group_members, owner_id } = chatbox;
-                  const name = "Trân" // fix - tran
-                  const avatar = "" // fix - tran
-                  const id = "1" // fix - tran
-                  const group_members = [] // fix - tran
-                  const owner_id = "" // fix - tran
+                  const name = "Trân"
+                  const avatar = ""
+                  const id = "1"
+                  const group_members = []
+                  const owner_id = ""
                   return (
                     <GroupChat
                       key={index}
@@ -325,67 +325,72 @@ const ChatList: FC<ChatListProps> = ({ onSelectChat, onSuccess }) => {
                     />
                   );
                 })} */}
-          {conversations?.length > 0 && // fix - tran
-            conversations.map((conversation, index) => {
-              const isGroupChat = conversation.participants.length > 2;
+          {conversations?.length > 0 &&
+            [...conversations] // copy mảng để không mutate data gốc
+              .sort((a, b) => {
+                const timeA = new Date(a.latest_message_created_at).getTime();
+                const timeB = new Date(b.latest_message_created_at).getTime();
+                return timeB - timeA;
+              }).map((conversation, index) => {
+                const isGroupChat = conversation.participants.length > 2;
 
-              const time =
-                conversation.latest_message_created_at
-                  && conversation.latest_message_created_at !== '0001-01-01T00:00:00Z'
-                  ? moment(conversation.latest_message_created_at).fromNow()
-                  : moment().fromNow();
+                const time =
+                  conversation.latest_message_created_at
+                    && conversation.latest_message_created_at !== '0001-01-01T00:00:00Z'
+                    ? moment(conversation.latest_message_created_at).fromNow()
+                    : moment().fromNow();
 
-              let lastChatLogContent = conversation.latest_message_content;
+                let lastChatLogContent = conversation.latest_message_content;
 
-              const seen = conversation.seen;
-              const chatboxId = conversation.id.toString();
+                const seen = conversation.seen;
+                const chatboxId = conversation.id.toString();
 
-              const otherParticipant = !isGroupChat
-                ? conversation.participants.find(p => p.id.toString() !== userId)
-                : null;
+                const otherParticipant = !isGroupChat
+                  ? conversation.participants.find(p => p.id.toString() !== userId)
+                  : null;
 
-              const avatar = isGroupChat
-                ? '' // fix - tran
-                : otherParticipant?.avatar || '';
+                const avatar = isGroupChat
+                  ? ''
+                  : otherParticipant?.avatar || '';
 
-              const group_name = isGroupChat ? conversation.name : otherParticipant?.username || '';
+                const group_name = isGroupChat ? conversation.name : otherParticipant?.username || '';
 
-              if (isGroupChat) {
-                return (
-                  <GroupChat
-                    key={index}
-                    id={chatboxId}
-                    chatboxId={chatboxId}
-                    name={group_name}
-                    img={avatar}
-                    time={time}
-                    participants={conversation.participants}
-                    memberCount={conversation.participants.length}
-                    seen={seen}
-                    latest_message_sender_name={conversation.latest_message_sender_name}
-                    msg={lastChatLogContent}
-                    ownerId={conversation.creator_id.toString()}
-                    onClick={() => onSelectChat(chatboxId)}
-                  />
-                );
-              } else {
-                return (
-                  <SingleChat
-                    key={index}
-                    id={chatboxId}
-                    chatboxId={chatboxId}
-                    name={group_name}
-                    img={avatar}
-                    time={time}
-                    msg={lastChatLogContent}
-                    seen={seen}
-                    participants={conversation.participants}
-                    latest_message_sender_name={conversation.latest_message_sender_name}
-                    onClick={() => onSelectChat(chatboxId)}
-                  />
-                );
-              }
-            })}
+                if (isGroupChat) {
+                  return (
+                    <GroupChat
+                      key={index}
+                      id={chatboxId}
+                      chatboxId={chatboxId}
+                      name={group_name}
+                      img={avatar}
+                      time={time}
+                      participants={conversation.participants}
+                      memberCount={conversation.participants.length}
+                      seen={seen}
+                      latest_message_sender_name={conversation.latest_message_sender_name}
+                      msg={lastChatLogContent}
+                      ownerId={conversation.creator_id.toString()}
+                      onClick={() => onSelectChat(chatboxId)}
+                    />
+                  );
+                } else {
+                  return (
+                    <SingleChat
+                      key={index}
+                      id={chatboxId}
+                      chatboxId={chatboxId}
+                      name={group_name}
+                      img={avatar}
+                      time={time}
+                      msg={lastChatLogContent}
+                      seen={seen}
+                      participants={conversation.participants}
+                      latest_message_sender_name={conversation.latest_message_sender_name}
+                      onClick={() => onSelectChat(chatboxId)}
+                    />
+                  );
+                }
+              })}
 
         </Stack>
       </Stack>

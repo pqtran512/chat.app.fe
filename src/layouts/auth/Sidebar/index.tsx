@@ -94,7 +94,7 @@ function Sidebar() {
         }}
       >
         <Box height={'85vh'}>
-          {!loadingGetUserDetail && ( // fix - no comment
+          {!loadingGetUserDetail && (
           <Box mt={3}>
             <Box>
               <Button
